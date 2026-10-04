@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <!-- Vibrant D Gradient (Purple / Neon Magenta to Violet) -->
+    <linearGradient id="dGrad" x1="15%" y1="10%" x2="85%" y2="90%">
+      <stop offset="0%" stop-color="#c626ff" />
+      <stop offset="40%" stop-color="#b022ff" />
+      <stop offset="100%" stop-color="#8015ff" />
+    </linearGradient>
+
+    <!-- Vibrant x Gradient (Electric Royal Blue to Cobalt) -->
+    <linearGradient id="xGrad" x1="20%" y1="10%" x2="80%" y2="90%">
+      <stop offset="0%" stop-color="#3d68ff" />
+      <stop offset="50%" stop-color="#3055ff" />
+      <stop offset="100%" stop-color="#1f42fa" />
+    </linearGradient>
+
+    <!-- Subtle inner glow / border for squircle container -->
+    <linearGradient id="borderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="rgba(255,255,255,0.18)" />
+      <stop offset="100%" stop-color="rgba(255,255,255,0.03)" />
+    </linearGradient>
+  </defs>
+
+  <!-- Deep Black Squircle with Premium Smooth Corner Radius -->
+  <rect x="8" y="8" width="1008" height="1008" rx="224" ry="224" fill="#000000" stroke="url(#borderGrad)" stroke-width="4" />
+
+  <!-- Vector Group for Dx Logo Mark -->
+  <g id="dx-mark">
+    <!-- Capital "D": Flat left spine + continuous curvature + inner counter -->
+    <path fill="url(#dGrad)" fill-rule="evenodd" d="
+      M 148 260
+      L 330 260
+      C 440 260 514 330 514 498
+      C 514 666 440 736 330 736
+      L 148 736
+      Z
+      M 268 376
+      L 268 620
+      L 326 620
+      C 386 620 422 584 422 498
+      C 422 412 386 376 326 376
+      Z
+    " />
+
+    <!-- Lowercase "x": Geometric crossed arms on shared baseline -->
+    <path fill="url(#xGrad)" d="
+      M 568 382
+      L 670 382
+      L 736 502
+      L 802 382
+      L 904 382
+      L 800 558
+      L 914 736
+      L 810 736
+      L 736 612
+      L 662 736
+      L 558 736
+      L 672 558
+      Z
+    " />
+  </g>
+</svg>

@@ -1,0 +1,101 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper: Valid Document ID format
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // Helper: Incoming request payload
+    function incoming() {
+      return request.resource.data;
+    }
+
+    // Validation: Blueprint (Client Project Brief)
+    // Note: Bracket notation data['service'] avoids the reserved keyword 'service'
+    function isValidBlueprint(data) {
+      return (
+        data.name is string && data.name.size() > 0 && data.name.size() <= 120 &&
+        data['service'] is string && data['service'].size() <= 120 &&
+        data.project_type is string && data.project_type.size() <= 120 &&
+        data.status in ['New', 'In Review', 'Contacted', 'Proposal Sent', 'Accepted', 'Archived'] &&
+        (!('email' in data) || (data.email is string && data.email.size() <= 150)) &&
+        (!('whatsapp' in data) || (data.whatsapp is string && data.whatsapp.size() <= 50)) &&
+        (!('template_code' in data) || (data.template_code is string && data.template_code.size() <= 60)) &&
+        (!('timeline' in data) || (data.timeline is string && data.timeline.size() <= 120)) &&
+        (!('budget' in data) || (data.budget is string && data.budget.size() <= 120)) &&
+        (!('notes' in data) || (data.notes is string && data.notes.size() <= 3500)) &&
+        (!('internal_notes' in data) || (data.internal_notes is string && data.internal_notes.size() <= 3500))
+      );
+    }
+
+    // Validation: Showcase Production Template
+    function isValidTemplate(data) {
+      return (
+        data.title is string && data.title.size() > 0 && data.title.size() <= 150 &&
+        data.category is string && data.category.size() <= 120 &&
+        data.sourceType in ['url', 'html'] &&
+        (!('code' in data) || (data.code is string && data.code.size() <= 40)) &&
+        (!('description' in data) || (data.description is string && data.description.size() <= 1500)) &&
+        (!('liveUrl' in data) || (data.liveUrl is string && data.liveUrl.size() <= 500)) &&
+        (!('htmlContent' in data) || (data.htmlContent is string)) &&
+        (!('thumbnail' in data) || (data.thumbnail is string && data.thumbnail.size() <= 1000))
+      );
+    }
+
+    // Validation: User FAQ Inquiries & Questions
+    function isValidQuestion(data) {
+      return (
+        data.question is string && data.question.size() > 0 && data.question.size() <= 2500 &&
+        data.status in ['New', 'Replied', 'Archived'] &&
+        (!('name' in data) || (data.name is string && data.name.size() <= 120)) &&
+        (!('email' in data) || (data.email is string && data.email.size() <= 150))
+      );
+    }
+
+    // Validation: FAQ Knowledge Base Items
+    function isValidFaq(data) {
+      return (
+        data.question is string && data.question.size() > 0 && data.question.size() <= 350 &&
+        data.answer is string && data.answer.size() > 0 && data.answer.size() <= 3000
+      );
+    }
+
+    // 1. Projects & Client Intake Blueprints
+    match /blueprints/{blueprintId} {
+      allow get, list: if true;
+      allow create: if isValidId(blueprintId) && isValidBlueprint(incoming());
+      allow update: if isValidId(blueprintId) && isValidBlueprint(incoming());
+      allow delete: if isValidId(blueprintId);
+    }
+
+    // 2. Showcase Production Templates
+    match /templates/{templateId} {
+      allow get, list: if true;
+      allow create: if isValidId(templateId) && isValidTemplate(incoming());
+      allow update: if isValidId(templateId) && isValidTemplate(incoming());
+      allow delete: if isValidId(templateId);
+    }
+
+    // 3. User Inquiries from FAQ & "Ask a Question"
+    match /questions/{questionId} {
+      allow get, list: if true;
+      allow create: if isValidId(questionId) && isValidQuestion(incoming());
+      allow update: if isValidId(questionId) && isValidQuestion(incoming());
+      allow delete: if isValidId(questionId);
+    }
+
+    // 4. FAQ Knowledge Base Items
+    match /faqs/{faqId} {
+      allow get, list: if true;
+      allow create, update: if isValidId(faqId) && isValidFaq(incoming());
+      allow delete: if isValidId(faqId);
+    }
+
+    // Default deny for all other paths
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

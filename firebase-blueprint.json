@@ -1,0 +1,92 @@
+{
+  "entities": {
+    "Blueprint": {
+      "title": "Blueprint",
+      "description": "Client project brief submission with scope, timeline, budget, and status",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string", "maxLength": 100 },
+        "email": { "type": "string", "maxLength": 150 },
+        "whatsapp": { "type": "string", "maxLength": 50 },
+        "service": { "type": "string", "maxLength": 100 },
+        "project_type": { "type": "string", "maxLength": 100 },
+        "template_code": { "type": "string", "maxLength": 50 },
+        "timeline": { "type": "string", "maxLength": 100 },
+        "budget": { "type": "string", "maxLength": 100 },
+        "notes": { "type": "string", "maxLength": 2000 },
+        "status": { "type": "string", "enum": ["New", "In Review", "Contacted", "Proposal Sent", "Accepted", "Archived"] },
+        "internal_notes": { "type": "string", "maxLength": 2000 },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "email", "service", "project_type", "status", "createdAt"]
+    },
+    "Question": {
+      "title": "Question",
+      "description": "General visitor inquiry or question",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string", "maxLength": 100 },
+        "email": { "type": "string", "maxLength": 150 },
+        "question": { "type": "string", "maxLength": 2000 },
+        "status": { "type": "string", "enum": ["New", "Replied", "Archived"] },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "repliedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["email", "question", "status", "createdAt"]
+    },
+    "Template": {
+      "title": "Template",
+      "description": "Pre-engineered production showcase template",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "code": { "type": "string", "maxLength": 30 },
+        "title": { "type": "string", "maxLength": 150 },
+        "category": { "type": "string", "maxLength": 100 },
+        "description": { "type": "string", "maxLength": 1000 },
+        "tags": { "type": "array" },
+        "sourceType": { "type": "string", "enum": ["url", "html"] },
+        "liveUrl": { "type": "string", "maxLength": 500 },
+        "htmlContent": { "type": "string" },
+        "thumbnail": { "type": "string", "maxLength": 500 },
+        "featured": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "code", "title", "category", "sourceType", "createdAt"]
+    },
+    "FaqItem": {
+      "title": "FaqItem",
+      "description": "Frequently asked questions and answers for the website",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "question": { "type": "string", "maxLength": 300 },
+        "answer": { "type": "string", "maxLength": 2000 },
+        "order": { "type": "number" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "question", "answer"]
+    }
+  },
+  "firestore": {
+    "/blueprints/{blueprintId}": {
+      "schema": { "$ref": "#/entities/Blueprint" },
+      "description": "Collection of client project briefs"
+    },
+    "/questions/{questionId}": {
+      "schema": { "$ref": "#/entities/Question" },
+      "description": "Collection of user inquiries and questions"
+    },
+    "/templates/{templateId}": {
+      "schema": { "$ref": "#/entities/Template" },
+      "description": "Showcase template repository items"
+    },
+    "/faqs/{faqId}": {
+      "schema": { "$ref": "#/entities/FaqItem" },
+      "description": "Showcase FAQ questions and answers"
+    }
+  }
+}
