@@ -41,6 +41,21 @@ body {
   background: var(--bg);
   color: var(--text);
   font-family: var(--font);
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+/* Keep text selection enabled inside editable form inputs & textareas */
+input,
+textarea,
+[contenteditable="true"],
+.selectable-text {
+  user-select: text;
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
 }
 
 /* ─── Global Dark Theme Scrollbar ─── */
@@ -2860,7 +2875,7 @@ div#templates-view > main > div#templates-grid-container > div > div > span:nth-
       <div class="foot-links-bottom">
         <a href="#home">Privacy Policy</a>
         <a href="#home">Terms of Service</a>
-        <a href="#admin" onclick="showAdminView(event)" class="foot-admin-link" style="opacity: 0.3; font-size: 11.5px; display: inline-flex; align-items: center; gap: 4px; transition: opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.3'" title="Agency Admin Console"><span class="material-icons" style="font-size: 13px;">shield</span> Admin</a>
+        <a href="#admin23" onclick="showAdminView(event)" class="foot-admin-link" style="opacity: 0.3; font-size: 11.5px; display: inline-flex; align-items: center; gap: 4px; transition: opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.3'" title="Agency Admin Console"><span class="material-icons" style="font-size: 13px;">shield</span> Admin</a>
       </div>
     </div>
   </footer>
@@ -4258,7 +4273,7 @@ function showMainView() {
     mainView.style.opacity = '1';
     nav.style.opacity = '1';
 
-    if (window.location.hash === '#admin') {
+    if (window.location.hash === '#admin23' || window.location.hash === '#admin') {
       history.replaceState(null, null, window.location.pathname);
     }
   }, 250);
@@ -6262,6 +6277,10 @@ function showAdminView(e) {
     void adminView.offsetWidth;
     adminView.classList.add('active');
 
+    if (window.location.hash !== '#admin23') {
+      history.replaceState(null, null, '#admin23');
+    }
+
     // Check Step 1 (Authentication Gate) vs Step 2 (Executive Dashboard)
     const inspectPage = document.getElementById('admin-inspect-container');
     if (BlueprintStore.isAuthenticated()) {
@@ -6971,7 +6990,7 @@ function escapeHtml(str) {
 function checkAdminRoute() {
   const hash = window.location.hash;
   const search = window.location.search;
-  if (hash === '#admin' || search.includes('view=admin') || search.includes('admin=true')) {
+  if (hash === '#admin23' || search.includes('view=admin23')) {
     showAdminView();
   } else if (hash === '#templates' || search.includes('view=templates')) {
     showTemplatesView();
