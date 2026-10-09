@@ -9,6 +9,16 @@ import {
   deleteDoc,
   onSnapshot
 } from "firebase/firestore";
+import {
+  getAuth,
+  GoogleAuthProvider,
+  signInWithPopup,
+  signOut,
+  setPersistence,
+  browserSessionPersistence,
+  onAuthStateChanged,
+  User
+} from "firebase/auth";
 
 // User-provided Firebase Configuration
 export const firebaseConfig = {
@@ -21,9 +31,17 @@ export const firebaseConfig = {
   measurementId: "G-GG3H3N55N8"
 };
 
-// Initialize Firebase App
+// Initialize Firebase App & Services
 export const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 export const db = getFirestore(app);
+export const auth = getAuth(app);
+export const googleProvider = new GoogleAuthProvider();
+googleProvider.setCustomParameters({
+  prompt: "select_account"
+});
+
+// Designated Sole Administrator Account
+export const DESIGNATED_ADMIN_EMAIL = "bungorajesh23@gmail.com";
 
 // Safe Analytics Initialization
 export let analytics: any = null;
@@ -66,15 +84,19 @@ export interface FirestoreErrorInfo {
 }
 
 export function handleFirestoreError(error: unknown, operationType: OperationType, path: string | null) {
+  const currentUser = auth.currentUser;
   const errInfo: FirestoreErrorInfo = {
     error: error instanceof Error ? error.message : String(error),
     authInfo: {
-      userId: null,
-      email: null,
-      emailVerified: null,
-      isAnonymous: null,
-      tenantId: null,
-      providerInfo: []
+      userId: currentUser?.uid || null,
+      email: currentUser?.email || null,
+      emailVerified: currentUser?.emailVerified || null,
+      isAnonymous: currentUser?.isAnonymous || null,
+      tenantId: currentUser?.tenantId || null,
+      providerInfo: currentUser?.providerData?.map(p => ({
+        providerId: p.providerId,
+        email: p.email || null
+      })) || []
     },
     operationType,
     path
@@ -82,12 +104,59 @@ export function handleFirestoreError(error: unknown, operationType: OperationTyp
   console.warn("Firestore Notice:", JSON.stringify(errInfo));
 }
 
-// Global Bridge for BlueprintStore, FaqQuestionsStore, and TemplateStore
+// Global Bridge for BlueprintStore, FaqQuestionsStore, TemplateStore & Admin Authentication
 const FirebaseSync = {
   isReady: true,
   projectId: firebaseConfig.projectId,
   db,
   app,
+  auth,
+  designatedAdminEmail: DESIGNATED_ADMIN_EMAIL,
+
+  // --- AUTHENTICATION (Google Sign-In with Restricted Admin Whitelist) ---
+  isAuthorizedAdmin(user: User | null): boolean {
+    if (!user || !user.email) return false;
+    return user.email.toLowerCase() === DESIGNATED_ADMIN_EMAIL.toLowerCase();
+  },
+
+  async signInAdminWithGoogle(): Promise<{ user: User; email: string; displayName: string | null; photoURL: string | null }> {
+    try {
+      await setPersistence(auth, browserSessionPersistence);
+    } catch (pErr) {
+      console.warn("Session persistence notice:", pErr);
+    }
+
+    const credential = await signInWithPopup(auth, googleProvider);
+    const user = credential.user;
+
+    if (!this.isAuthorizedAdmin(user)) {
+      await signOut(auth);
+      throw new Error('Access Denied.');
+    }
+
+    return {
+      user,
+      email: user.email!,
+      displayName: user.displayName || user.email!.split('@')[0],
+      photoURL: user.photoURL || null
+    };
+  },
+
+  async signOutAdmin(): Promise<void> {
+    await signOut(auth);
+  },
+
+  onAdminAuthStateChanged(callback: (user: User | null, isAuthorized: boolean) => void) {
+    return onAuthStateChanged(auth, user => {
+      const isAuth = this.isAuthorizedAdmin(user);
+      callback(user, isAuth);
+    });
+  },
+
+  getCurrentAdminUser(): User | null {
+    const user = auth.currentUser;
+    return this.isAuthorizedAdmin(user) ? user : null;
+  },
 
   // --- BLUEPRINTS (Project Intake Briefs) ---
   async addBlueprint(data: any) {

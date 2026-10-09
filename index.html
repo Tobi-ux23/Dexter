@@ -1189,6 +1189,70 @@ hr.divide {
   color: var(--green);
   margin-bottom: 20px;
   box-shadow: 0 0 24px rgba(52, 168, 83, 0.3);
+  position: relative;
+}
+
+#success-view.active .success-icon-badge {
+  animation: successBadgePop 0.55s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+#success-view.active .success-icon-badge::after {
+  content: '';
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 2px solid rgba(52, 168, 83, 0.65);
+  animation: celebrationPulse 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  pointer-events: none;
+}
+
+@keyframes successBadgePop {
+  0% {
+    transform: scale(0.3);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.15);
+    opacity: 1;
+    box-shadow: 0 0 36px rgba(52, 168, 83, 0.6);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+    box-shadow: 0 0 24px rgba(52, 168, 83, 0.35);
+  }
+}
+
+@keyframes celebrationPulse {
+  0% {
+    transform: scale(0.85);
+    opacity: 0.95;
+  }
+  100% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}
+
+#success-view.active h3 {
+  animation: successFadeInUp 0.45s 0.1s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+#success-view.active #success-summary {
+  animation: successFadeInUp 0.45s 0.18s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+#success-view.active div:last-child {
+  animation: successFadeInUp 0.45s 0.25s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes successFadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @media(max-width: 1024px) {
@@ -2875,7 +2939,6 @@ div#templates-view > main > div#templates-grid-container > div > div > span:nth-
       <div class="foot-links-bottom">
         <a href="#home">Privacy Policy</a>
         <a href="#home">Terms of Service</a>
-        <a href="#admin23" onclick="showAdminView(event)" class="foot-admin-link" style="opacity: 0.3; font-size: 11.5px; display: inline-flex; align-items: center; gap: 4px; transition: opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.3'" title="Agency Admin Console"><span class="material-icons" style="font-size: 13px;">shield</span> Admin</a>
       </div>
     </div>
   </footer>
@@ -3317,40 +3380,34 @@ div#templates-view > main > div#templates-grid-container > div > div > span:nth-
   <!-- Step 1: Authentication Gate (Restricted Admin Access) -->
   <div id="admin-auth-gate" class="admin-auth-wrapper">
     <div class="admin-auth-card">
-      <img src="/dexter-logo.png" alt="DexterTech Logo" style="width: 54px; height: 54px; border-radius: 14px; margin: 0 auto 16px; display: block; box-shadow: 0 8px 28px rgba(198,38,255,0.4);">
+      <img src="/dexter-logo.png" alt="Dexter Logo" style="width: 54px; height: 54px; border-radius: 14px; margin: 0 auto 16px; display: block; box-shadow: 0 8px 28px rgba(198,38,255,0.4);">
       <div class="admin-terminal-badge">
-        <span class="material-icons" style="font-size: 14px;">lock</span> Executive Terminal
+        <span class="material-icons" style="font-size: 14px;">lock</span> Admin Access
       </div>
-      <h2 class="admin-auth-title">Blueprint Desk Sign-In</h2>
-      <p class="admin-auth-sub">Enter the designated agency administrator email to access incoming client project submissions and blueprints.</p>
+      <h2 class="admin-auth-title">Admin Sign In</h2>
+      <p class="admin-auth-sub">Sign in with your Google account to access the dashboard.</p>
       
       <div id="admin-auth-alert" class="admin-auth-alert"></div>
       
-      <form id="admin-login-form" onsubmit="handleAdminAuth(event)" novalidate>
-        <div class="intake-group" style="text-align: left; margin-bottom: 16px;">
-          <label for="admin-email-input" class="intake-label">Admin Email Address</label>
-          <div style="position: relative;">
-            <input type="email" id="admin-email-input" class="intake-input" style="padding-left: 42px;" placeholder="admin@dextertech.com" required autocomplete="email">
-            <span class="material-icons" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-size: 18px; color: var(--text-dim);">email</span>
-          </div>
-          <div style="font-size: 11px; color: var(--text-dim); margin-top: 6px; display: flex; align-items: center; gap: 4px;">
-            <span class="material-icons" style="font-size: 13px; color: var(--blue);">info</span> Default authorized: <code style="color: #8ab4f8; background: rgba(255,255,255,0.06); padding: 1px 5px; border-radius: 4px;">admin@dextertech.com</code>
-          </div>
-        </div>
-
-        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; font-size: 12.5px; color: var(--text-dim);">
-          <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-            <input type="checkbox" id="admin-remember-me" checked style="accent-color: var(--blue);">
-            <span>Remember this device</span>
-          </label>
-        </div>
-
-        <button type="submit" id="admin-auth-btn" class="btn-main" style="width: 100%; justify-content: center; padding: 13px; font-size: 14px; border: none;">
-          <span>Unlock Admin Console ↗</span>
+      <div style="margin: 22px 0 16px;">
+        <button type="button" id="admin-google-btn" class="google-auth-btn" onclick="handleGoogleAdminSignIn()" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 12px; padding: 13px 20px; font-size: 14px; font-weight: 500; font-family: var(--font); background: #ffffff; color: #1f1f1f; border: 1px solid rgba(255,255,255,0.18); border-radius: 12px; cursor: pointer; transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 4px 18px rgba(0,0,0,0.35);">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M17.64 9.20455C17.64 8.56636 17.5827 7.95273 17.4764 7.36364H9V10.845H13.8436C13.635 11.97 13.0009 12.9232 12.0477 13.5614V15.8195H14.9564C16.6582 14.2527 17.64 11.9455 17.64 9.20455Z" fill="#4285F4"/>
+            <path d="M9 18C11.43 18 13.4673 17.1941 14.9564 15.8195L12.0477 13.5614C11.2418 14.1014 10.2109 14.4205 9 14.4205C6.65591 14.4205 4.67182 12.8373 3.96409 10.71H0.957275V13.0418C2.43818 15.9832 5.48182 18 9 18Z" fill="#34A853"/>
+            <path d="M3.96409 10.71C3.78409 10.17 3.68182 9.59318 3.68182 9C3.68182 8.40682 3.78409 7.83 3.96409 7.29V4.95818H0.957273C0.347727 6.17318 0 7.54773 0 9C0 10.4523 0.347727 11.8268 0.957273 13.0418L3.96409 10.71Z" fill="#FBBC05"/>
+            <path d="M9 3.57955C10.3214 3.57955 11.5077 4.03364 12.4405 4.92545L15.0218 2.34409C13.4632 0.891818 11.4259 0 9 0C5.48182 0 2.43818 2.01682 0.957275 4.95818L3.96409 7.29C4.67182 5.16273 6.65591 3.57955 9 3.57955Z" fill="#EA4335"/>
+          </svg>
+          <span id="admin-google-btn-text">Sign In with Google</span>
         </button>
-      </form>
+      </div>
 
-      <div style="margin-top: 24px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.08);">
+
+
+      <div style="font-size: 11px; color: var(--text-dim); margin-bottom: 16px; opacity: 0.7;">
+        <span>🔒 Session-only security </span>
+      </div>
+
+      <div style="padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.08);">
         <button type="button" class="btn-ghost" onclick="showMainView()" style="font-size: 12px; padding: 8px 16px;">
           ← Back to Public Website
         </button>
@@ -3364,12 +3421,16 @@ div#templates-view > main > div#templates-grid-container > div > div > span:nth-
     <header class="admin-header-bar">
       <div class="admin-header-left">
         <div class="admin-brand-tag">
-          <img src="/dexter-logo.png" alt="DexterTech Logo" class="brand-logo-img" style="width: 28px; height: 28px; border-radius: 7px;">
+          <img src="/dexter-logo.png" alt="Dexter Logo" class="brand-logo-img" style="width: 28px; height: 28px; border-radius: 7px;">
           <span>Dexter<span style="color: #b022ff;">Tech</span> Desk</span>
         </div>
       </div>
 
       <div class="admin-header-actions">
+        <div id="admin-user-profile-badge" style="display: flex; align-items: center; gap: 8px; margin-right: 6px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); padding: 5px 12px; border-radius: 20px;">
+          <img id="admin-user-avatar" src="/dexter-logo.png" style="width: 20px; height: 20px; border-radius: 50%; object-fit: cover;" alt="Admin Avatar">
+          <span id="admin-user-email-text" style="font-size: 12px; color: #fff; font-weight: 500;">bungorajesh23@gmail.com</span>
+        </div>
         <button type="button" class="admin-btn" onclick="handleAdminLogout()" title="Log out of admin session">
           <span class="material-icons" style="font-size: 16px; color: #ff8a80;">logout</span> Sign Out
         </button>
@@ -4244,6 +4305,7 @@ function toggleFaq(btn) {
 }
 
 function showMainView() {
+  closeTemplatePreviewModal();
   const mainView = document.getElementById('main-view');
   const nav = document.getElementById('main-nav');
   const intakeView = document.getElementById('intake-view');
@@ -4256,6 +4318,7 @@ function showMainView() {
   if (adminView) adminView.classList.remove('active');
 
   setTimeout(() => {
+    closeTemplatePreviewModal();
     if (intakeView) intakeView.style.display = 'none';
     if (askView) askView.style.display = 'none';
     if (adminView) adminView.style.display = 'none';
@@ -4281,6 +4344,7 @@ function showMainView() {
 
 function showTemplatesView(e) {
   if (e) e.preventDefault();
+  closeTemplatePreviewModal();
   const mainView = document.getElementById('main-view');
   const nav = document.getElementById('main-nav');
   const intakeView = document.getElementById('intake-view');
@@ -4361,6 +4425,10 @@ function resetAndShowForm() {
   document.querySelectorAll('.field-error').forEach(el => el.classList.remove('visible'));
 
   if (successView) successView.classList.remove('active');
+  const existingConfetti = document.getElementById('brief-celebration-canvas');
+  if (existingConfetti && existingConfetti.parentNode) {
+    existingConfetti.parentNode.removeChild(existingConfetti);
+  }
   currentIntakeStep = 1;
   updateIntakeBackButton();
   if (step2) step2.style.display = 'none';
@@ -4640,10 +4708,159 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  /* ─── Celebratory Confetti Micro-Animation ─── */
+  function triggerBriefCelebrationConfetti(sourceElement) {
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      return;
+    }
+
+    const oldCanvas = document.getElementById('brief-celebration-canvas');
+    if (oldCanvas && oldCanvas.parentNode) {
+      oldCanvas.parentNode.removeChild(oldCanvas);
+    }
+
+    const canvas = document.createElement('canvas');
+    canvas.id = 'brief-celebration-canvas';
+    canvas.style.position = 'fixed';
+    canvas.style.inset = '0';
+    canvas.style.width = '100vw';
+    canvas.style.height = '100vh';
+    canvas.style.pointerEvents = 'none';
+    canvas.style.zIndex = '9999';
+    document.body.appendChild(canvas);
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+    canvas.width = width * dpr;
+    canvas.height = height * dpr;
+    ctx.scale(dpr, dpr);
+
+    let originX = width / 2;
+    let originY = height * 0.42;
+
+    if (sourceElement && typeof sourceElement.getBoundingClientRect === 'function') {
+      const rect = sourceElement.getBoundingClientRect();
+      if (rect.width > 0 && rect.height > 0) {
+        originX = rect.left + rect.width / 2;
+        originY = rect.top + rect.height / 2;
+      }
+    }
+
+    // Curated brand palette: Dexter cobalt blue, purple, mint green, gold, cyan, white
+    const palette = [
+      '#4285f4', '#34a853', '#b022ff', '#fbbc04', 
+      '#00e5ff', '#ffffff', '#7c4dff', '#69f0ae'
+    ];
+
+    const particleCount = 58;
+    const particles = [];
+
+    for (let i = 0; i < particleCount; i++) {
+      const angle = (Math.PI * 1.5) + ((Math.random() - 0.5) * 1.9);
+      const speed = 4.5 + Math.random() * 8.5;
+      const isRibbon = Math.random() > 0.42;
+
+      particles.push({
+        x: originX + (Math.random() - 0.5) * 16,
+        y: originY + (Math.random() - 0.5) * 16,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed - (1.8 + Math.random() * 3.2),
+        size: isRibbon ? (6.5 + Math.random() * 5.5) : (4 + Math.random() * 4),
+        aspectRatio: isRibbon ? (0.45 + Math.random() * 0.35) : 1,
+        color: palette[Math.floor(Math.random() * palette.length)],
+        rotation: Math.random() * Math.PI * 2,
+        rotationSpeed: (Math.random() - 0.5) * 0.16,
+        tilt: Math.random() * Math.PI,
+        tiltSpeed: 0.08 + Math.random() * 0.1,
+        opacity: 1,
+        drag: 0.95 + Math.random() * 0.02,
+        gravity: 0.17 + Math.random() * 0.06,
+        shape: isRibbon ? 'ribbon' : (Math.random() > 0.45 ? 'circle' : 'diamond')
+      });
+    }
+
+    let animId;
+    const startTime = performance.now();
+    const maxLifetime = 2600;
+
+    function frame(currentTime) {
+      const elapsed = currentTime - startTime;
+      ctx.clearRect(0, 0, width, height);
+
+      let livingCount = 0;
+
+      for (let i = 0; i < particles.length; i++) {
+        const p = particles[i];
+
+        p.vx *= p.drag;
+        p.vy *= p.drag;
+        p.vy += p.gravity;
+        p.x += p.vx;
+        p.y += p.vy;
+
+        p.rotation += p.rotationSpeed;
+        p.tilt += p.tiltSpeed;
+
+        if (elapsed > 1400) {
+          p.opacity = Math.max(0, 1 - (elapsed - 1400) / 1100);
+        }
+
+        if (p.opacity > 0 && p.y < height + 50) {
+          livingCount++;
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate(p.rotation);
+          ctx.scale(1, Math.cos(p.tilt));
+          ctx.globalAlpha = p.opacity;
+          ctx.fillStyle = p.color;
+
+          if (p.shape === 'ribbon') {
+            ctx.fillRect(-p.size / 2, (-p.size * p.aspectRatio) / 2, p.size, p.size * p.aspectRatio);
+          } else if (p.shape === 'circle') {
+            ctx.beginPath();
+            ctx.arc(0, 0, p.size * 0.42, 0, Math.PI * 2);
+            ctx.fill();
+          } else {
+            ctx.beginPath();
+            ctx.moveTo(0, -p.size * 0.6);
+            ctx.lineTo(p.size * 0.45, 0);
+            ctx.lineTo(0, p.size * 0.6);
+            ctx.lineTo(-p.size * 0.45, 0);
+            ctx.closePath();
+            ctx.fill();
+          }
+
+          ctx.restore();
+        }
+      }
+
+      if (livingCount > 0 && elapsed < maxLifetime) {
+        animId = requestAnimationFrame(frame);
+      } else {
+        ctx.clearRect(0, 0, width, height);
+        if (canvas && canvas.parentNode) {
+          canvas.parentNode.removeChild(canvas);
+        }
+      }
+    }
+
+    animId = requestAnimationFrame(frame);
+  }
+
   function displaySuccess(data, isDemoKey = false) {
     const step2 = document.getElementById('intake-step-2');
     if (step2) step2.style.display = 'none';
     if (successView) successView.classList.add('active');
+
+    // Trigger subtle celebratory confetti burst originating from the success check badge
+    const successBadge = document.querySelector('#success-view .success-icon-badge');
+    setTimeout(() => {
+      triggerBriefCelebrationConfetti(successBadge);
+    }, 140);
 
     let templateMention = '';
     if (data.template_code) {
@@ -4823,10 +5040,8 @@ document.addEventListener('DOMContentLoaded', () => {
 /* ════════════════════════════════════════════════════════════════
    ADMIN PORTAL & BLUEPRINT RECEPTION REPOSITORY (Cloud-Ready)
 ════════════════════════════════════════════════════════════════ */
-// Configurable authorized admin emails (placeholder default + customizable)
+// Sole authorized administrator account (Firebase Google Auth)
 const DEFAULT_ADMIN_EMAILS = [
-  'admin@dextertech.com',
-  'admin@agency.studio',
   'bungorajesh23@gmail.com'
 ];
 
@@ -5013,34 +5228,35 @@ const BlueprintStore = {
   },
 
   getAuthorizedEmails() {
-    const custom = localStorage.getItem(ADMIN_CONFIG_EMAIL_KEY);
-    const emails = [...DEFAULT_ADMIN_EMAILS];
-    if (custom && custom.trim()) {
-      emails.unshift(custom.trim());
-    }
-    return emails.map(e => e.toLowerCase().trim());
-  },
-
-  setPrimaryAdminEmail(email) {
-    if (email && email.trim()) {
-      localStorage.setItem(ADMIN_CONFIG_EMAIL_KEY, email.trim().toLowerCase());
-    }
+    return [...DEFAULT_ADMIN_EMAILS];
   },
 
   isAuthenticated() {
-    return sessionStorage.getItem(ADMIN_AUTH_KEY) === 'true' || localStorage.getItem(ADMIN_AUTH_KEY) === 'true';
+    if (window.FirebaseSync && typeof window.FirebaseSync.getCurrentAdminUser === 'function') {
+      const user = window.FirebaseSync.getCurrentAdminUser();
+      if (user && user.email && user.email.toLowerCase() === DEFAULT_ADMIN_EMAILS[0].toLowerCase()) {
+        return true;
+      }
+    }
+    return sessionStorage.getItem(ADMIN_AUTH_KEY) === 'true';
   },
 
-  login(remember) {
-    if (remember) {
-      localStorage.setItem(ADMIN_AUTH_KEY, 'true');
-    }
+  login(userData) {
     sessionStorage.setItem(ADMIN_AUTH_KEY, 'true');
+    if (userData) {
+      sessionStorage.setItem('dexter_admin_user', JSON.stringify(userData));
+    }
+    // Enforce session-only persistence (expire upon closing browser tab)
+    localStorage.removeItem(ADMIN_AUTH_KEY);
   },
 
   logout() {
     sessionStorage.removeItem(ADMIN_AUTH_KEY);
+    sessionStorage.removeItem('dexter_admin_user');
     localStorage.removeItem(ADMIN_AUTH_KEY);
+    if (window.FirebaseSync && typeof window.FirebaseSync.signOutAdmin === 'function') {
+      window.FirebaseSync.signOutAdmin().catch(console.warn);
+    }
   }
 };
 window.BlueprintStore = BlueprintStore;
@@ -5864,6 +6080,113 @@ function renderTemplatesGallery() {
   });
 }
 
+function prepareTemplatePreviewHtml(rawHtml) {
+  if (!rawHtml || typeof rawHtml !== 'string') return '';
+
+  // 1. Convert any links targeting top or parent to stay in the preview frame
+  var processed = rawHtml
+    .replace(/target\s*=\s*["']_top["']/gi, 'target="_self"')
+    .replace(/target\s*=\s*["']_parent["']/gi, 'target="_self"');
+
+  // 2. Prepare comprehensive isolation script
+  var isolationScript = `
+<script>
+(function() {
+  // Prevent any template scripts or onclick handlers from calling host window view methods
+  window.showMainView = function(e) {
+    if (e && e.preventDefault) e.preventDefault();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    return false;
+  };
+  window.showTemplatesView = function(e) {
+    if (e && e.preventDefault) e.preventDefault();
+    return false;
+  };
+  window.showIntake = function(e) {
+    if (e && e.preventDefault) e.preventDefault();
+    return false;
+  };
+  window.showAdminView = function(e) {
+    if (e && e.preventDefault) e.preventDefault();
+    return false;
+  };
+
+  // Prevent default host-route hash changing from escaping
+  window.addEventListener('hashchange', function(e) {
+    var h = window.location.hash;
+    if (h && h.length > 1) {
+      var targetId = h.substring(1);
+      var targetEl = document.getElementById(targetId);
+      if (targetEl) {
+        targetEl.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  });
+
+  // Capture and contain all clicks on anchor links
+  document.addEventListener('click', function(e) {
+    var a = e.target.closest('a');
+    if (!a) return;
+    var href = a.getAttribute('href');
+    if (!href || href === '#' || href.indexOf('javascript:') === 0) {
+      return;
+    }
+
+    // Force link to remain inside this preview frame
+    a.target = '_self';
+
+    // Hash anchor navigation (#home, #about, #services, #contact, etc.)
+    if (href.charAt(0) === '#') {
+      e.preventDefault();
+      e.stopPropagation();
+      var id = href.substring(1);
+      var targetEl = document.getElementById(id);
+      if (targetEl) {
+        targetEl.scrollIntoView({ behavior: 'smooth' });
+      } else if (id === 'home' || id === 'top' || id === '') {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+      return;
+    }
+
+    // Host-relative or root navigation (/, /index.html, index.html, /#home, etc.)
+    // Never navigate the preview iframe to the host website!
+    var cleanHref = href.split('?')[0];
+    if (cleanHref === '/' || cleanHref === '/index.html' || cleanHref === 'index.html' || cleanHref.indexOf('/#') === 0) {
+      e.preventDefault();
+      e.stopPropagation();
+      var hashPart = href.indexOf('#') !== -1 ? href.split('#')[1] : '';
+      if (hashPart) {
+        var el = document.getElementById(hashPart);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth' });
+          return;
+        }
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+  }, true);
+})();
+<\/script>
+`;
+
+  // Inject base target and isolation script
+  if (/<head[^>]*>/i.test(processed)) {
+    processed = processed.replace(/<head[^>]*>/i, function(match) {
+      return match + '\n<base target="_self">\n' + isolationScript;
+    });
+  } else if (/<html[^>]*>/i.test(processed)) {
+    processed = processed.replace(/<html[^>]*>/i, function(match) {
+      return match + '\n<head><base target="_self">' + isolationScript + '</head>';
+    });
+  } else {
+    processed = '<base target="_self">\n' + isolationScript + '\n' + processed;
+  }
+
+  return processed;
+}
+
 function openTemplatePreview(id) {
   const t = TemplateStore.getById(id);
   if (!t) return;
@@ -5885,7 +6208,7 @@ function openTemplatePreview(id) {
   if (iframe) {
     if (t.sourceType === 'html' && t.htmlContent) {
       iframe.removeAttribute('src');
-      iframe.srcdoc = t.htmlContent;
+      iframe.srcdoc = prepareTemplatePreviewHtml(t.htmlContent);
     } else {
       iframe.removeAttribute('srcdoc');
       iframe.src = t.liveUrl || 'about:blank';
@@ -6283,7 +6606,14 @@ function showAdminView(e) {
 
     // Check Step 1 (Authentication Gate) vs Step 2 (Executive Dashboard)
     const inspectPage = document.getElementById('admin-inspect-container');
-    if (BlueprintStore.isAuthenticated()) {
+    const alertEl = document.getElementById('admin-auth-alert');
+    let storedUser = null;
+    try {
+      storedUser = JSON.parse(sessionStorage.getItem('dexter_admin_user') || 'null');
+    } catch (_) {}
+    const firebaseAdmin = window.FirebaseSync && typeof window.FirebaseSync.getCurrentAdminUser === 'function' ? window.FirebaseSync.getCurrentAdminUser() : null;
+
+    if (BlueprintStore.isAuthenticated() || firebaseAdmin) {
       if (authGate) authGate.style.display = 'none';
       if (inspectPage && activeDrawerBlueprintId) {
         inspectPage.style.display = 'block';
@@ -6291,74 +6621,98 @@ function showAdminView(e) {
       } else {
         if (inspectPage) inspectPage.style.display = 'none';
         if (dashboard) dashboard.style.display = 'block';
-        updateAdminEmailTag();
+        updateAdminProfileDisplay(firebaseAdmin || storedUser);
         renderAdminDashboard();
       }
     } else {
       if (inspectPage) inspectPage.style.display = 'none';
       if (authGate) authGate.style.display = 'flex';
       if (dashboard) dashboard.style.display = 'none';
-      const emailInput = document.getElementById('admin-email-input');
-      if (emailInput) {
-        emailInput.value = localStorage.getItem(ADMIN_CONFIG_EMAIL_KEY) || 'admin@dextertech.com';
-        setTimeout(() => emailInput.focus(), 150);
-      }
+      if (alertEl) alertEl.classList.remove('visible');
     }
   }, 200);
 }
 
-function updateAdminEmailTag() {
-  const tag = document.getElementById('admin-current-email-tag');
-  if (tag) {
-    const current = localStorage.getItem(ADMIN_CONFIG_EMAIL_KEY) || DEFAULT_ADMIN_EMAILS[0];
-    tag.textContent = current;
-  }
+function updateAdminProfileDisplay(userData) {
+  const emailText = document.getElementById('admin-user-email-text');
+  const avatarImg = document.getElementById('admin-user-avatar');
+  const emailTag = document.getElementById('admin-current-email-tag');
+
+  const email = (userData && userData.email) || 'bungorajesh23@gmail.com';
+  const photo = (userData && userData.photoURL) || '/dexter-logo.png';
+
+  if (emailText) emailText.textContent = email;
+  if (avatarImg) avatarImg.src = photo;
+  if (emailTag) emailTag.textContent = email;
 }
 
-function handleAdminAuth(e) {
-  e.preventDefault();
-  const emailInput = document.getElementById('admin-email-input');
-  const rememberCheckbox = document.getElementById('admin-remember-me');
+async function handleGoogleAdminSignIn() {
+  const btn = document.getElementById('admin-google-btn');
+  const btnText = document.getElementById('admin-google-btn-text');
   const alertEl = document.getElementById('admin-auth-alert');
   const authGate = document.getElementById('admin-auth-gate');
   const dashboard = document.getElementById('admin-dashboard-container');
 
-  if (!emailInput) return;
-  const inputEmail = emailInput.value.trim().toLowerCase();
-  const authorizedEmails = BlueprintStore.getAuthorizedEmails();
+  if (alertEl) {
+    alertEl.classList.remove('visible');
+    alertEl.innerHTML = '';
+  }
 
-  if (!inputEmail || !authorizedEmails.includes(inputEmail)) {
+  if (!window.FirebaseSync || typeof window.FirebaseSync.signInAdminWithGoogle !== 'function') {
     if (alertEl) {
-      alertEl.innerHTML = `<strong>Access Denied:</strong> <code>${inputEmail || 'Email'}</code> is not an authorized administrator address. You may sign in with <code>${authorizedEmails[0]}</code> or update your primary email.`;
+      alertEl.innerHTML = `<strong>Authentication Service:</strong> Initializing secure Firebase Authentication. Please try again in a moment.`;
       alertEl.classList.add('visible');
     }
-    emailInput.classList.add('is-invalid');
     return;
   }
 
-  if (alertEl) alertEl.classList.remove('visible');
-  emailInput.classList.remove('is-invalid');
+  if (btn) btn.style.pointerEvents = 'none';
+  if (btnText) btnText.textContent = 'Verifying with Google...';
 
-  // Authenticate and save session
-  const remember = rememberCheckbox ? rememberCheckbox.checked : false;
-  BlueprintStore.login(remember);
+  try {
+    const adminData = await window.FirebaseSync.signInAdminWithGoogle();
+    
+    // Save session-only auth state
+    BlueprintStore.login({
+      email: adminData.email,
+      displayName: adminData.displayName,
+      photoURL: adminData.photoURL
+    });
 
-  // Transition to Step 2: Dashboard
-  authGate.style.transition = 'opacity 0.2s ease';
-  authGate.style.opacity = '0';
-  setTimeout(() => {
-    authGate.style.display = 'none';
-    authGate.style.opacity = '1';
-    if (dashboard) {
-      dashboard.style.display = 'block';
-      dashboard.style.opacity = '0';
-      void dashboard.offsetWidth;
-      dashboard.style.transition = 'opacity 0.25s ease';
-      dashboard.style.opacity = '1';
+    updateAdminProfileDisplay(adminData);
+
+    // Transition to Step 2: Dashboard
+    authGate.style.transition = 'opacity 0.2s ease';
+    authGate.style.opacity = '0';
+    setTimeout(() => {
+      authGate.style.display = 'none';
+      authGate.style.opacity = '1';
+      if (dashboard) {
+        dashboard.style.display = 'block';
+        dashboard.style.opacity = '0';
+        void dashboard.offsetWidth;
+        dashboard.style.transition = 'opacity 0.25s ease';
+        dashboard.style.opacity = '1';
+      }
+      renderAdminDashboard();
+      showToastNotification(`Welcome, ${adminData.displayName || 'Administrator'}!`);
+    }, 200);
+
+  } catch (err) {
+    console.warn('Admin Google Sign-In notice:', err);
+    if (alertEl) {
+      const msg = err && err.message ? err.message : '';
+      if (msg.includes('Access Denied')) {
+        alertEl.innerHTML = `<strong>Access Denied.</strong>`;
+      } else {
+        alertEl.innerHTML = `<strong>Access Notice:</strong> ${escapeHtml(msg || 'Google authentication could not be completed.')}`;
+      }
+      alertEl.classList.add('visible');
     }
-    updateAdminEmailTag();
-    renderAdminDashboard();
-  }, 200);
+  } finally {
+    if (btn) btn.style.pointerEvents = 'auto';
+    if (btnText) btnText.textContent = 'Sign In with Google';
+  }
 }
 
 function handleAdminLogout() {
@@ -6366,6 +6720,9 @@ function handleAdminLogout() {
   const authGate = document.getElementById('admin-auth-gate');
   const dashboard = document.getElementById('admin-dashboard-container');
   const inspectPage = document.getElementById('admin-inspect-container');
+  const alertEl = document.getElementById('admin-auth-alert');
+  
+  if (alertEl) alertEl.classList.remove('visible');
   if (inspectPage) inspectPage.style.display = 'none';
   if (dashboard) dashboard.style.display = 'none';
   activeDrawerBlueprintId = null;
@@ -6373,18 +6730,7 @@ function handleAdminLogout() {
     authGate.style.display = 'flex';
     authGate.style.opacity = '1';
   }
-  const emailInput = document.getElementById('admin-email-input');
-  if (emailInput) setTimeout(() => emailInput.focus(), 100);
-}
-
-function configureAdminEmailPrompt() {
-  const current = localStorage.getItem(ADMIN_CONFIG_EMAIL_KEY) || DEFAULT_ADMIN_EMAILS[0];
-  const newEmail = prompt('Set designated administrator email address for sign-in:\n(Incoming blueprints and console access will be authorized for this address)', current);
-  if (newEmail !== null && newEmail.trim()) {
-    BlueprintStore.setPrimaryAdminEmail(newEmail.trim());
-    updateAdminEmailTag();
-    alert(`Designated admin email updated to: ${newEmail.trim()}`);
-  }
+  showToastNotification('Administrator signed out.');
 }
 
 /* ─── DASHBOARD RENDERING & METRICS ─── */
@@ -6996,6 +7342,24 @@ function checkAdminRoute() {
     showTemplatesView();
   }
 }
+
+window.addEventListener('firebase:ready', function(evt) {
+  var sync = (evt && evt.detail) || window.FirebaseSync;
+  if (sync && typeof sync.onAdminAuthStateChanged === 'function') {
+    sync.onAdminAuthStateChanged(function(user, isAuthorized) {
+      if (user && isAuthorized) {
+        BlueprintStore.login({
+          email: user.email,
+          displayName: user.displayName,
+          photoURL: user.photoURL
+        });
+        updateAdminProfileDisplay(user);
+      } else if (!isAuthorized && BlueprintStore.isAuthenticated()) {
+        BlueprintStore.logout();
+      }
+    });
+  }
+});
 
 window.addEventListener('hashchange', checkAdminRoute);
 window.addEventListener('DOMContentLoaded', checkAdminRoute);
