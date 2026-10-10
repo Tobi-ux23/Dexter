@@ -1776,25 +1776,35 @@ hr.divide {
   border-radius: 100px;
   white-space: nowrap;
 }
-.status-pill.new {
-  background: rgba(66, 133, 244, 0.15);
-  border: 1px solid rgba(66, 133, 244, 0.4);
-  color: #8ab4f8;
+.status-pill.new,
+.status-badge.new {
+  background: rgba(234, 67, 53, 0.15);
+  border: 1px solid rgba(234, 67, 53, 0.4);
+  color: #ff8a80;
 }
+.status-pill.working,
+.status-badge.working {
+  background: rgba(251, 188, 4, 0.15);
+  border: 1px solid rgba(251, 188, 4, 0.4);
+  color: #ffd54f;
+}
+.status-pill.completed,
+.status-badge.completed {
+  background: rgba(52, 168, 83, 0.15);
+  border: 1px solid rgba(52, 168, 83, 0.4);
+  color: #81c995;
+}
+/* Fallbacks for older references */
 .status-pill.in-review {
   background: rgba(251, 188, 4, 0.15);
   border: 1px solid rgba(251, 188, 4, 0.4);
-  color: #fdd663;
+  color: #ffd54f;
 }
-.status-pill.contacted {
-  background: rgba(161, 66, 244, 0.15);
-  border: 1px solid rgba(161, 66, 244, 0.4);
-  color: #d7aefb;
-}
+.status-pill.contacted,
 .status-pill.proposal-sent {
-  background: rgba(36, 193, 224, 0.15);
-  border: 1px solid rgba(36, 193, 224, 0.4);
-  color: #78d9ec;
+  background: rgba(251, 188, 4, 0.15);
+  border: 1px solid rgba(251, 188, 4, 0.4);
+  color: #ffd54f;
 }
 .status-pill.accepted {
   background: rgba(52, 168, 83, 0.15);
@@ -1805,6 +1815,59 @@ hr.divide {
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.15);
   color: var(--text-dim);
+}
+
+/* 3-Status Table Dropdown Select */
+.admin-status-select {
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%239aa0a6'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 15px;
+  padding: 5px 24px 5px 10px;
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: 8px;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.2s ease;
+  min-width: 124px;
+}
+.admin-status-select.status-new {
+  background-color: rgba(234, 67, 53, 0.12);
+  border: 1px solid rgba(234, 67, 53, 0.45);
+  color: #ff8a80;
+}
+.admin-status-select.status-new:hover,
+.admin-status-select.status-new:focus {
+  border-color: #ea4335;
+  box-shadow: 0 0 10px rgba(234, 67, 53, 0.25);
+}
+.admin-status-select.status-working {
+  background-color: rgba(251, 188, 4, 0.12);
+  border: 1px solid rgba(251, 188, 4, 0.45);
+  color: #ffd54f;
+}
+.admin-status-select.status-working:hover,
+.admin-status-select.status-working:focus {
+  border-color: #fbbc04;
+  box-shadow: 0 0 10px rgba(251, 188, 4, 0.25);
+}
+.admin-status-select.status-completed {
+  background-color: rgba(52, 168, 83, 0.12);
+  border: 1px solid rgba(52, 168, 83, 0.45);
+  color: #81c995;
+}
+.admin-status-select.status-completed:hover,
+.admin-status-select.status-completed:focus {
+  border-color: #34a853;
+  box-shadow: 0 0 10px rgba(52, 168, 83, 0.25);
+}
+.admin-status-select option {
+  background: #14151f;
+  color: #fff;
+  padding: 6px 10px;
 }
 
 .service-chip {
@@ -2236,6 +2299,61 @@ hr.divide {
 
 .tmpl-card:hover .tmpl-thumb-img {
   transform: scale(1.04);
+}
+
+.tmpl-thumb-frame-wrap {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+  background: #090a10;
+}
+
+.tmpl-hero-iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1200px;
+  height: 750px;
+  border: none;
+  pointer-events: none;
+  transform-origin: 0 0;
+  background: #090a10;
+  transition: filter 0.25s ease;
+}
+
+.tmpl-card:hover .tmpl-hero-iframe {
+  filter: brightness(1.08);
+}
+
+.tmpl-admin-thumb-wrap {
+  width: 56px;
+  height: 38px;
+  border-radius: 6px;
+  overflow: hidden;
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: #0c0d12;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.tmpl-admin-thumb-iframe {
+  width: 1200px;
+  height: 814px;
+  border: none;
+  pointer-events: none;
+  transform-origin: 0 0;
+  transform: scale(0.0467);
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: #090a10;
 }
 
 .tmpl-source-badge {
@@ -3403,8 +3521,9 @@ div#templates-view > main > div#templates-grid-container > div > div > span:nth-
 
 
 
-      <div style="font-size: 11px; color: var(--text-dim); margin-bottom: 16px; opacity: 0.7;">
-        <span>🔒 Session-only security </span>
+      <div style="font-size: 11.5px; color: #81c995; margin-bottom: 16px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; background: rgba(52, 168, 83, 0.08); padding: 7px 14px; border-radius: 8px; border: 1px solid rgba(52, 168, 83, 0.2);">
+        <span class="material-icons" style="font-size: 14px; color: #81c995;">devices</span>
+        <span style="font-weight: 500;">Remember Device Active &bull; Stay signed in</span>
       </div>
 
       <div style="padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.08);">
@@ -3460,12 +3579,9 @@ div#templates-view > main > div#templates-grid-container > div > div > span:nth-
 
         <select id="admin-status-filter" class="admin-filter-select" onchange="handleAdminFilterChange()">
           <option value="ALL">All Statuses</option>
-          <option value="New">New</option>
-          <option value="In Review">In Review</option>
-          <option value="Contacted">Contacted</option>
-          <option value="Proposal Sent">Proposal Sent</option>
-          <option value="Accepted">Accepted</option>
-          <option value="Archived">Archived</option>
+          <option value="New">🔴 New</option>
+          <option value="Working">🟡 Working</option>
+          <option value="Completed">🟢 Completed</option>
         </select>
 
         <button type="button" class="admin-btn" onclick="showAdminSection('templates')" id="btn-show-templates" style="margin-left: auto;" title="Manage public showcase templates">
@@ -3491,7 +3607,7 @@ div#templates-view > main > div#templates-grid-container > div > div > span:nth-
                 <th>Service Discipline</th>
                 <th>Project Scope</th>
                 <th>Budget & Timeline</th>
-                <th>Date</th>
+                <th>Date & Time</th>
                 <th>Status</th>
                 <th style="text-align: right;">Action</th>
               </tr>
@@ -4384,6 +4500,9 @@ function showTemplatesView(e) {
     }
 
     renderTemplatesGallery();
+    setTimeout(() => {
+      if (typeof fitAllTemplateThumbnails === 'function') fitAllTemplateThumbnails();
+    }, 280);
   }, 200);
 }
 
@@ -5061,79 +5180,61 @@ const BLUEPRINT_STORAGE_KEY = 'dextertech_blueprints_v1';
 const ADMIN_AUTH_KEY = 'dextertech_admin_session_v1';
 const ADMIN_CONFIG_EMAIL_KEY = 'dextertech_custom_admin_email_v1';
 
-// Seed sample blueprints if the repository is completely clean
-const INITIAL_SEED_BLUEPRINTS = [
-  {
-    id: 'bp_seed_001',
-    createdAt: new Date(Date.now() - 3600000 * 2.5).toISOString(),
-    name: 'Sarah Jenkins',
-    email: 'sarah.j@nexuscad.io',
-    whatsapp: '+1 415 555 2671',
-    service: 'Website Development',
-    project_type: 'SaaS & Web Application',
-    template_code: 'DT-SAAS-01',
-    timeline: '3 - 4 Weeks (Full Build)',
-    budget: 'Standard Full-Stack',
-    notes: 'We need a high-performance customer dashboard with dark-mode glassmorphic aesthetics, role-based user management, and seamless real-time API sync.',
-    status: 'New',
-    internal_notes: 'Reviewed initial brief. Referenced Showcase Template DT-SAAS-01 (Apex SaaS Analytics Platform).'
-  },
-  {
-    id: 'bp_seed_002',
-    createdAt: new Date(Date.now() - 3600000 * 14).toISOString(),
-    name: 'Marcus Vance',
-    email: 'marcus@hypergrowth.co',
-    whatsapp: '+44 7700 900382',
-    service: 'Video Editing',
-    project_type: 'YouTube Long-Form Content',
-    template_code: '',
-    timeline: 'Under 1 Week (Standard)',
-    budget: 'Multi-Video Package',
-    notes: 'Looking for a dedicated lead editor for our weekly 4K tech documentary series. Needs punchy motion graphics, tight pacing, and cinematic color grading.',
-    status: 'In Review',
-    internal_notes: 'Sample sequence reviewed. Drafted preliminary production schedule.'
-  },
-  {
-    id: 'bp_seed_003',
-    createdAt: new Date(Date.now() - 3600000 * 38).toISOString(),
-    name: 'Priya Sharma',
-    email: 'priya@aurahealth.app',
-    whatsapp: '+91 98201 12345',
-    service: 'Application Making',
-    project_type: 'iOS & Android Mobile App',
-    template_code: 'DT-APP-04',
-    timeline: '1 - 2 Months (Recommended)',
-    budget: 'Production Growth App',
-    notes: 'Building an AI-assisted meditation and daily habit tracker for iOS and Android with offline audio playback, local streaks, and Apple HealthKit integration.',
-    status: 'Contacted',
-    internal_notes: 'Introductory scope call completed. Client referenced DT-APP-04 (Pulse Fintech Prototype) architecture for component layout.'
-  },
-  {
-    id: 'bp_seed_004',
-    createdAt: new Date(Date.now() - 3600000 * 72).toISOString(),
-    name: 'Kavita Rao',
-    email: 'kavita@solarisbrand.com',
-    whatsapp: '+91 94360 88721',
-    service: 'Graphics Designing',
-    project_type: 'Brand Identity & Logo Suite',
-    template_code: 'DT-PORT-03',
-    timeline: '2 - 4 Days (Fast Track)',
-    budget: 'Complete Brand & Collateral',
-    notes: 'Complete rebrand for an eco-luxury sustainable skincare line. Need typography guidelines, responsive logo variants, and product packaging mockup renders.',
-    status: 'Proposal Sent',
-    internal_notes: 'Moodboard approved. Sent official quote for ₹12,500.'
+function normalizeProjectStatus(status) {
+  if (!status) return 'New';
+  const s = String(status).trim().toLowerCase();
+  if (s === 'new') return 'New';
+  if (s === 'working' || s === 'in review' || s === 'in-review' || s === 'contacted' || s === 'proposal sent' || s === 'proposal-sent') return 'Working';
+  if (s === 'completed' || s === 'accepted' || s === 'archived') return 'Completed';
+  return 'New';
+}
+
+const DELETED_BLUEPRINTS_STORAGE_KEY = 'dextertech_deleted_blueprints_v1';
+const PLACEHOLDER_BLUEPRINT_IDS = new Set(['bp_seed_001', 'bp_seed_002', 'bp_seed_003', 'bp_seed_004']);
+
+function getDeletedBlueprintIds() {
+  try {
+    const raw = localStorage.getItem(DELETED_BLUEPRINTS_STORAGE_KEY);
+    return new Set(raw ? JSON.parse(raw) : []);
+  } catch (e) {
+    return new Set();
   }
-];
+}
+
+function addDeletedBlueprintId(id) {
+  try {
+    const set = getDeletedBlueprintIds();
+    set.add(id);
+    localStorage.setItem(DELETED_BLUEPRINTS_STORAGE_KEY, JSON.stringify(Array.from(set)));
+  } catch (e) {}
+}
+
+const INITIAL_SEED_BLUEPRINTS = [];
 
 const BlueprintStore = {
   getAll() {
     try {
       const raw = localStorage.getItem(BLUEPRINT_STORAGE_KEY);
+      const deletedIds = getDeletedBlueprintIds();
       if (!raw) {
-        localStorage.setItem(BLUEPRINT_STORAGE_KEY, JSON.stringify(INITIAL_SEED_BLUEPRINTS));
-        return INITIAL_SEED_BLUEPRINTS;
+        return [];
       }
-      return JSON.parse(raw);
+      let list = JSON.parse(raw);
+      const beforeLen = list.length;
+      // Filter out deleted blueprints and legacy placeholder blueprint submissions
+      list = list.filter(item => item && item.id && !PLACEHOLDER_BLUEPRINT_IDS.has(item.id) && !deletedIds.has(item.id));
+      let modified = (list.length !== beforeLen);
+      list.forEach(item => {
+        const norm = normalizeProjectStatus(item.status);
+        if (item.status !== norm) {
+          item.status = norm;
+          modified = true;
+        }
+      });
+      if (modified) {
+        localStorage.setItem(BLUEPRINT_STORAGE_KEY, JSON.stringify(list));
+      }
+      return list;
     } catch (e) {
       console.error('Error reading BlueprintStore:', e);
       return [];
@@ -5215,6 +5316,7 @@ const BlueprintStore = {
   },
 
   deleteBlueprint(id) {
+    addDeletedBlueprintId(id);
     let list = this.getAll();
     list = list.filter(b => b.id !== id);
     this.saveAll(list);
@@ -5238,22 +5340,24 @@ const BlueprintStore = {
         return true;
       }
     }
-    return sessionStorage.getItem(ADMIN_AUTH_KEY) === 'true';
+    return localStorage.getItem(ADMIN_AUTH_KEY) === 'true' || sessionStorage.getItem(ADMIN_AUTH_KEY) === 'true';
   },
 
   login(userData) {
+    // Remember device: persist in both localStorage and sessionStorage
+    localStorage.setItem(ADMIN_AUTH_KEY, 'true');
     sessionStorage.setItem(ADMIN_AUTH_KEY, 'true');
     if (userData) {
+      localStorage.setItem('dexter_admin_user', JSON.stringify(userData));
       sessionStorage.setItem('dexter_admin_user', JSON.stringify(userData));
     }
-    // Enforce session-only persistence (expire upon closing browser tab)
-    localStorage.removeItem(ADMIN_AUTH_KEY);
   },
 
   logout() {
+    localStorage.removeItem(ADMIN_AUTH_KEY);
+    localStorage.removeItem('dexter_admin_user');
     sessionStorage.removeItem(ADMIN_AUTH_KEY);
     sessionStorage.removeItem('dexter_admin_user');
-    localStorage.removeItem(ADMIN_AUTH_KEY);
     if (window.FirebaseSync && typeof window.FirebaseSync.signOutAdmin === 'function') {
       window.FirebaseSync.signOutAdmin().catch(console.warn);
     }
@@ -5420,250 +5524,8 @@ window.FaqQuestionsStore = FaqQuestionsStore;
 ════════════════════════════════════════════════════════════════ */
 const TEMPLATE_STORAGE_KEY = 'dextertech_templates_v1';
 
-const INITIAL_SEED_TEMPLATES = [
-  {
-    id: 'tmpl_apex',
-    code: 'DT-SAAS-01',
-    title: 'Apex SaaS Analytics Platform',
-    category: 'SaaS & Web App',
-    description: 'Enterprise telemetry dashboard featuring realtime ARR velocity charts, dark-mode glassmorphic cards, team RBAC, and modular KPI tracking.',
-    tags: ['React', 'Tailwind', 'Recharts', 'TypeScript'],
-    sourceType: 'html',
-    liveUrl: 'https://dextertech.agency/demo/apex-saas',
-    thumbnail: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=900&q=80',
-    featured: true,
-    createdAt: new Date(Date.now() - 3600000 * 24 * 7).toISOString(),
-    htmlContent: `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Apex SaaS Analytics Platform</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Plus Jakarta Sans', sans-serif; background: #090a0f; color: #f3f4f6; padding: 32px 24px; min-height: 100vh; }
-    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 20px; }
-    .badge { background: rgba(176,34,255,0.15); border: 1px solid rgba(176,34,255,0.4); color: #d67bff; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
-    .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 28px; }
-    .kpi-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; padding: 20px; }
-    .kpi-title { font-size: 13px; color: #9ca3af; margin-bottom: 8px; }
-    .kpi-val { font-size: 26px; font-weight: 700; color: #fff; }
-    .kpi-growth { font-size: 12px; color: #34d399; margin-top: 6px; }
-    .chart-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; padding: 24px; margin-bottom: 24px; }
-    .chart-title { font-size: 16px; font-weight: 600; margin-bottom: 16px; }
-    .bar-row { display: flex; align-items: flex-end; gap: 12px; height: 160px; padding-top: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
-    .bar { flex: 1; background: linear-gradient(180deg, #b022ff 0%, #3b82f6 100%); border-radius: 6px 6px 0 0; transition: height 0.5s ease; position: relative; }
-    .bar:hover { filter: brightness(1.2); }
-    .table-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; padding: 20px; overflow-x: auto; }
-    table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13.5px; }
-    th { padding: 12px; color: #9ca3af; border-bottom: 1px solid rgba(255,255,255,0.08); font-weight: 500; }
-    td { padding: 14px 12px; border-bottom: 1px solid rgba(255,255,255,0.04); }
-    .status-pill { background: rgba(52,211,153,0.15); color: #34d399; padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: 600; }
-  </style>
-</head>
-<body>
-  <div class="header">
-    <div>
-      <h1 style="font-size: 24px; font-weight: 700; color: #fff;">Apex Telemetry Hub</h1>
-      <p style="font-size: 13px; color: #9ca3af; margin-top: 4px;">Live Multi-Tenant Production Metrics</p>
-    </div>
-    <span class="badge">Live Stream Connected</span>
-  </div>
-  <div class="kpi-grid">
-    <div class="kpi-card"><div class="kpi-title">Monthly Recurring Revenue</div><div class="kpi-val">$84,290</div><div class="kpi-growth">↑ +18.4% vs last mo</div></div>
-    <div class="kpi-card"><div class="kpi-title">Active Organizations</div><div class="kpi-val">1,248</div><div class="kpi-growth">↑ +94 new seats</div></div>
-    <div class="kpi-card"><div class="kpi-title">API Edge Latency</div><div class="kpi-val">22ms</div><div class="kpi-growth" style="color:#60a5fa">Global CDN Active</div></div>
-    <div class="kpi-card"><div class="kpi-title">Conversion Rate</div><div class="kpi-val">4.62%</div><div class="kpi-growth">↑ +0.8% checkout</div></div>
-  </div>
-  <div class="chart-card">
-    <div class="chart-title">Revenue Trajectory (Past 6 Months)</div>
-    <div class="bar-row">
-      <div class="bar" style="height: 45%;"></div>
-      <div class="bar" style="height: 55%;"></div>
-      <div class="bar" style="height: 68%;"></div>
-      <div class="bar" style="height: 82%;"></div>
-      <div class="bar" style="height: 90%;"></div>
-      <div class="bar" style="height: 100%;"></div>
-    </div>
-  </div>
-  <div class="table-card">
-    <div class="chart-title" style="margin-bottom: 12px;">Recent Enterprise Subscriptions</div>
-    <table>
-      <thead><tr><th>Customer</th><th>Plan</th><th>Region</th><th>MRR</th><th>Status</th></tr></thead>
-      <tbody>
-        <tr><td><strong>Stratos Corp</strong></td><td>Enterprise Scale</td><td>US-East</td><td>$2,400</td><td><span class="status-pill">Active</span></td></tr>
-        <tr><td><strong>HyperFlow AI</strong></td><td>Growth Pro</td><td>EU-Central</td><td>$850</td><td><span class="status-pill">Active</span></td></tr>
-        <tr><td><strong>Luminary Media</strong></td><td>Team Fleet</td><td>AP-South</td><td>$420</td><td><span class="status-pill">Active</span></td></tr>
-      </tbody>
-    </table>
-  </div>
-</body>
-</html>`
-  },
-  {
-    id: 'tmpl_veloce',
-    code: 'DT-COMM-02',
-    title: 'Veloce Modern E-Commerce Store',
-    category: 'E-Commerce',
-    description: 'High-conversion digital storefront featuring fluid micro-interactions, category filters, quick drawer cart, and Stripe checkout compatibility.',
-    tags: ['Next.js', 'Tailwind', 'Stripe', 'Headless'],
-    sourceType: 'html',
-    liveUrl: 'https://dextertech.agency/demo/veloce-store',
-    thumbnail: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=900&q=80',
-    featured: true,
-    createdAt: new Date(Date.now() - 3600000 * 24 * 5).toISOString(),
-    htmlContent: `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Veloce Digital Storefront</title>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Space Grotesk', sans-serif; background: #0c0d12; color: #fff; padding: 24px; min-height: 100vh; }
-    .nav { display: flex; justify-content: space-between; align-items: center; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.08); margin-bottom: 30px; }
-    .hero { background: linear-gradient(135deg, rgba(176,34,255,0.2) 0%, rgba(59,130,246,0.15) 100%); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 40px 30px; margin-bottom: 36px; text-align: center; }
-    .hero h1 { font-size: 36px; font-weight: 700; margin-bottom: 12px; }
-    .hero p { color: #9ca3af; font-size: 15px; max-width: 500px; margin: 0 auto; }
-    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; }
-    .card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; overflow: hidden; transition: transform 0.2s; }
-    .card:hover { transform: translateY(-4px); border-color: rgba(176,34,255,0.4); }
-    .card-img { height: 160px; background: #1a1c24; display: flex; align-items: center; justify-content: center; font-size: 38px; }
-    .card-body { padding: 18px; }
-    .card-title { font-size: 16px; font-weight: 600; margin-bottom: 6px; }
-    .card-price { color: #34d399; font-weight: 700; font-size: 15px; }
-    .btn { background: #b022ff; color: #fff; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; width: 100%; margin-top: 12px; }
-  </style>
-</head>
-<body>
-  <div class="nav">
-    <div style="font-size: 20px; font-weight: 700;">VELOCE<span style="color:#b022ff;">.CO</span></div>
-    <div style="background: rgba(255,255,255,0.08); padding: 6px 14px; border-radius: 20px; font-size: 13px;">Bag (3) • $389</div>
-  </div>
-  <div class="hero">
-    <h1>Aesthetic Hardware & Gear</h1>
-    <p>Engineered for high performance, tactile feedback, and seamless desk aesthetics.</p>
-  </div>
-  <div class="grid">
-    <div class="card"><div class="card-img">⌨️</div><div class="card-body"><div class="card-title">Apex Magnetic Keyboard</div><div class="card-price">$189.00</div><button class="btn">Add to Bag</button></div></div>
-    <div class="card"><div class="card-img">🎧</div><div class="card-body"><div class="card-title">Studio Reference Headphones</div><div class="card-price">$249.00</div><button class="btn">Add to Bag</button></div></div>
-    <div class="card"><div class="card-img">🖱️</div><div class="card-body"><div class="card-title">Ergo Wireless Pointer</div><div class="card-price">$79.00</div><button class="btn">Add to Bag</button></div></div>
-  </div>
-</body>
-</html>`
-  },
-  {
-    id: 'tmpl_kroma',
-    code: 'DT-PORT-03',
-    title: 'Kroma Minimalist Studio Portfolio',
-    category: 'Corporate & Portfolios',
-    description: 'Editorial typography, dark glassmorphic cards, fluid anchor navigation, and interactive project showcases tailored for creative agencies.',
-    tags: ['Astro', 'Tailwind', 'Typography', 'Showcase'],
-    sourceType: 'html',
-    liveUrl: 'https://dextertech.agency/demo/kroma-portfolio',
-    thumbnail: 'https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&w=900&q=80',
-    featured: true,
-    createdAt: new Date(Date.now() - 3600000 * 24 * 3).toISOString(),
-    htmlContent: `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kroma Studio Portfolio</title>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@500;700;800&family=Inter:wght@400;500&display=swap" rel="stylesheet">
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Inter', sans-serif; background: #08080a; color: #eee; padding: 40px 24px; min-height: 100vh; }
-    h1, h2, h3 { font-family: 'Syne', sans-serif; }
-    .hero { max-width: 800px; margin: 0 auto 50px; text-align: center; }
-    .hero h1 { font-size: 48px; font-weight: 800; line-height: 1.1; margin-bottom: 16px; background: linear-gradient(135deg, #fff 0%, #a855f7 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    .hero p { color: #888; font-size: 16px; line-height: 1.6; }
-    .case-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; max-width: 1000px; margin: 0 auto; }
-    .case-card { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 24px; transition: 0.3s; }
-    .case-card:hover { border-color: #a855f7; transform: translateY(-4px); }
-    .case-tag { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: #a855f7; margin-bottom: 8px; }
-    .case-title { font-size: 20px; font-weight: 700; margin-bottom: 8px; color: #fff; }
-    .case-desc { font-size: 13.5px; color: #999; line-height: 1.5; }
-  </style>
-</head>
-<body>
-  <div class="hero">
-    <h1>Crafting Brands for the Future.</h1>
-    <p>We partner with visionary founders to build memorable visual identities, web architecture, and design systems.</p>
-  </div>
-  <div class="case-grid">
-    <div class="case-card"><div class="case-tag">Identity & Web</div><div class="case-title">Solaris Energy</div><div class="case-desc">Comprehensive brand architecture and high-converting commercial launch platform for sustainable renewables.</div></div>
-    <div class="case-card"><div class="case-tag">App Design</div><div class="case-title">Aura Health App</div><div class="case-desc">Calming, habit-focused mobile app interface with intuitive streaks and dark glassmorphic components.</div></div>
-    <div class="case-card"><div class="case-tag">E-Commerce</div><div class="case-title">Lumière Botanicals</div><div class="case-desc">Direct-to-consumer skincare shopping experience featuring custom ingredient animations.</div></div>
-  </div>
-</body>
-</html>`
-  },
-  {
-    id: 'tmpl_pulse',
-    code: 'DT-APP-04',
-    title: 'Pulse Fintech Banking Prototype',
-    category: 'Application Making',
-    description: 'Next-gen personal finance portal with holographic virtual cards, instant P2P transfer flows, transaction search, and security settings.',
-    tags: ['Flutter / Web', 'Tailwind', 'Fintech', 'PWA'],
-    sourceType: 'html',
-    liveUrl: 'https://dextertech.agency/demo/pulse-fintech',
-    thumbnail: 'https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=900&q=80',
-    featured: true,
-    createdAt: new Date(Date.now() - 3600000 * 24 * 2).toISOString(),
-    htmlContent: `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pulse Fintech Prototype</title>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Plus Jakarta Sans', sans-serif; background: #07090e; color: #fff; padding: 24px; min-height: 100vh; }
-    .card-wrap { max-width: 480px; margin: 0 auto; }
-    .virtual-card { background: linear-gradient(135deg, #1e1b4b 0%, #312e81 40%, #064e3b 100%); border: 1px solid rgba(255,255,255,0.2); border-radius: 20px; padding: 26px; height: 210px; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 16px 36px rgba(0,0,0,0.5); margin-bottom: 24px; position: relative; overflow: hidden; }
-    .chip { width: 38px; height: 28px; background: rgba(255,255,255,0.2); border-radius: 6px; }
-    .card-num { font-size: 19px; letter-spacing: 0.16em; font-family: monospace; }
-    .card-bottom { display: flex; justify-content: space-between; align-items: flex-end; }
-    .actions { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 28px; text-align: center; }
-    .action-btn { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 14px 6px; font-size: 12px; cursor: pointer; }
-    .tx-list { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 18px; }
-    .tx-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 13.5px; }
-    .tx-item:last-child { border: none; }
-  </style>
-</head>
-<body>
-  <div class="card-wrap">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
-      <div><span style="font-size: 12px; color:#9ca3af;">Total Balance</span><h2 style="font-size: 28px; font-weight:700;">$24,850.40</h2></div>
-      <span style="background: rgba(52,211,153,0.15); color:#34d399; padding:4px 10px; border-radius:12px; font-size:12px; font-weight:600;">Verified ID</span>
-    </div>
-    <div class="virtual-card">
-      <div style="display:flex; justify-content:space-between; align-items:center;"><div class="chip"></div><span style="font-weight:700; letter-spacing:0.05em;">PULSE.VIP</span></div>
-      <div class="card-num">•••• •••• •••• 8492</div>
-      <div class="card-bottom"><div><div style="font-size:10px; color:#aaa;">CARDHOLDER</div><div style="font-weight:600;">ALEXANDER SINGH</div></div><div><div style="font-size:10px; color:#aaa;">EXPIRES</div><div>09/29</div></div></div>
-    </div>
-    <div class="actions">
-      <div class="action-btn">💸 Send</div>
-      <div class="action-btn">📥 Request</div>
-      <div class="action-btn">📊 Insights</div>
-      <div class="action-btn">⚙️ Limits</div>
-    </div>
-    <div class="tx-list">
-      <div style="font-weight:600; font-size:14px; margin-bottom: 6px;">Recent Ledger</div>
-      <div class="tx-item"><div><strong>AWS Cloud Services</strong><div style="font-size:11px; color:#888;">Infrastructure • Today</div></div><span style="color:#f87171;">-$240.00</span></div>
-      <div class="tx-item"><div><strong>Stripe Payout</strong><div style="font-size:11px; color:#888;">Client Settlement • Yesterday</div></div><span style="color:#34d399;">+$4,250.00</span></div>
-      <div class="tx-item"><div><strong>Github Enterprise</strong><div style="font-size:11px; color:#888;">Subscription • Sep 26</div></div><span style="color:#f87171;">-$84.00</span></div>
-    </div>
-  </div>
-</body>
-</html>`
-  }
-];
+const INITIAL_SEED_TEMPLATES = [];
+const PLACEHOLDER_TEMPLATE_IDS = new Set(['tmpl_apex', 'tmpl_veloce', 'tmpl_kroma', 'tmpl_pulse']);
 
 const DELETED_TEMPLATES_STORAGE_KEY = 'dextertech_deleted_templates_v1';
 
@@ -5713,28 +5575,13 @@ const TemplateStore = {
       const raw = localStorage.getItem(TEMPLATE_STORAGE_KEY);
       const deletedIds = getDeletedTemplateIds();
       if (!raw) {
-        const initial = INITIAL_SEED_TEMPLATES.filter(t => !deletedIds.has(t.id));
-        localStorage.setItem(TEMPLATE_STORAGE_KEY, JSON.stringify(initial));
-        return initial;
+        return [];
       }
       let list = JSON.parse(raw);
-      if (deletedIds.size > 0) {
-        list = list.filter(t => !deletedIds.has(t.id));
-      }
-      // Auto-migration: ensure every template has a valid code
-      let needsSave = false;
-      list = list.map((t, idx) => {
-        if (!t.code) {
-          needsSave = true;
-          const fallbackPrefix = (t.category && t.category.includes('SaaS')) ? 'DT-SAAS' :
-                                 (t.category && t.category.includes('Commerce')) ? 'DT-COMM' :
-                                 (t.category && t.category.includes('Portfolio')) ? 'DT-PORT' :
-                                 (t.category && t.category.includes('App')) ? 'DT-APP' : 'DT-TMPL';
-          return { ...t, code: `${fallbackPrefix}-${String(idx + 1).padStart(2, '0')}` };
-        }
-        return t;
-      });
-      if (needsSave) {
+      const beforeLen = list.length;
+      // Clean out placeholder templates and deleted templates
+      list = list.filter(t => t && t.id && !PLACEHOLDER_TEMPLATE_IDS.has(t.id) && !deletedIds.has(t.id));
+      if (list.length !== beforeLen) {
         localStorage.setItem(TEMPLATE_STORAGE_KEY, JSON.stringify(list));
       }
       return list;
@@ -5781,7 +5628,7 @@ const TemplateStore = {
       sourceType: data.sourceType || 'url',
       liveUrl: data.liveUrl || '',
       htmlContent: data.htmlContent || '',
-      thumbnail: data.thumbnail || 'https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&w=900&q=80',
+      thumbnail: data.thumbnail || '',
       featured: Boolean(data.featured),
       createdAt: new Date().toISOString()
     };
@@ -5819,25 +5666,19 @@ function initFirestoreSyncBridge() {
   if (!window.FirebaseSync) return;
   console.log("Initializing real-time Firestore sync bridge with project:", window.FirebaseSync.projectId);
 
-  // Real-time synchronization of project blueprints
+  // Real-time synchronization of project blueprints directly with Firestore database
   window.FirebaseSync.listenBlueprints(remoteBlueprints => {
-    if (remoteBlueprints && remoteBlueprints.length > 0) {
-      const local = BlueprintStore.getAll();
-      const mergedMap = new Map();
-      local.forEach(b => mergedMap.set(b.id, b));
-      remoteBlueprints.forEach(b => mergedMap.set(b.id, { ...(mergedMap.get(b.id) || {}), ...b }));
-      const mergedList = Array.from(mergedMap.values()).sort((a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime());
-      
-      try {
-        localStorage.setItem(BLUEPRINT_STORAGE_KEY, JSON.stringify(mergedList));
-      } catch (e) {}
-      
-      if (typeof renderAdminDashboard === 'function') {
-        renderAdminDashboard();
-      }
-    } else {
-      // First boot: push existing initial seed records to Firestore cloud
-      INITIAL_SEED_BLUEPRINTS.forEach(b => window.FirebaseSync.addBlueprint(b));
+    const deletedIds = getDeletedBlueprintIds();
+    const cleanRemote = (remoteBlueprints || [])
+      .filter(b => b && b.id && !PLACEHOLDER_BLUEPRINT_IDS.has(b.id) && !deletedIds.has(b.id))
+      .sort((a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime());
+
+    try {
+      localStorage.setItem(BLUEPRINT_STORAGE_KEY, JSON.stringify(cleanRemote));
+    } catch (e) {}
+
+    if (typeof renderAdminDashboard === 'function') {
+      renderAdminDashboard();
     }
   });
 
@@ -5863,44 +5704,25 @@ function initFirestoreSyncBridge() {
     }
   });
 
-  // Real-time synchronization of templates
+  // Real-time synchronization of templates directly with Firestore database
   window.FirebaseSync.listenTemplates(remoteTemplates => {
-    if (remoteTemplates && remoteTemplates.length > 0) {
-      const deletedIds = getDeletedTemplateIds();
-      const local = TemplateStore.getAll().filter(t => !deletedIds.has(t.id));
-      const mergedMap = new Map();
-      remoteTemplates.forEach(t => {
-        if (!deletedIds.has(t.id)) {
-          mergedMap.set(t.id, t);
-        }
-      });
-      local.forEach(t => {
-        if (!mergedMap.has(t.id) && !deletedIds.has(t.id)) {
-          mergedMap.set(t.id, t);
-        }
-      });
-      const mergedList = Array.from(mergedMap.values());
-      
-      try {
-        localStorage.setItem(TEMPLATE_STORAGE_KEY, JSON.stringify(mergedList));
-      } catch (e) {}
+    const deletedIds = getDeletedTemplateIds();
+    const cleanRemote = (remoteTemplates || [])
+      .filter(t => t && t.id && !PLACEHOLDER_TEMPLATE_IDS.has(t.id) && !deletedIds.has(t.id))
+      .sort((a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime());
 
-      if (typeof renderTemplatesGallery === 'function') {
-        renderTemplatesGallery();
-      }
-      if (typeof renderAdminTemplatesTable === 'function') {
-        renderAdminTemplatesTable();
-      }
-      if (typeof updateTemplatesBadge === 'function') {
-        updateTemplatesBadge();
-      }
-    } else {
-      // First boot: push initial seed templates to Firestore cloud if not previously deleted
-      const deletedIds = getDeletedTemplateIds();
-      const seedsToPush = INITIAL_SEED_TEMPLATES.filter(t => !deletedIds.has(t.id));
-      if (seedsToPush.length > 0 && !localStorage.getItem(TEMPLATE_STORAGE_KEY)) {
-        seedsToPush.forEach(t => window.FirebaseSync.addTemplate(t));
-      }
+    try {
+      localStorage.setItem(TEMPLATE_STORAGE_KEY, JSON.stringify(cleanRemote));
+    } catch (e) {}
+
+    if (typeof renderTemplatesGallery === 'function') {
+      renderTemplatesGallery();
+    }
+    if (typeof renderAdminTemplatesTable === 'function') {
+      renderAdminTemplatesTable();
+    }
+    if (typeof updateTemplatesBadge === 'function') {
+      updateTemplatesBadge();
     }
   });
 
@@ -6020,6 +5842,88 @@ function copyModalTemplateCode(e) {
   }
 }
 
+function prepareTemplateThumbnailHtml(rawHtml) {
+  if (!rawHtml || typeof rawHtml !== 'string') return '';
+
+  const isolationCss = `
+<style>
+  html, body {
+    overflow: hidden !important;
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+    user-select: none !important;
+    pointer-events: none !important;
+    width: 1200px !important;
+    min-height: 750px !important;
+    margin: 0 !important;
+    padding-top: 0 !important;
+    background: transparent !important;
+  }
+  html::-webkit-scrollbar, body::-webkit-scrollbar {
+    display: none !important;
+  }
+  * {
+    -webkit-user-select: none !important;
+    user-select: none !important;
+    pointer-events: none !important;
+    animation: none !important;
+    transition: none !important;
+  }
+</style>
+`;
+
+  // Strip script tags and inline event handlers for instant, lightweight, secure rendering
+  let processed = rawHtml
+    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+    .replace(/\son\w+\s*=\s*(?:'[^']*'|"[^"]*"|[^\s>]+)/gi, '')
+    .replace(/target\s*=\s*["']_top["']/gi, 'target="_self"')
+    .replace(/target\s*=\s*["']_parent["']/gi, 'target="_self"');
+
+  if (/<head[^>]*>/i.test(processed)) {
+    return processed.replace(/<head[^>]*>/i, function(m) { return m + '\n<base target="_self">\n' + isolationCss; });
+  } else if (/<html[^>]*>/i.test(processed)) {
+    return processed.replace(/<html[^>]*>/i, function(m) { return m + '\n<head><base target="_self">' + isolationCss + '</head>'; });
+  }
+  return '<base target="_self">\n' + isolationCss + '\n' + processed;
+}
+
+function fitAllTemplateThumbnails() {
+  document.querySelectorAll('.tmpl-thumb-frame-wrap').forEach(wrap => {
+    const iframe = wrap.querySelector('.tmpl-hero-iframe');
+    if (!iframe) return;
+    const w = wrap.offsetWidth;
+    if (w > 0) {
+      iframe.style.transform = `scale(${w / 1200})`;
+    }
+  });
+}
+
+let tmplThumbResizeObserver = null;
+function observeTemplateThumbnails() {
+  if (window.ResizeObserver) {
+    if (!tmplThumbResizeObserver) {
+      tmplThumbResizeObserver = new ResizeObserver(entries => {
+        for (const entry of entries) {
+          const iframe = entry.target.querySelector('.tmpl-hero-iframe');
+          if (iframe) {
+            const w = entry.contentRect.width;
+            if (w > 0) {
+              iframe.style.transform = `scale(${w / 1200})`;
+            }
+          }
+        }
+      });
+    }
+    document.querySelectorAll('.tmpl-thumb-frame-wrap').forEach(wrap => {
+      tmplThumbResizeObserver.observe(wrap);
+    });
+  }
+  requestAnimationFrame(fitAllTemplateThumbnails);
+  setTimeout(fitAllTemplateThumbnails, 100);
+}
+
+window.addEventListener('resize', fitAllTemplateThumbnails);
+
 function renderTemplatesGallery() {
   const list = TemplateStore.getAll();
   const searchInput = document.getElementById('templates-search-input');
@@ -6044,7 +5948,27 @@ function renderTemplatesGallery() {
   container.innerHTML = '';
 
   if (filtered.length === 0) {
-    if (emptyState) emptyState.style.display = 'block';
+    if (emptyState) {
+      emptyState.style.display = 'block';
+      if (list.length === 0) {
+        emptyState.innerHTML = `
+          <span class="material-icons" style="font-size: 48px; color: var(--text-dim); margin-bottom: 12px; display: inline-block;">layers_clear</span>
+          <h3 style="font-size: 18px; color: #fff; margin-bottom: 6px;">Showcase Database Connected</h3>
+          <p style="font-size: 13.5px; color: var(--text-dim); max-width: 460px; margin: 0 auto 16px;">The showcase is directly synchronized with the live Firestore database. Templates published via the Admin Desk will appear here in real time.</p>
+          <button type="button" class="btn-main" onclick="showIntakeView()" style="display: inline-flex; align-items: center; gap: 6px;">
+            <span class="material-icons" style="font-size: 16px;">send</span>
+            <span>Request a Custom Build</span>
+          </button>
+        `;
+      } else {
+        emptyState.innerHTML = `
+          <span class="material-icons" style="font-size: 48px; color: var(--text-dim); margin-bottom: 12px; display: inline-block;">layers_clear</span>
+          <h3 style="font-size: 18px; color: #fff; margin-bottom: 6px;">No Matching Templates Found</h3>
+          <p style="font-size: 13.5px; color: var(--text-dim); max-width: 440px; margin: 0 auto 16px;">Try adjusting your search keywords or clear filters to view all available design architectures.</p>
+          <button type="button" class="admin-btn primary" onclick="resetTemplateFilters()">Show All Templates</button>
+        `;
+      }
+    }
     return;
   }
   if (emptyState) emptyState.style.display = 'none';
@@ -6053,31 +5977,77 @@ function renderTemplatesGallery() {
     const card = document.createElement('div');
     card.className = 'tmpl-card';
 
-    card.innerHTML = `
-      <div class="tmpl-thumb-wrap" onclick="openTemplatePreview('${t.id}')">
-        <img src="${escapeHtml(t.thumbnail)}" alt="${escapeHtml(t.title)}" class="tmpl-thumb-img" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&w=800&q=80'">
-        <div class="tmpl-thumb-overlay">
-          <button type="button" class="btn-main" style="padding: 10px 20px; font-size: 13px;">
-            <span class="material-icons" style="font-size: 16px;">visibility</span>
-            <span>Live Preview</span>
-          </button>
-        </div>
-      </div>
-      <div class="tmpl-content">
-        <h3 class="tmpl-title">${escapeHtml(t.title)}</h3>
-        <div class="tmpl-actions-row">
-          <button type="button" class="btn-ghost" onclick="openTemplatePreview('${t.id}')" style="font-size: 12.5px; padding: 8px 14px;">
-            <span class="material-icons" style="font-size: 15px;">visibility</span>
-            <span>Preview</span>
-          </button>
-          <button type="button" class="admin-btn primary" onclick="useTemplateForIntake('${t.id}')" style="font-size: 12.5px; padding: 8px 16px;" title="Send project brief referencing this template">
-            <span>Use Template</span>
-          </button>
-        </div>
+    const thumbWrap = document.createElement('div');
+    thumbWrap.className = 'tmpl-thumb-wrap';
+    thumbWrap.setAttribute('onclick', `openTemplatePreview('${t.id}')`);
+
+    // Live HTML Hero Preview as default thumbnail
+    if (t.htmlContent && t.htmlContent.trim().length > 0) {
+      const frameWrap = document.createElement('div');
+      frameWrap.className = 'tmpl-thumb-frame-wrap';
+
+      const iframe = document.createElement('iframe');
+      iframe.className = 'tmpl-hero-iframe';
+      iframe.setAttribute('sandbox', 'allow-same-origin');
+      iframe.setAttribute('scrolling', 'no');
+      iframe.setAttribute('tabindex', '-1');
+      iframe.setAttribute('title', `${t.title} Hero Landing Preview`);
+      iframe.srcdoc = prepareTemplateThumbnailHtml(t.htmlContent);
+      iframe.style.transform = 'scale(0.315)';
+
+      frameWrap.appendChild(iframe);
+      thumbWrap.appendChild(frameWrap);
+    } else if (t.thumbnail && t.thumbnail.trim().length > 0) {
+      const img = document.createElement('img');
+      img.className = 'tmpl-thumb-img';
+      img.alt = t.title;
+      img.src = t.thumbnail;
+      img.loading = 'lazy';
+      thumbWrap.appendChild(img);
+    } else {
+      const placeholder = document.createElement('div');
+      placeholder.className = 'tmpl-thumb-frame-wrap';
+      placeholder.style.cssText = 'display:flex; flex-direction:column; align-items:center; justify-content:center; background: radial-gradient(circle at 50% 30%, #1e1b4b 0%, #090a10 80%); color:#9ca3af; padding:20px; text-align:center;';
+      placeholder.innerHTML = `
+        <span class="material-icons" style="font-size:36px; color:#b022ff; margin-bottom:8px;">devices</span>
+        <div style="font-weight:600; color:#fff; font-size:14px;">${escapeHtml(t.title)}</div>
+        <div style="font-size:12px; color:#8ab4f8; margin-top:4px;">${escapeHtml(t.category)}</div>
+      `;
+      thumbWrap.appendChild(placeholder);
+    }
+
+    const overlay = document.createElement('div');
+    overlay.className = 'tmpl-thumb-overlay';
+    overlay.innerHTML = `
+      <button type="button" class="btn-main" style="padding: 10px 20px; font-size: 13px;">
+        <span class="material-icons" style="font-size: 16px;">visibility</span>
+        <span>Live Preview</span>
+      </button>
+    `;
+    thumbWrap.appendChild(overlay);
+
+    card.appendChild(thumbWrap);
+
+    const content = document.createElement('div');
+    content.className = 'tmpl-content';
+    content.innerHTML = `
+      <h3 class="tmpl-title">${escapeHtml(t.title)}</h3>
+      <div class="tmpl-actions-row">
+        <button type="button" class="btn-ghost" onclick="openTemplatePreview('${t.id}')" style="font-size: 12.5px; padding: 8px 14px;">
+          <span class="material-icons" style="font-size: 15px;">visibility</span>
+          <span>Preview</span>
+        </button>
+        <button type="button" class="admin-btn primary" onclick="useTemplateForIntake('${t.id}')" style="font-size: 12.5px; padding: 8px 16px;" title="Send project brief referencing this template">
+          <span>Use Template</span>
+        </button>
       </div>
     `;
+    card.appendChild(content);
+
     container.appendChild(card);
   });
+
+  observeTemplateThumbnails();
 }
 
 function prepareTemplatePreviewHtml(rawHtml) {
@@ -6343,13 +6313,22 @@ function renderAdminTemplatesTable() {
   filtered.forEach(t => {
     const tr = document.createElement('tr');
     const isHtml = t.sourceType === 'html';
+    const isHtmlWithContent = t.htmlContent && t.htmlContent.trim().length > 0;
     const sourceBadge = isHtml
       ? `<span class="service-chip" style="color:#e599ff; border-color:rgba(176,34,255,0.4);">📄 HTML File</span>`
       : `<span class="service-chip" style="color:#60a5fa; border-color:rgba(96,165,250,0.4);">🌐 Live URL</span>`;
 
+    const thumbCellHtml = isHtmlWithContent
+      ? `<div class="tmpl-admin-thumb-wrap" title="${escapeHtml(t.title)} hero preview">
+           <iframe class="tmpl-admin-thumb-iframe" srcdoc="${escapeHtml(prepareTemplateThumbnailHtml(t.htmlContent))}" sandbox="allow-same-origin" scrolling="no" tabindex="-1"></iframe>
+         </div>`
+      : (t.thumbnail
+          ? `<img src="${escapeHtml(t.thumbnail)}" alt="${escapeHtml(t.title)}" style="width: 54px; height: 38px; border-radius: 6px; object-fit: cover; border: 1px solid rgba(255,255,255,0.1);">`
+          : `<div class="tmpl-admin-thumb-wrap"><span class="material-icons" style="font-size:18px; color:#b022ff;">devices</span></div>`);
+
     tr.innerHTML = `
       <td>
-        <img src="${escapeHtml(t.thumbnail)}" alt="${escapeHtml(t.title)}" style="width: 54px; height: 38px; border-radius: 6px; object-fit: cover; border: 1px solid rgba(255,255,255,0.1);" onerror="this.src='https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&w=200&q=80'">
+        ${thumbCellHtml}
       </td>
       <td>
         <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 3px;">
@@ -6368,8 +6347,12 @@ function renderAdminTemplatesTable() {
         <span class="service-chip" style="font-size: 11.5px;">${escapeHtml(t.category)}</span>
       </td>
       <td>${sourceBadge}</td>
-      <td style="white-space: nowrap; font-size: 12px; color: var(--text-dim);">
-        ${formatBlueprintDate(t.createdAt)}
+      <td style="white-space: nowrap; font-size: 12px;">
+        <div style="font-weight: 500; color: #e8eaf2;">${getBlueprintDateParts(t.createdAt).date}</div>
+        <div style="font-size: 11px; color: var(--text-dim); margin-top: 2px; display: inline-flex; align-items: center; gap: 4px;">
+          <span class="material-icons" style="font-size: 11px; opacity: 0.7;">schedule</span>
+          <span>${getBlueprintDateParts(t.createdAt).time}</span>
+        </div>
       </td>
       <td style="text-align: right; white-space: nowrap;">
         <div style="display: inline-flex; align-items: center; gap: 6px;">
@@ -6545,7 +6528,7 @@ function handleAdminTemplateSubmit(e) {
     return;
   }
 
-  const thumbnail = tempUploadedThumbDataUrl || thumbUrl || 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80';
+  const thumbnail = tempUploadedThumbDataUrl || thumbUrl || '';
 
   const newRecord = TemplateStore.addTemplate({
     title,
@@ -6609,7 +6592,7 @@ function showAdminView(e) {
     const alertEl = document.getElementById('admin-auth-alert');
     let storedUser = null;
     try {
-      storedUser = JSON.parse(sessionStorage.getItem('dexter_admin_user') || 'null');
+      storedUser = JSON.parse(localStorage.getItem('dexter_admin_user') || sessionStorage.getItem('dexter_admin_user') || 'null');
     } catch (_) {}
     const firebaseAdmin = window.FirebaseSync && typeof window.FirebaseSync.getCurrentAdminUser === 'function' ? window.FirebaseSync.getCurrentAdminUser() : null;
 
@@ -6750,19 +6733,18 @@ function renderAdminDashboard() {
 
   // Compute Metrics across all records
   const totalCount = list.length;
-  const newCount = list.filter(b => b.status === 'New' || b.status === 'In Review').length;
-  const pipelineCount = list.filter(b => b.status === 'Contacted' || b.status === 'Proposal Sent').length;
+  const newCount = list.filter(b => normalizeProjectStatus(b.status) === 'New').length;
+  const workingCount = list.filter(b => normalizeProjectStatus(b.status) === 'Working').length;
+  const completedCount = list.filter(b => normalizeProjectStatus(b.status) === 'Completed').length;
 
   // Approximate pipeline value calculation
   let estimatedValueINR = 0;
   list.forEach(b => {
-    if (b.status !== 'Archived') {
-      const budgetStr = b.budget || '';
-      if (budgetStr.includes('Enterprise') || budgetStr.includes('1.8L') || budgetStr.includes('15k+') || budgetStr.includes('System')) estimatedValueINR += 18000;
-      else if (budgetStr.includes('Standard') || budgetStr.includes('Production') || budgetStr.includes('Multi') || budgetStr.includes('Complete') || budgetStr.includes('80k') || budgetStr.includes('8k') || budgetStr.includes('60k')) estimatedValueINR += 10000;
-      else if (budgetStr.includes('Starter') || budgetStr.includes('Logo') || budgetStr.includes('4k') || budgetStr.includes('35k') || budgetStr.includes('25k')) estimatedValueINR += 5000;
-      else estimatedValueINR += 6000;
-    }
+    const budgetStr = b.budget || '';
+    if (budgetStr.includes('Enterprise') || budgetStr.includes('1.8L') || budgetStr.includes('15k+') || budgetStr.includes('System')) estimatedValueINR += 18000;
+    else if (budgetStr.includes('Standard') || budgetStr.includes('Production') || budgetStr.includes('Multi') || budgetStr.includes('Complete') || budgetStr.includes('80k') || budgetStr.includes('8k') || budgetStr.includes('60k')) estimatedValueINR += 10000;
+    else if (budgetStr.includes('Starter') || budgetStr.includes('Logo') || budgetStr.includes('4k') || budgetStr.includes('35k') || budgetStr.includes('25k')) estimatedValueINR += 5000;
+    else estimatedValueINR += 6000;
   });
 
   const totalEl = document.getElementById('metric-total-count');
@@ -6772,15 +6754,16 @@ function renderAdminDashboard() {
 
   if (totalEl) totalEl.textContent = totalCount;
   if (newEl) newEl.textContent = newCount;
-  if (pipelineEl) pipelineEl.textContent = pipelineCount;
+  if (pipelineEl) pipelineEl.textContent = workingCount;
   if (valueEl) valueEl.textContent = '₹' + estimatedValueINR.toLocaleString('en-IN');
 
   // Apply Filters
   const filtered = list.filter(b => {
+    const norm = normalizeProjectStatus(b.status);
     if (selectedService !== 'ALL' && b.service !== selectedService) return false;
-    if (selectedStatus !== 'ALL' && b.status !== selectedStatus) return false;
+    if (selectedStatus !== 'ALL' && norm !== selectedStatus) return false;
     if (searchTerm) {
-      const haystack = `${b.name} ${b.email} ${b.service} ${b.project_type} ${b.template_code || ''} ${b.notes} ${b.budget}`.toLowerCase();
+      const haystack = `${b.name} ${b.email} ${b.service} ${b.project_type} ${b.template_code || ''} ${b.notes} ${b.budget} ${norm}`.toLowerCase();
       if (!haystack.includes(searchTerm)) return false;
     }
     return true;
@@ -6798,8 +6781,9 @@ function renderAdminDashboard() {
   filtered.forEach(bp => {
     const tr = document.createElement('tr');
     const serviceIcon = (SERVICE_CONFIGS[bp.service] && SERVICE_CONFIGS[bp.service].icon) || 'folder';
-    const dateFormatted = formatBlueprintDate(bp.createdAt);
-    const statusClass = (bp.status || 'new').toLowerCase().replace(/\s+/g, '-');
+    const dateParts = getBlueprintDateParts(bp.createdAt);
+    const normStatus = normalizeProjectStatus(bp.status);
+    const statusClass = normStatus.toLowerCase();
 
     tr.innerHTML = `
       <td>
@@ -6838,27 +6822,50 @@ function renderAdminDashboard() {
         <div style="font-size: 12.5px; color: #81c995; font-weight: 500;">${escapeHtml(bp.budget || 'Custom')}</div>
         <div style="font-size: 11.5px; color: var(--text-dim); margin-top: 2px;">⏳ ${escapeHtml(bp.timeline || 'Standard')}</div>
       </td>
-      <td style="white-space: nowrap; font-size: 12px; color: var(--text-dim);">
-        ${dateFormatted}
+      <td style="white-space: nowrap; font-size: 12.5px;">
+        <div style="font-weight: 600; color: #e8eaf2; display: flex; align-items: center; gap: 5px;">
+          <span class="material-icons" style="font-size: 13.5px; color: #8ab4f8;">calendar_today</span>
+          <span>${dateParts.date}</span>
+        </div>
+        <div style="font-size: 11.5px; color: #ffd54f; margin-top: 3px; display: inline-flex; align-items: center; gap: 4px; font-weight: 500;">
+          <span class="material-icons" style="font-size: 12.5px; color: #ffd54f;">schedule</span>
+          <span>${dateParts.time}</span>
+        </div>
       </td>
       <td>
-        <select onchange="updateBlueprintStatus('${bp.id}', this.value)" class="admin-filter-select" style="padding: 4px 8px; font-size: 12px; min-width: 120px; border-radius: 8px;">
-          <option value="New" ${bp.status === 'New' ? 'selected' : ''}>🔵 New</option>
-          <option value="In Review" ${bp.status === 'In Review' ? 'selected' : ''}>🟡 In Review</option>
-          <option value="Contacted" ${bp.status === 'Contacted' ? 'selected' : ''}>🟣 Contacted</option>
-          <option value="Proposal Sent" ${bp.status === 'Proposal Sent' ? 'selected' : ''}>💠 Proposal Sent</option>
-          <option value="Accepted" ${bp.status === 'Accepted' ? 'selected' : ''}>🟢 Accepted</option>
-          <option value="Archived" ${bp.status === 'Archived' ? 'selected' : ''}>⚪ Archived</option>
+        <select onchange="updateBlueprintStatus('${bp.id}', this.value)" class="admin-status-select status-${statusClass}" title="Project Status">
+          <option value="New" ${normStatus === 'New' ? 'selected' : ''}>🔴 New</option>
+          <option value="Working" ${normStatus === 'Working' ? 'selected' : ''}>🟡 Working</option>
+          <option value="Completed" ${normStatus === 'Completed' ? 'selected' : ''}>🟢 Completed</option>
         </select>
       </td>
       <td style="text-align: right; white-space: nowrap;">
-        <button type="button" class="admin-btn primary" onclick="openBlueprintDrawer('${bp.id}')" style="padding: 6px 12px; font-size: 12px;">
-          <span>Inspect</span>
-          <span class="material-icons" style="font-size: 14px;">chevron_right</span>
-        </button>
+        <div style="display: inline-flex; align-items: center; gap: 6px; justify-content: flex-end;">
+          <button type="button" class="admin-btn primary" onclick="openBlueprintDrawer('${bp.id}')" style="padding: 6px 12px; font-size: 12px;" title="Inspect Project Details">
+            <span>Inspect</span>
+            <span class="material-icons" style="font-size: 14px;">chevron_right</span>
+          </button>
+          <button type="button" class="admin-action-btn delete" onclick="confirmDeleteProjectRow('${bp.id}', '${escapeHtml(bp.name || 'Anonymous Client')}', event)" style="padding: 6px 8px; border-radius: 8px; color: #ff8a80; background: rgba(234,67,53,0.12); border: 1px solid rgba(234,67,53,0.28); cursor: pointer; display: inline-flex; align-items: center; justify-content: center;" title="Delete Project">
+            <span class="material-icons" style="font-size: 15px;">delete_outline</span>
+          </button>
+        </div>
       </td>
     `;
     tbody.appendChild(tr);
+  });
+}
+
+function confirmDeleteProjectRow(id, clientName, event) {
+  if (event) event.stopPropagation();
+  showAdminConfirmModal({
+    title: 'Delete Project Submission',
+    message: `Are you sure you want to permanently delete the project submission from "${clientName}"? This action cannot be undone.`,
+    confirmText: 'Delete Project',
+    onConfirm: () => {
+      BlueprintStore.deleteBlueprint(id);
+      renderAdminDashboard();
+      showToastNotification('Project submission deleted.');
+    }
   });
 }
 
@@ -6964,7 +6971,7 @@ function renderFaqQuestionsTable() {
 
   filtered.forEach(q => {
     const tr = document.createElement('tr');
-    const dateFormatted = formatBlueprintDate(q.createdAt);
+    const qDateParts = getBlueprintDateParts(q.createdAt);
     const subject = `Re: DexterTech - Regarding your question from our website`;
     const mailBody = `Hi ${q.name || 'there'},\n\nThank you for reaching out via our FAQ section regarding:\n"${q.question}"\n\n`;
     const mailtoUrl = `mailto:${encodeURIComponent(q.email)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(mailBody)}`;
@@ -6985,9 +6992,13 @@ function renderFaqQuestionsTable() {
           "${escapeHtml(q.question)}"
         </div>
       </td>
-      <td style="white-space: nowrap; font-size: 12px; color: var(--text-dim);">
-        <div>${dateFormatted}</div>
-        ${q.repliedAt ? `<div style="font-size: 11px; color: #81c995; margin-top: 3px;">Replied: ${formatBlueprintDate(q.repliedAt)}</div>` : ''}
+      <td style="white-space: nowrap; font-size: 12px;">
+        <div style="font-weight: 500; color: #e8eaf2;">${qDateParts.date}</div>
+        <div style="font-size: 11px; color: var(--text-dim); margin-top: 2px; display: inline-flex; align-items: center; gap: 4px;">
+          <span class="material-icons" style="font-size: 11px; opacity: 0.7;">schedule</span>
+          <span>${qDateParts.time}</span>
+        </div>
+        ${q.repliedAt ? `<div style="font-size: 11px; color: #81c995; margin-top: 4px; display: inline-flex; align-items: center; gap: 3px;"><span class="material-icons" style="font-size: 11px;">done_all</span> Replied: ${formatBlueprintDate(q.repliedAt)}</div>` : ''}
       </td>
       <td>
         <select onchange="updateFaqQuestionStatus('${q.id}', this.value)" class="admin-filter-select" style="padding: 4px 8px; font-size: 12px; min-width: 110px; border-radius: 8px;">
@@ -7013,14 +7024,15 @@ function renderFaqQuestionsTable() {
 }
 
 function updateBlueprintStatus(id, newStatus) {
-  BlueprintStore.updateStatus(id, newStatus);
+  const norm = normalizeProjectStatus(newStatus);
+  BlueprintStore.updateStatus(id, norm);
   renderAdminDashboard();
   if (activeDrawerBlueprintId === id) {
-    renderDrawerStatusButtons(newStatus);
+    renderDrawerStatusButtons(norm);
     const statusBadge = document.getElementById('inspect-status-badge');
     if (statusBadge) {
-      statusBadge.textContent = newStatus;
-      statusBadge.className = 'status-badge ' + (newStatus || 'new').toLowerCase().replace(/\s+/g, '-');
+      statusBadge.textContent = norm;
+      statusBadge.className = 'status-badge ' + norm.toLowerCase();
     }
   }
 }
@@ -7029,20 +7041,34 @@ function updateBlueprintStatus(id, newStatus) {
 function renderDrawerStatusButtons(activeStatus) {
   const container = document.getElementById('drawer-status-buttons');
   if (!container) return;
-  const statuses = ['New', 'In Review', 'Contacted', 'Proposal Sent', 'Accepted', 'Archived'];
+  const current = normalizeProjectStatus(activeStatus);
+  const statuses = [
+    { key: 'New', label: '🔴 New', color: '#ff8a80', bg: 'rgba(234, 67, 53, 0.18)', border: 'rgba(234, 67, 53, 0.45)' },
+    { key: 'Working', label: '🟡 Working', color: '#ffd54f', bg: 'rgba(251, 188, 4, 0.18)', border: 'rgba(251, 188, 4, 0.45)' },
+    { key: 'Completed', label: '🟢 Completed', color: '#81c995', bg: 'rgba(52, 168, 83, 0.18)', border: 'rgba(52, 168, 83, 0.45)' }
+  ];
   container.innerHTML = '';
   statuses.forEach(st => {
-    const isSelected = (st === activeStatus);
+    const isSelected = (st.key === current);
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.className = `admin-btn ${isSelected ? 'primary' : ''}`;
     btn.style.justifyContent = 'center';
     btn.style.fontSize = '12px';
-    btn.style.padding = '8px 6px';
-    btn.textContent = st;
+    btn.style.padding = '8px 12px';
+    btn.style.fontWeight = isSelected ? '600' : '500';
+    if (isSelected) {
+      btn.style.background = st.bg;
+      btn.style.borderColor = st.border;
+      btn.style.color = st.color;
+      btn.style.boxShadow = `0 0 12px ${st.bg}`;
+    } else {
+      btn.style.opacity = '0.7';
+    }
+    btn.textContent = st.label;
     btn.onclick = () => {
       if (activeDrawerBlueprintId) {
-        updateBlueprintStatus(activeDrawerBlueprintId, st);
+        updateBlueprintStatus(activeDrawerBlueprintId, st.key);
       }
     };
     container.appendChild(btn);
@@ -7094,11 +7120,12 @@ function openBlueprintInspect(id) {
     const savedTag = document.getElementById('drawer-notes-saved-tag');
 
     if (clientNameEl) clientNameEl.textContent = bp.name || 'Anonymous Client';
-    if (createdAtEl) createdAtEl.textContent = 'Submitted on ' + new Date(bp.createdAt).toLocaleString();
+    if (createdAtEl) createdAtEl.innerHTML = `<span class="material-icons" style="font-size: 13px; vertical-align: -2px; margin-right: 4px; color: #8ab4f8;">calendar_today</span> Submitted on ${formatBlueprintDate(bp.createdAt)}`;
     if (blueprintIdEl) blueprintIdEl.textContent = bp.id || '-';
+    const normStatus = normalizeProjectStatus(bp.status);
     if (statusBadge) {
-      statusBadge.textContent = bp.status || 'New';
-      statusBadge.className = 'status-badge ' + (bp.status || 'new').toLowerCase().replace(/\s+/g, '-');
+      statusBadge.textContent = normStatus;
+      statusBadge.className = 'status-badge ' + normStatus.toLowerCase();
     }
     if (serviceNameEl) serviceNameEl.textContent = bp.service || '-';
     if (projectTypeEl) projectTypeEl.textContent = bp.project_type || '-';
@@ -7250,6 +7277,7 @@ function copyDrawerBriefSummary() {
   if (!bp) return;
   const summary = `DEXTERTECH CLIENT BLUEPRINT:
 • Client: ${bp.name}
+• Submitted: ${formatBlueprintDate(bp.createdAt)}
 • Email: ${bp.email || 'None'}
 • WhatsApp: ${bp.whatsapp || 'None'}
 • Discipline: ${bp.service}
@@ -7312,15 +7340,34 @@ function exportBlueprintsJSON() {
 }
 
 /* ─── HELPER UTILITIES & ROUTING ─── */
-function formatBlueprintDate(isoString) {
-  if (!isoString) return 'Recent';
+function getBlueprintDateParts(isoString) {
+  if (!isoString) return { date: '-', time: '-' };
   const d = new Date(isoString);
-  const diffSec = Math.floor((Date.now() - d.getTime()) / 1000);
-  if (diffSec < 60) return 'Just now';
-  if (diffSec < 3600) return `${Math.floor(diffSec / 60)}m ago`;
-  if (diffSec < 86400) return `${Math.floor(diffSec / 3600)}h ago`;
-  if (diffSec < 172800) return 'Yesterday';
-  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  if (isNaN(d.getTime())) return { date: '-', time: '-' };
+
+  const day = String(d.getDate()).padStart(2, '0');
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const month = months[d.getMonth()];
+  const year = d.getFullYear();
+
+  let hours = d.getHours();
+  const minutes = String(d.getMinutes()).padStart(2, '0');
+  const ampm = hours >= 12 ? 'PM' : 'AM';
+  hours = hours % 12;
+  hours = hours ? hours : 12;
+  const hoursStr = String(hours).padStart(2, '0');
+
+  return {
+    date: `${day} ${month} ${year}`,
+    time: `${hoursStr}:${minutes} ${ampm}`
+  };
+}
+
+function formatBlueprintDate(isoString) {
+  if (!isoString) return '-';
+  const parts = getBlueprintDateParts(isoString);
+  if (parts.date === '-') return '-';
+  return `${parts.date} at ${parts.time}`;
 }
 
 function escapeHtml(str) {
@@ -7354,7 +7401,19 @@ window.addEventListener('firebase:ready', function(evt) {
           photoURL: user.photoURL
         });
         updateAdminProfileDisplay(user);
-      } else if (!isAuthorized && BlueprintStore.isAuthenticated()) {
+        const adminView = document.getElementById('admin-view');
+        const authGate = document.getElementById('admin-auth-gate');
+        const dashboard = document.getElementById('admin-dashboard-container');
+        if (adminView && adminView.classList.contains('active') && authGate && authGate.style.display !== 'none') {
+          authGate.style.display = 'none';
+          if (dashboard) {
+            dashboard.style.display = 'block';
+            dashboard.style.opacity = '1';
+          }
+          renderAdminDashboard();
+        }
+      } else if (user && !isAuthorized) {
+        // User explicitly logged in with unauthorized email
         BlueprintStore.logout();
       }
     });

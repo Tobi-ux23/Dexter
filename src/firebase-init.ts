@@ -15,7 +15,7 @@ import {
   signInWithPopup,
   signOut,
   setPersistence,
-  browserSessionPersistence,
+  browserLocalPersistence,
   onAuthStateChanged,
   User
 } from "firebase/auth";
@@ -121,9 +121,9 @@ const FirebaseSync = {
 
   async signInAdminWithGoogle(): Promise<{ user: User; email: string; displayName: string | null; photoURL: string | null }> {
     try {
-      await setPersistence(auth, browserSessionPersistence);
+      await setPersistence(auth, browserLocalPersistence);
     } catch (pErr) {
-      console.warn("Session persistence notice:", pErr);
+      console.warn("Device persistence notice:", pErr);
     }
 
     const credential = await signInWithPopup(auth, googleProvider);
@@ -202,14 +202,30 @@ const FirebaseSync = {
     }
   },
 
+  async purgePlaceholderBlueprints() {
+    const placeholderIds = ['bp_seed_001', 'bp_seed_002', 'bp_seed_003', 'bp_seed_004'];
+    for (const id of placeholderIds) {
+      try {
+        await deleteDoc(doc(db, "blueprints", id));
+      } catch (_) {}
+    }
+  },
+
   listenBlueprints(callback: (items: any[]) => void) {
+    const placeholderIds = new Set(['bp_seed_001', 'bp_seed_002', 'bp_seed_003', 'bp_seed_004']);
+    this.purgePlaceholderBlueprints().catch(() => {});
     try {
       return onSnapshot(
         collection(db, "blueprints"),
         snapshot => {
           const items: any[] = [];
           snapshot.forEach(docSnap => {
-            items.push({ ...docSnap.data(), id: docSnap.id });
+            const id = docSnap.id;
+            if (placeholderIds.has(id)) {
+              deleteDoc(doc(db, "blueprints", id)).catch(() => {});
+              return;
+            }
+            items.push({ ...docSnap.data(), id });
           });
           callback(items);
         },
@@ -293,13 +309,30 @@ const FirebaseSync = {
     }
   },
 
+  async purgePlaceholderTemplates() {
+    const placeholderIds = ['tmpl_apex', 'tmpl_veloce', 'tmpl_kroma', 'tmpl_pulse'];
+    for (const id of placeholderIds) {
+      try {
+        await deleteDoc(doc(db, "templates", id));
+      } catch (_) {}
+    }
+  },
+
   listenTemplates(callback: (items: any[]) => void) {
+    const placeholderIds = new Set(['tmpl_apex', 'tmpl_veloce', 'tmpl_kroma', 'tmpl_pulse']);
+    // Proactively clean legacy placeholder templates from the database
+    this.purgePlaceholderTemplates().catch(() => {});
     try {
       return onSnapshot(
         collection(db, "templates"),
         snapshot => {
           const items: any[] = [];
           snapshot.forEach(docSnap => {
+            const id = docSnap.id;
+            if (placeholderIds.has(id)) {
+              deleteDoc(doc(db, "templates", id)).catch(() => {});
+              return;
+            }
             items.push({ ...docSnap.data(), id: docSnap.id });
           });
           callback(items);

@@ -19,7 +19,7 @@ service cloud.firestore {
         data.name is string && data.name.size() > 0 && data.name.size() <= 120 &&
         data['service'] is string && data['service'].size() <= 120 &&
         data.project_type is string && data.project_type.size() <= 120 &&
-        data.status in ['New', 'In Review', 'Contacted', 'Proposal Sent', 'Accepted', 'Archived'] &&
+        data.status in ['New', 'Working', 'Completed', 'In Review', 'Contacted', 'Proposal Sent', 'Accepted', 'Archived'] &&
         (!('email' in data) || (data.email is string && data.email.size() <= 150)) &&
         (!('whatsapp' in data) || (data.whatsapp is string && data.whatsapp.size() <= 50)) &&
         (!('template_code' in data) || (data.template_code is string && data.template_code.size() <= 60)) &&

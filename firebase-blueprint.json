@@ -15,7 +15,7 @@
         "timeline": { "type": "string", "maxLength": 100 },
         "budget": { "type": "string", "maxLength": 100 },
         "notes": { "type": "string", "maxLength": 2000 },
-        "status": { "type": "string", "enum": ["New", "In Review", "Contacted", "Proposal Sent", "Accepted", "Archived"] },
+        "status": { "type": "string", "enum": ["New", "Working", "Completed", "In Review", "Contacted", "Proposal Sent", "Accepted", "Archived"] },
         "internal_notes": { "type": "string", "maxLength": 2000 },
         "createdAt": { "type": "string", "format": "date-time" },
         "updatedAt": { "type": "string", "format": "date-time" }
