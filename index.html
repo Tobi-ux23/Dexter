@@ -2406,13 +2406,25 @@ hr.divide {
   font-size: 16.5px;
   font-weight: 600;
   color: #fff;
-  margin: 0 0 16px;
+  margin: 0 0 6px;
   line-height: 1.35;
+}
+
+.tmpl-desc {
+  font-size: 13px;
+  line-height: 1.5;
+  color: #9ca3af;
+  margin: 0 0 16px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-height: 20px;
 }
 
 .tmpl-thumb-code,
 .tmpl-source-badge,
-.tmpl-desc,
 .tmpl-meta-row,
 .tmpl-tags-list,
 .tmpl-card .tmpl-thumb-wrap > span,
@@ -3475,6 +3487,10 @@ div#templates-view > main > div#templates-grid-container > div > div > span:nth-
       </div>
 
       <div class="tmpl-preview-actions">
+        <button type="button" id="modal-edit-template-btn" class="admin-btn" onclick="editFromPreviewModal()" style="display: none; padding: 7px 12px; font-size: 12px; color: #8ab4f8; background: rgba(66, 133, 244, 0.12); border-color: rgba(66, 133, 244, 0.3);">
+          <span class="material-icons" style="font-size: 14px;">edit</span>
+          <span>Edit Details</span>
+        </button>
         <button type="button" id="modal-use-template-btn" class="admin-btn primary" onclick="useCurrentPreviewTemplate()" style="padding: 7px 14px; font-size: 12px;">
           <span>Use This Template</span>
         </button>
@@ -3748,8 +3764,8 @@ div#templates-view > main > div#templates-grid-container > div > div > span:nth-
     <div class="admin-modal-dialog">
       <div class="admin-modal-header">
         <div style="display: flex; align-items: center; gap: 8px;">
-          <span class="material-icons" style="color: var(--blue); font-size: 22px;">upload_file</span>
-          <h3 style="margin: 0; font-size: 17px; color: #fff; font-weight: 600;">Upload New Template</h3>
+          <span class="material-icons" id="admin-template-modal-icon" style="color: var(--blue); font-size: 22px;">upload_file</span>
+          <h3 id="admin-template-modal-title" style="margin: 0; font-size: 17px; color: #fff; font-weight: 600;">Upload New Template</h3>
         </div>
         <button type="button" class="modal-close-icon" onclick="closeAdminUploadTemplateModal()">
           <span class="material-icons">close</span>
@@ -3757,11 +3773,12 @@ div#templates-view > main > div#templates-grid-container > div > div > span:nth-
       </div>
 
       <form id="admin-template-upload-form" onsubmit="handleAdminTemplateSubmit(event)" style="display: flex; flex-direction: column; flex: 1; min-height: 0; overflow: hidden;">
+        <input type="hidden" id="tmpl-editing-id" value="">
         <div class="admin-modal-body">
           <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 14px; margin-bottom: 14px;">
             <div class="intake-group">
               <label class="intake-label" for="tmpl-upload-title">Template Title <span style="color: var(--blue);">*</span></label>
-              <input type="text" id="tmpl-upload-title" class="intake-input" placeholder="e.g. Apex SaaS Analytics Platform" required>
+              <input type="text" id="tmpl-upload-title" class="intake-input" placeholder="e.g. Apex SaaS Analytics Platform">
             </div>
             <div class="intake-group">
               <label class="intake-label" for="tmpl-upload-code">
@@ -3775,7 +3792,7 @@ div#templates-view > main > div#templates-grid-container > div > div > span:nth-
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px;">
             <div class="intake-group">
               <label class="intake-label" for="tmpl-upload-category">Category <span style="color: var(--blue);">*</span></label>
-              <select id="tmpl-upload-category" class="intake-select" required>
+              <select id="tmpl-upload-category" class="intake-select">
                 <option value="SaaS & Web App">SaaS & Web App</option>
                 <option value="E-Commerce">E-Commerce</option>
                 <option value="Corporate & Portfolios">Corporate & Portfolios</option>
@@ -3813,7 +3830,7 @@ div#templates-view > main > div#templates-grid-container > div > div > span:nth-
           <!-- Input Option 1: Live Demo URL -->
           <div id="tmpl-source-url-group" class="intake-group" style="margin-bottom: 14px;">
             <label class="intake-label" for="tmpl-upload-url">Live Website URL</label>
-            <input type="url" id="tmpl-upload-url" class="intake-input" placeholder="https://your-template-demo.vercel.app">
+            <input type="text" id="tmpl-upload-url" class="intake-input" placeholder="https://your-template-demo.vercel.app or example.com">
           </div>
 
           <!-- Input Option 2: HTML File Upload -->
@@ -3825,17 +3842,20 @@ div#templates-view > main > div#templates-grid-container > div > div > span:nth-
 
           <!-- Thumbnail Image -->
           <div class="intake-group" style="margin-bottom: 8px;">
-            <label class="intake-label" for="tmpl-upload-thumb">Preview Thumbnail Image URL</label>
+            <label class="intake-label" for="tmpl-upload-thumb">Custom Thumbnail Image (Optional)</label>
             <div style="display: flex; gap: 8px;">
-              <input type="url" id="tmpl-upload-thumb" class="intake-input" placeholder="https://images.unsplash.com/... or choose image below">
+              <input type="text" id="tmpl-upload-thumb" class="intake-input" placeholder="https://images.unsplash.com/... or choose image below" oninput="updateThumbRemoveButtonState()">
             </div>
-            <div style="margin-top: 6px;">
-              <label style="font-size: 11.5px; color: var(--text-dim); cursor: pointer; display: inline-flex; align-items: center; gap: 4px;">
-                <span class="material-icons" style="font-size: 14px;">add_photo_alternate</span> Or choose image from device
+            <div style="margin-top: 6px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+              <label style="font-size: 11.5px; color: var(--text-dim); cursor: pointer; display: inline-flex; align-items: center; gap: 4px; padding: 4px 8px; border-radius: 6px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">
+                <span class="material-icons" style="font-size: 14px; color: var(--blue);">add_photo_alternate</span> Choose image from device
                 <input type="file" id="tmpl-upload-thumb-file" accept="image/*" style="display: none;" onchange="handleTmplImageFileSelect(event)">
               </label>
-              <span id="tmpl-thumb-chosen-label" style="font-size: 11.5px; color: #81c995; margin-left: 8px;"></span>
+              <span id="tmpl-thumb-chosen-label" style="font-size: 11.5px; color: #81c995;"></span>
+              <button type="button" id="tmpl-thumb-remove-btn" onclick="clearTemplateThumbnail()" style="display: none; background: transparent; border: none; color: #ff8a80; font-size: 11.5px; cursor: pointer; padding: 0;">✕ Remove image (use default thumbnail)</button>
             </div>
+            <div id="tmpl-thumb-preview-box" style="margin-top: 10px; padding: 8px 12px; background: rgba(255,255,255,0.03); border: 1px dashed rgba(255,255,255,0.12); border-radius: 8px; display: flex; align-items: center; gap: 12px;"></div>
+            <div style="font-size: 11px; color: var(--text-dim); margin-top: 4px;">If no custom image is uploaded, the template will automatically display its default live preview thumbnail.</div>
           </div>
         </div>
 
@@ -5644,6 +5664,58 @@ const TemplateStore = {
     return newRecord;
   },
 
+  updateTemplate(id, data) {
+    const list = this.getAll();
+    const cleanId = String(id || '').trim();
+    const index = list.findIndex(t => t.id === cleanId || (t.id && String(t.id).trim() === cleanId));
+    if (index === -1) {
+      console.warn("Template not found for update:", id);
+      return null;
+    }
+
+    const existing = list[index];
+    const cleanCode = (data.code && data.code.trim())
+      ? data.code.trim().toUpperCase()
+      : (existing.code || this.generateCode(data.category));
+
+    const updatedRecord = {
+      ...existing,
+      code: cleanCode,
+      title: data.title !== undefined ? String(data.title).trim() : existing.title,
+      category: data.category !== undefined ? data.category : existing.category,
+      description: data.description !== undefined ? String(data.description).trim() : (existing.description || ''),
+      tags: data.tags !== undefined
+        ? (Array.isArray(data.tags) ? data.tags : String(data.tags).split(',').map(s => s.trim()).filter(Boolean))
+        : (existing.tags || []),
+      sourceType: data.sourceType || existing.sourceType || 'url',
+      liveUrl: data.liveUrl !== undefined ? String(data.liveUrl).trim() : (existing.liveUrl || ''),
+      htmlContent: data.htmlContent !== undefined ? data.htmlContent : (existing.htmlContent || ''),
+      thumbnail: data.thumbnail !== undefined ? String(data.thumbnail).trim() : (existing.thumbnail || ''),
+      featured: data.featured !== undefined ? Boolean(data.featured) : (existing.featured || false),
+      updatedAt: new Date().toISOString()
+    };
+
+    list[index] = updatedRecord;
+    this.saveAll(list);
+    if (typeof updateTemplatesBadge === 'function') updateTemplatesBadge();
+
+    // Broadcast change immediately across views
+    window.dispatchEvent(new CustomEvent('templates:updated', { detail: list }));
+
+    // Sync to Firestore Cloud Database
+    if (window.FirebaseSync && typeof window.FirebaseSync.updateTemplate === 'function') {
+      window.FirebaseSync.updateTemplate(cleanId, updatedRecord).catch(err => {
+        console.warn("Firestore template update sync notice:", err);
+      });
+    } else if (window.FirebaseSync && typeof window.FirebaseSync.addTemplate === 'function') {
+      window.FirebaseSync.addTemplate(updatedRecord).catch(err => {
+        console.warn("Firestore template add fallback notice:", err);
+      });
+    }
+
+    return updatedRecord;
+  },
+
   deleteTemplate(id) {
     addDeletedTemplateId(id);
     let list = this.getAll();
@@ -5708,11 +5780,44 @@ function initFirestoreSyncBridge() {
   window.FirebaseSync.listenTemplates(remoteTemplates => {
     const deletedIds = getDeletedTemplateIds();
     const cleanRemote = (remoteTemplates || [])
-      .filter(t => t && t.id && !PLACEHOLDER_TEMPLATE_IDS.has(t.id) && !deletedIds.has(t.id))
+      .filter(t => t && t.id && !PLACEHOLDER_TEMPLATE_IDS.has(t.id) && !deletedIds.has(t.id));
+
+    // Smart merge: retain newer local edits
+    const localList = TemplateStore.getAll();
+    const localMap = new Map();
+    localList.forEach(item => {
+      if (item && item.id) localMap.set(String(item.id).trim(), item);
+    });
+
+    const mergedMap = new Map();
+    cleanRemote.forEach(remoteItem => {
+      const idKey = String(remoteItem.id).trim();
+      const localItem = localMap.get(idKey);
+      if (localItem) {
+        const localTime = localItem.updatedAt ? new Date(localItem.updatedAt).getTime() : 0;
+        const remoteTime = remoteItem.updatedAt ? new Date(remoteItem.updatedAt).getTime() : 0;
+        // If local update is newer than or equal to remote update, keep local changes
+        if (localTime >= remoteTime && localTime > 0) {
+          mergedMap.set(idKey, { ...remoteItem, ...localItem });
+          return;
+        }
+      }
+      mergedMap.set(idKey, remoteItem);
+    });
+
+    // Also keep any local template that remote hasn't ingested yet
+    localList.forEach(localItem => {
+      const idKey = String(localItem.id).trim();
+      if (!mergedMap.has(idKey) && !deletedIds.has(idKey)) {
+        mergedMap.set(idKey, localItem);
+      }
+    });
+
+    const mergedList = Array.from(mergedMap.values())
       .sort((a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime());
 
     try {
-      localStorage.setItem(TEMPLATE_STORAGE_KEY, JSON.stringify(cleanRemote));
+      localStorage.setItem(TEMPLATE_STORAGE_KEY, JSON.stringify(mergedList));
     } catch (e) {}
 
     if (typeof renderTemplatesGallery === 'function') {
@@ -5924,6 +6029,67 @@ function observeTemplateThumbnails() {
 
 window.addEventListener('resize', fitAllTemplateThumbnails);
 
+function renderDefaultTemplateThumbnail(thumbWrap, t) {
+  // 1. If template has HTML bundle: render live HTML hero preview
+  if (t.htmlContent && t.htmlContent.trim().length > 0) {
+    const frameWrap = document.createElement('div');
+    frameWrap.className = 'tmpl-thumb-frame-wrap';
+
+    const iframe = document.createElement('iframe');
+    iframe.className = 'tmpl-hero-iframe';
+    iframe.setAttribute('sandbox', 'allow-same-origin');
+    iframe.setAttribute('scrolling', 'no');
+    iframe.setAttribute('tabindex', '-1');
+    iframe.setAttribute('title', `${t.title} Hero Landing Preview`);
+    iframe.srcdoc = prepareTemplateThumbnailHtml(t.htmlContent);
+    iframe.style.transform = 'scale(0.315)';
+
+    frameWrap.appendChild(iframe);
+    thumbWrap.appendChild(frameWrap);
+  }
+  // 2. If template has live website URL: render live frame with browser chrome backdrop
+  else if (t.liveUrl && t.liveUrl.trim().length > 0) {
+    const frameWrap = document.createElement('div');
+    frameWrap.className = 'tmpl-thumb-frame-wrap';
+    frameWrap.style.cssText = 'position: absolute; inset: 0; width: 100%; height: 100%; overflow: hidden; background: radial-gradient(circle at 50% 20%, #1e1b4b 0%, #090a10 80%);';
+
+    const iframe = document.createElement('iframe');
+    iframe.className = 'tmpl-hero-iframe';
+    iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin');
+    iframe.setAttribute('scrolling', 'no');
+    iframe.setAttribute('tabindex', '-1');
+    iframe.setAttribute('title', `${t.title} Live Demo Preview`);
+    iframe.src = t.liveUrl;
+    iframe.style.transform = 'scale(0.315)';
+    iframe.style.pointerEvents = 'none';
+
+    // Watermark behind iframe in case external site restricts embedding
+    const backdrop = document.createElement('div');
+    backdrop.style.cssText = 'position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; pointer-events: none; z-index: 0;';
+    backdrop.innerHTML = `
+      <span class="material-icons" style="font-size:36px; color:#b022ff; margin-bottom:8px; opacity: 0.85;">language</span>
+      <div style="font-weight:600; color:#fff; font-size:14px;">${escapeHtml(t.title)}</div>
+      <div style="font-size:12px; color:#8ab4f8; margin-top:4px;">${escapeHtml(t.category)}</div>
+    `;
+
+    frameWrap.appendChild(backdrop);
+    frameWrap.appendChild(iframe);
+    thumbWrap.appendChild(frameWrap);
+  }
+  // 3. Fallback default visual preview
+  else {
+    const placeholder = document.createElement('div');
+    placeholder.className = 'tmpl-thumb-frame-wrap';
+    placeholder.style.cssText = 'display:flex; flex-direction:column; align-items:center; justify-content:center; background: radial-gradient(circle at 50% 30%, #1e1b4b 0%, #090a10 80%); color:#9ca3af; padding:20px; text-align:center;';
+    placeholder.innerHTML = `
+      <span class="material-icons" style="font-size:36px; color:#b022ff; margin-bottom:8px;">devices</span>
+      <div style="font-weight:600; color:#fff; font-size:14px;">${escapeHtml(t.title)}</div>
+      <div style="font-size:12px; color:#8ab4f8; margin-top:4px;">${escapeHtml(t.category)}</div>
+    `;
+    thumbWrap.appendChild(placeholder);
+  }
+}
+
 function renderTemplatesGallery() {
   const list = TemplateStore.getAll();
   const searchInput = document.getElementById('templates-search-input');
@@ -5981,39 +6147,23 @@ function renderTemplatesGallery() {
     thumbWrap.className = 'tmpl-thumb-wrap';
     thumbWrap.setAttribute('onclick', `openTemplatePreview('${t.id}')`);
 
-    // Live HTML Hero Preview as default thumbnail
-    if (t.htmlContent && t.htmlContent.trim().length > 0) {
-      const frameWrap = document.createElement('div');
-      frameWrap.className = 'tmpl-thumb-frame-wrap';
-
-      const iframe = document.createElement('iframe');
-      iframe.className = 'tmpl-hero-iframe';
-      iframe.setAttribute('sandbox', 'allow-same-origin');
-      iframe.setAttribute('scrolling', 'no');
-      iframe.setAttribute('tabindex', '-1');
-      iframe.setAttribute('title', `${t.title} Hero Landing Preview`);
-      iframe.srcdoc = prepareTemplateThumbnailHtml(t.htmlContent);
-      iframe.style.transform = 'scale(0.315)';
-
-      frameWrap.appendChild(iframe);
-      thumbWrap.appendChild(frameWrap);
-    } else if (t.thumbnail && t.thumbnail.trim().length > 0) {
+    // 1. In case an image is uploaded for the template: let the thumbnail be the uploaded image
+    if (t.thumbnail && t.thumbnail.trim().length > 0) {
       const img = document.createElement('img');
       img.className = 'tmpl-thumb-img';
       img.alt = t.title;
       img.src = t.thumbnail;
       img.loading = 'lazy';
+      img.onerror = () => {
+        // If custom uploaded image fails to load, gracefully fall back to default template thumbnail
+        img.style.display = 'none';
+        renderDefaultTemplateThumbnail(thumbWrap, t);
+      };
       thumbWrap.appendChild(img);
-    } else {
-      const placeholder = document.createElement('div');
-      placeholder.className = 'tmpl-thumb-frame-wrap';
-      placeholder.style.cssText = 'display:flex; flex-direction:column; align-items:center; justify-content:center; background: radial-gradient(circle at 50% 30%, #1e1b4b 0%, #090a10 80%); color:#9ca3af; padding:20px; text-align:center;';
-      placeholder.innerHTML = `
-        <span class="material-icons" style="font-size:36px; color:#b022ff; margin-bottom:8px;">devices</span>
-        <div style="font-weight:600; color:#fff; font-size:14px;">${escapeHtml(t.title)}</div>
-        <div style="font-size:12px; color:#8ab4f8; margin-top:4px;">${escapeHtml(t.category)}</div>
-      `;
-      thumbWrap.appendChild(placeholder);
+    }
+    // 2. Otherwise: let the default template's thumbnail be it
+    else {
+      renderDefaultTemplateThumbnail(thumbWrap, t);
     }
 
     const overlay = document.createElement('div');
@@ -6030,8 +6180,13 @@ function renderTemplatesGallery() {
 
     const content = document.createElement('div');
     content.className = 'tmpl-content';
+    const descText = t.description && t.description.trim()
+      ? t.description.trim()
+      : 'Modern design architecture engineered for high conversion and responsive performance.';
+
     content.innerHTML = `
       <h3 class="tmpl-title">${escapeHtml(t.title)}</h3>
+      <p class="tmpl-desc">${escapeHtml(descText)}</p>
       <div class="tmpl-actions-row">
         <button type="button" class="btn-ghost" onclick="openTemplatePreview('${t.id}')" style="font-size: 12.5px; padding: 8px 14px;">
           <span class="material-icons" style="font-size: 15px;">visibility</span>
@@ -6197,9 +6352,22 @@ function openTemplatePreview(id) {
     }
   }
 
+  const editBtn = document.getElementById('modal-edit-template-btn');
+  if (editBtn) {
+    const isAuthed = BlueprintStore.isAuthenticated();
+    editBtn.style.display = isAuthed ? 'inline-flex' : 'none';
+  }
+
   if (modal) {
     modal.style.display = 'flex';
   }
+}
+
+function editFromPreviewModal() {
+  if (!currentPreviewTemplateId) return;
+  const id = currentPreviewTemplateId;
+  closeTemplatePreviewModal();
+  openAdminEditTemplateModal(id);
 }
 
 function closeTemplatePreviewModal() {
@@ -6318,13 +6486,18 @@ function renderAdminTemplatesTable() {
       ? `<span class="service-chip" style="color:#e599ff; border-color:rgba(176,34,255,0.4);">📄 HTML File</span>`
       : `<span class="service-chip" style="color:#60a5fa; border-color:rgba(96,165,250,0.4);">🌐 Live URL</span>`;
 
-    const thumbCellHtml = isHtmlWithContent
-      ? `<div class="tmpl-admin-thumb-wrap" title="${escapeHtml(t.title)} hero preview">
-           <iframe class="tmpl-admin-thumb-iframe" srcdoc="${escapeHtml(prepareTemplateThumbnailHtml(t.htmlContent))}" sandbox="allow-same-origin" scrolling="no" tabindex="-1"></iframe>
-         </div>`
-      : (t.thumbnail
-          ? `<img src="${escapeHtml(t.thumbnail)}" alt="${escapeHtml(t.title)}" style="width: 54px; height: 38px; border-radius: 6px; object-fit: cover; border: 1px solid rgba(255,255,255,0.1);">`
-          : `<div class="tmpl-admin-thumb-wrap"><span class="material-icons" style="font-size:18px; color:#b022ff;">devices</span></div>`);
+    const hasUploadedThumb = t.thumbnail && t.thumbnail.trim().length > 0;
+    const thumbCellHtml = hasUploadedThumb
+      ? `<img src="${escapeHtml(t.thumbnail)}" alt="${escapeHtml(t.title)}" style="width: 54px; height: 38px; border-radius: 6px; object-fit: cover; border: 1px solid rgba(255,255,255,0.1);">`
+      : (isHtmlWithContent
+          ? `<div class="tmpl-admin-thumb-wrap" title="${escapeHtml(t.title)} default live preview">
+               <iframe class="tmpl-admin-thumb-iframe" srcdoc="${escapeHtml(prepareTemplateThumbnailHtml(t.htmlContent))}" sandbox="allow-same-origin" scrolling="no" tabindex="-1"></iframe>
+             </div>`
+          : (t.liveUrl
+              ? `<div class="tmpl-admin-thumb-wrap" title="${escapeHtml(t.title)} default live preview">
+                   <iframe class="tmpl-admin-thumb-iframe" src="${escapeHtml(t.liveUrl)}" sandbox="allow-scripts allow-same-origin" scrolling="no" tabindex="-1"></iframe>
+                 </div>`
+              : `<div class="tmpl-admin-thumb-wrap"><span class="material-icons" style="font-size:18px; color:#b022ff;">devices</span></div>`));
 
     tr.innerHTML = `
       <td>
@@ -6360,7 +6533,11 @@ function renderAdminTemplatesTable() {
             <span class="material-icons" style="font-size: 14px;">visibility</span>
             <span>Preview</span>
           </button>
-          <button type="button" class="admin-btn" onclick="deleteAdminTemplate('${t.id}')" style="padding: 6px 8px; color: #ff8a80;" title="Delete template">
+          <button type="button" class="admin-action-btn edit" onclick="openAdminEditTemplateModal('${t.id}')" style="padding: 6px 10px; border-radius: 8px; color: #8ab4f8; background: rgba(66, 133, 244, 0.12); border: 1px solid rgba(66, 133, 244, 0.3); cursor: pointer; display: inline-flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 500;" title="Edit product details">
+            <span class="material-icons" style="font-size: 14px;">edit</span>
+            <span>Edit</span>
+          </button>
+          <button type="button" class="admin-action-btn delete" onclick="deleteAdminTemplate('${t.id}')" style="padding: 6px 8px; border-radius: 8px; color: #ff8a80; background: rgba(234,67,53,0.12); border: 1px solid rgba(234,67,53,0.28); cursor: pointer; display: inline-flex; align-items: center; justify-content: center;" title="Delete template">
             <span class="material-icons" style="font-size: 14px;">delete_outline</span>
           </button>
         </div>
@@ -6422,12 +6599,124 @@ function deleteAdminTemplate(id) {
   });
 }
 
+let editingTemplateId = null;
+
+function compressImageFile(file, maxWidth = 1200, maxHeight = 800, quality = 0.85) {
+  return new Promise((resolve) => {
+    if (!file || !file.type || !file.type.startsWith('image/')) {
+      resolve('');
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        let width = img.width;
+        let height = img.height;
+        if (width > maxWidth) {
+          height = Math.round((height * maxWidth) / width);
+          width = maxWidth;
+        }
+        if (height > maxHeight) {
+          width = Math.round((width * maxHeight) / height);
+          height = maxHeight;
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+        resolve(canvas.toDataURL('image/jpeg', quality));
+      };
+      img.onerror = () => resolve(e.target.result);
+      img.src = e.target.result;
+    };
+    reader.onerror = () => resolve('');
+    reader.readAsDataURL(file);
+  });
+}
+
+function renderTemplateModalThumbPreview(thumbSrc) {
+  const previewBox = document.getElementById('tmpl-thumb-preview-box');
+  const removeBtn = document.getElementById('tmpl-thumb-remove-btn');
+  const thumbLabel = document.getElementById('tmpl-thumb-chosen-label');
+  if (!previewBox) return;
+
+  const cleanSrc = thumbSrc ? String(thumbSrc).trim() : '';
+
+  if (cleanSrc.length > 0) {
+    if (removeBtn) removeBtn.style.display = 'inline-block';
+    if (thumbLabel && !thumbLabel.textContent) {
+      thumbLabel.textContent = '✓ Custom thumbnail active';
+    }
+    previewBox.innerHTML = `
+      <img src="${escapeHtml(cleanSrc)}" alt="Thumbnail Preview" style="width: 58px; height: 40px; border-radius: 6px; object-fit: cover; border: 1px solid rgba(255,255,255,0.25); background: #000; flex-shrink: 0;">
+      <div style="flex: 1; min-width: 0;">
+        <div style="font-size: 12px; font-weight: 600; color: #81c995; display: flex; align-items: center; gap: 4px;">
+          <span class="material-icons" style="font-size: 14px;">check_circle</span> Custom Image Uploaded
+        </div>
+        <div style="font-size: 11px; color: var(--text-dim); margin-top: 2px;">This uploaded image will be used as the template's thumbnail in the Showcase.</div>
+      </div>
+      <button type="button" class="btn-ghost" onclick="clearTemplateThumbnail()" style="font-size: 11px; padding: 4px 8px; color: #ff8a80; border-color: rgba(234,67,53,0.35); flex-shrink: 0;" title="Remove uploaded image and use default template thumbnail">✕ Remove</button>
+    `;
+  } else {
+    if (removeBtn) removeBtn.style.display = 'none';
+    if (thumbLabel) thumbLabel.textContent = '';
+    previewBox.innerHTML = `
+      <div style="width: 38px; height: 38px; border-radius: 6px; background: rgba(66, 133, 244, 0.12); border: 1px solid rgba(66, 133, 244, 0.3); display: flex; align-items: center; justify-content: center; color: var(--blue); flex-shrink: 0;">
+        <span class="material-icons" style="font-size: 20px;">visibility</span>
+      </div>
+      <div style="flex: 1; min-width: 0;">
+        <div style="font-size: 12px; font-weight: 500; color: #fff;">Default Template Thumbnail</div>
+        <div style="font-size: 11px; color: var(--text-dim); margin-top: 2px;">Will automatically display the template's default live interactive preview. Choose or upload an image above to override.</div>
+      </div>
+    `;
+  }
+}
+
+function clearTemplateThumbnail() {
+  tempUploadedThumbDataUrl = '';
+  const thumbInput = document.getElementById('tmpl-upload-thumb');
+  const fileInput = document.getElementById('tmpl-upload-thumb-file');
+  const label = document.getElementById('tmpl-thumb-chosen-label');
+  if (thumbInput) thumbInput.value = '';
+  if (fileInput) fileInput.value = '';
+  if (label) label.textContent = '';
+  renderTemplateModalThumbPreview('');
+}
+
+function updateThumbRemoveButtonState() {
+  const thumbInput = document.getElementById('tmpl-upload-thumb');
+  const urlVal = thumbInput ? thumbInput.value.trim() : '';
+  const effective = tempUploadedThumbDataUrl || urlVal;
+  renderTemplateModalThumbPreview(effective);
+}
+
 function openAdminUploadTemplateModal() {
+  editingTemplateId = null;
   const modal = document.getElementById('admin-template-modal');
   const form = document.getElementById('admin-template-upload-form');
+  const titleEl = document.getElementById('admin-template-modal-title');
+  const iconEl = document.getElementById('admin-template-modal-icon');
+  const submitBtn = document.getElementById('tmpl-upload-submit-btn');
+  const fileInfo = document.getElementById('tmpl-file-preview-info');
+  const thumbLabel = document.getElementById('tmpl-thumb-chosen-label');
+  const hiddenId = document.getElementById('tmpl-editing-id');
+
+  if (titleEl) titleEl.textContent = 'Upload New Template';
+  if (iconEl) iconEl.textContent = 'upload_file';
+  if (submitBtn) submitBtn.textContent = 'Save & Publish Template';
+  if (fileInfo) {
+    fileInfo.style.display = 'none';
+    fileInfo.textContent = '';
+  }
+  if (thumbLabel) thumbLabel.textContent = '';
+  if (hiddenId) hiddenId.value = '';
+
   if (form) form.reset();
   tempUploadedHtmlContent = '';
   tempUploadedThumbDataUrl = '';
+  renderTemplateModalThumbPreview('');
   toggleTmplSourceMode('url');
 
   const catSelect = document.getElementById('tmpl-upload-category');
@@ -6435,23 +6724,93 @@ function openAdminUploadTemplateModal() {
   if (codeInput && catSelect) {
     codeInput.value = TemplateStore.generateCode(catSelect.value);
     catSelect.onchange = () => {
-      codeInput.value = TemplateStore.generateCode(catSelect.value);
+      if (!editingTemplateId) {
+        codeInput.value = TemplateStore.generateCode(catSelect.value);
+      }
     };
   }
 
-  const fileInfo = document.getElementById('tmpl-file-preview-info');
-  if (fileInfo) {
-    fileInfo.style.display = 'none';
-    fileInfo.textContent = '';
+  if (modal) modal.style.display = 'flex';
+}
+
+function openAdminEditTemplateModal(id) {
+  const t = TemplateStore.getById(id);
+  if (!t) {
+    showToastNotification('Template not found.');
+    return;
   }
+
+  editingTemplateId = id;
+  const modal = document.getElementById('admin-template-modal');
+  const form = document.getElementById('admin-template-upload-form');
+  const titleEl = document.getElementById('admin-template-modal-title');
+  const iconEl = document.getElementById('admin-template-modal-icon');
+  const submitBtn = document.getElementById('tmpl-upload-submit-btn');
+  const fileInfo = document.getElementById('tmpl-file-preview-info');
   const thumbLabel = document.getElementById('tmpl-thumb-chosen-label');
-  if (thumbLabel) thumbLabel.textContent = '';
+  const hiddenId = document.getElementById('tmpl-editing-id');
+
+  if (form) form.reset();
+
+  if (titleEl) titleEl.textContent = 'Edit Product / Template Information';
+  if (iconEl) iconEl.textContent = 'edit_note';
+  if (submitBtn) submitBtn.textContent = 'Save Changes';
+  if (hiddenId) hiddenId.value = id;
+
+  // Populate form inputs
+  const titleInput = document.getElementById('tmpl-upload-title');
+  const codeInput = document.getElementById('tmpl-upload-code');
+  const catSelect = document.getElementById('tmpl-upload-category');
+  const tagsInput = document.getElementById('tmpl-upload-tags');
+  const descInput = document.getElementById('tmpl-upload-desc');
+  const urlInput = document.getElementById('tmpl-upload-url');
+  const thumbInput = document.getElementById('tmpl-upload-thumb');
+
+  if (titleInput) titleInput.value = t.title || '';
+  if (codeInput) codeInput.value = t.code || '';
+  if (catSelect) catSelect.value = t.category || 'Website Development';
+  if (tagsInput) tagsInput.value = Array.isArray(t.tags) ? t.tags.join(', ') : (t.tags || '');
+  if (descInput) descInput.value = t.description || '';
+
+  tempUploadedHtmlContent = t.htmlContent || '';
+
+  if (t.thumbnail && t.thumbnail.startsWith('data:')) {
+    tempUploadedThumbDataUrl = t.thumbnail;
+    if (thumbInput) thumbInput.value = '';
+    if (thumbLabel) thumbLabel.textContent = '✓ Preserved custom uploaded image';
+  } else if (t.thumbnail && t.thumbnail.trim().length > 0) {
+    tempUploadedThumbDataUrl = '';
+    if (thumbInput) thumbInput.value = t.thumbnail;
+    if (thumbLabel) thumbLabel.textContent = '✓ Custom thumbnail URL active';
+  } else {
+    tempUploadedThumbDataUrl = '';
+    if (thumbInput) thumbInput.value = '';
+    if (thumbLabel) thumbLabel.textContent = '';
+  }
+
+  renderTemplateModalThumbPreview(t.thumbnail || '');
+
+  // Set source format mode
+  const sourceMode = t.sourceType === 'html' ? 'html' : 'url';
+  const radio = document.querySelector(`input[name="tmpl_source_type"][value="${sourceMode}"]`);
+  if (radio) radio.checked = true;
+  toggleTmplSourceMode(sourceMode);
+
+  if (sourceMode === 'url' && urlInput) {
+    urlInput.value = t.liveUrl || '';
+  } else if (sourceMode === 'html' && fileInfo) {
+    fileInfo.style.display = 'block';
+    const charLen = (t.htmlContent || '').length;
+    fileInfo.textContent = `✓ Current HTML bundle loaded (${charLen.toLocaleString()} chars). Select a new file to replace, or keep existing.`;
+  }
+
   if (modal) modal.style.display = 'flex';
 }
 
 function closeAdminUploadTemplateModal() {
   const modal = document.getElementById('admin-template-modal');
   if (modal) modal.style.display = 'none';
+  editingTemplateId = null;
 }
 
 function toggleTmplSourceMode(mode) {
@@ -6489,63 +6848,115 @@ function handleTmplHtmlFileSelect(e) {
   reader.readAsText(file);
 }
 
-function handleTmplImageFileSelect(e) {
+async function handleTmplImageFileSelect(e) {
   const file = e.target.files && e.target.files[0];
   const label = document.getElementById('tmpl-thumb-chosen-label');
+  const thumbInput = document.getElementById('tmpl-upload-thumb');
   if (!file) return;
 
-  const reader = new FileReader();
-  reader.onload = function(evt) {
-    tempUploadedThumbDataUrl = evt.target.result;
+  if (label) label.textContent = `Optimizing ${file.name}...`;
+
+  try {
+    const dataUrl = await compressImageFile(file);
+    tempUploadedThumbDataUrl = dataUrl;
+    if (thumbInput) thumbInput.value = '';
     if (label) label.textContent = `✓ ${file.name}`;
-  };
-  reader.readAsDataURL(file);
+    renderTemplateModalThumbPreview(dataUrl);
+  } catch (err) {
+    console.error('Image compression error, using fallback reader:', err);
+    const reader = new FileReader();
+    reader.onload = function(evt) {
+      tempUploadedThumbDataUrl = evt.target.result;
+      if (thumbInput) thumbInput.value = '';
+      if (label) label.textContent = `✓ ${file.name}`;
+      renderTemplateModalThumbPreview(tempUploadedThumbDataUrl);
+    };
+    reader.readAsDataURL(file);
+  }
 }
 
 function handleAdminTemplateSubmit(e) {
-  e.preventDefault();
+  if (e) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+  const hiddenId = document.getElementById('tmpl-editing-id');
+  const currentEditId = (hiddenId && hiddenId.value && hiddenId.value.trim()) ? hiddenId.value.trim() : (editingTemplateId ? String(editingTemplateId).trim() : null);
+
   const title = (document.getElementById('tmpl-upload-title').value || '').trim();
   const code = (document.getElementById('tmpl-upload-code').value || '').trim();
   const category = document.getElementById('tmpl-upload-category').value;
   const tagsStr = (document.getElementById('tmpl-upload-tags').value || '').trim();
   const desc = (document.getElementById('tmpl-upload-desc').value || '').trim();
-  const sourceMode = document.querySelector('input[name="tmpl_source_type"]:checked').value;
-  const liveUrl = (document.getElementById('tmpl-upload-url').value || '').trim();
+  const sourceModeRadio = document.querySelector('input[name="tmpl_source_type"]:checked');
+  const sourceMode = sourceModeRadio ? sourceModeRadio.value : 'url';
+  let liveUrl = (document.getElementById('tmpl-upload-url').value || '').trim();
   const thumbUrl = (document.getElementById('tmpl-upload-thumb').value || '').trim();
 
+  if (liveUrl && !/^https?:\/\//i.test(liveUrl) && !liveUrl.startsWith('/')) {
+    liveUrl = 'https://' + liveUrl;
+  }
+
   if (!title) {
-    alert('Please enter a template title.');
+    showToastNotification('Please enter a template title.');
     return;
   }
 
-  if (sourceMode === 'url' && !liveUrl) {
-    alert('Please enter a valid live website URL for this template.');
+  const existing = currentEditId ? TemplateStore.getById(currentEditId) : null;
+  const effectiveLiveUrl = liveUrl || (existing ? existing.liveUrl : '');
+  const effectiveHtml = tempUploadedHtmlContent || (existing ? existing.htmlContent : '');
+
+  // 1. If an image is uploaded (from file or URL): let thumbnail be the uploaded image
+  // 2. Otherwise: let thumbnail be empty string '', so the default template's thumbnail is used!
+  const thumbnail = (tempUploadedThumbDataUrl || thumbUrl || '').trim();
+
+  if (sourceMode === 'url' && !effectiveLiveUrl) {
+    showToastNotification('Please enter a live website URL for this template.');
     return;
   }
 
-  if (sourceMode === 'html' && !tempUploadedHtmlContent) {
-    alert('Please select an HTML file to upload for this template.');
+  if (sourceMode === 'html' && !effectiveHtml) {
+    showToastNotification('Please select or provide an HTML file for this template.');
     return;
   }
 
-  const thumbnail = tempUploadedThumbDataUrl || thumbUrl || '';
+  if (currentEditId) {
+    // EDIT EXISTING PRODUCT / TEMPLATE
+    const updated = TemplateStore.updateTemplate(currentEditId, {
+      title,
+      code,
+      category,
+      description: desc,
+      tags: tagsStr,
+      sourceType: sourceMode,
+      liveUrl: sourceMode === 'url' ? effectiveLiveUrl : (existing ? existing.liveUrl : ''),
+      htmlContent: sourceMode === 'html' ? effectiveHtml : (existing ? existing.htmlContent : ''),
+      thumbnail
+    });
 
-  const newRecord = TemplateStore.addTemplate({
-    title,
-    code,
-    category,
-    description: desc,
-    tags: tagsStr,
-    sourceType: sourceMode,
-    liveUrl: sourceMode === 'url' ? liveUrl : '',
-    htmlContent: sourceMode === 'html' ? tempUploadedHtmlContent : '',
-    thumbnail
-  });
+    closeAdminUploadTemplateModal();
+    renderAdminTemplatesTable();
+    renderTemplatesGallery();
+    showToastNotification(`Template "${title}" updated successfully!`);
+  } else {
+    // CREATE NEW TEMPLATE / PRODUCT
+    const newRecord = TemplateStore.addTemplate({
+      title,
+      code,
+      category,
+      description: desc,
+      tags: tagsStr,
+      sourceType: sourceMode,
+      liveUrl: sourceMode === 'url' ? effectiveLiveUrl : '',
+      htmlContent: sourceMode === 'html' ? effectiveHtml : '',
+      thumbnail
+    });
 
-  closeAdminUploadTemplateModal();
-  renderAdminTemplatesTable();
-  renderTemplatesGallery();
-  showToastNotification(`Template "${title}" [${newRecord.code}] published to Showcase!`);
+    closeAdminUploadTemplateModal();
+    renderAdminTemplatesTable();
+    renderTemplatesGallery();
+    showToastNotification(`Template "${title}" [${newRecord.code}] published to Showcase!`);
+  }
 }
 
 /* ════════════════════════════════════════════════════════════════

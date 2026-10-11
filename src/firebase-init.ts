@@ -300,6 +300,19 @@ const FirebaseSync = {
     }
   },
 
+  async updateTemplate(id: string, data: any) {
+    try {
+      const payload = {
+        ...data,
+        updatedAt: new Date().toISOString()
+      };
+      await setDoc(doc(db, "templates", id), payload, { merge: true });
+      console.log("Updated template in Firestore:", id);
+    } catch (err) {
+      handleFirestoreError(err, OperationType.UPDATE, `templates/${id}`);
+    }
+  },
+
   async deleteTemplate(id: string) {
     try {
       await deleteDoc(doc(db, "templates", id));

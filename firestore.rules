@@ -33,14 +33,19 @@ service cloud.firestore {
     // Validation: Showcase Production Template
     function isValidTemplate(data) {
       return (
-        data.title is string && data.title.size() > 0 && data.title.size() <= 150 &&
-        data.category is string && data.category.size() <= 120 &&
+        data.title is string && data.title.size() > 0 && data.title.size() <= 300 &&
+        data.category is string && data.category.size() <= 150 &&
         data.sourceType in ['url', 'html'] &&
-        (!('code' in data) || (data.code is string && data.code.size() <= 40)) &&
-        (!('description' in data) || (data.description is string && data.description.size() <= 1500)) &&
-        (!('liveUrl' in data) || (data.liveUrl is string && data.liveUrl.size() <= 500)) &&
+        (!('code' in data) || (data.code is string && data.code.size() <= 60)) &&
+        (!('description' in data) || (data.description is string && data.description.size() <= 5000)) &&
+        (!('liveUrl' in data) || (data.liveUrl is string && data.liveUrl.size() <= 2000)) &&
         (!('htmlContent' in data) || (data.htmlContent is string)) &&
-        (!('thumbnail' in data) || (data.thumbnail is string && data.thumbnail.size() <= 1000))
+        (!('thumbnail' in data) || (data.thumbnail is string && data.thumbnail.size() <= 1048576)) &&
+        (!('featured' in data) || (data.featured is bool)) &&
+        (!('tags' in data) || (data.tags is list)) &&
+        (!('id' in data) || (data.id is string)) &&
+        (!('createdAt' in data) || (data.createdAt is string)) &&
+        (!('updatedAt' in data) || (data.updatedAt is string))
       );
     }
 
