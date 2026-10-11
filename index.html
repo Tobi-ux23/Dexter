@@ -3126,7 +3126,7 @@ div#templates-view > main > div#templates-grid-container > div > div > span:nth-
           <div class="success-icon-badge">
             <span class="material-icons" style="font-size: 34px;">check_circle</span>
           </div>
-          <h3 style="font-family: 'Google Sans Display', var(--font); font-size: 26px; color: #fff; margin-bottom: 12px;">Project Brief Submitted! 🚀</h3>
+          <h3 style="font-family: 'Google Sans Display', var(--font); font-size: 26px; color: #fff; margin-bottom: 12px;">Project Brief Submitted!</h3>
           <p id="success-summary" style="font-size: 14.5px; color: var(--text-dim); line-height: 1.6; max-width: 480px; margin-bottom: 24px;">
             Thank you! Your project requirements have been successfully dispatched. We will review your blueprint and get back to you within 24 hours.
           </p>
@@ -3305,7 +3305,7 @@ div#templates-view > main > div#templates-grid-container > div > div > span:nth-
         </div>
         <div class="eyebrow">Direct Inquiry</div>
         <h2 class="sec-title" style="margin-bottom: 12px; font-size: clamp(32px, 4vw, 48px);">Got a question?<br>Ask away.</h2>
-        <p class="sec-body" style="font-size: 15px; margin-bottom: 0;">Have a technical question, want to know more about our deliverables, or just curious about our process? Send us a quick note and our engineers will respond directly.</p>
+        <p class="sec-body" style="font-size: 15px; margin-bottom: 0;">Have a technical question, want to know more about our deliverables, or just curious about our process? Send us a quick note and our team will respond directly.</p>
         
         <div class="direct-contact-grid">
           <span style="font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-dim); margin-bottom: -4px;">Prefer instant chat?</span>
@@ -3341,7 +3341,7 @@ div#templates-view > main > div#templates-grid-container > div > div > span:nth-
           </div>
           <h3 style="font-family: 'Google Sans Display', var(--font); font-size: 26px; color: #fff; margin-bottom: 12px;">Question Dispatched! ✉️</h3>
           <p id="ask-success-summary" style="font-size: 14.5px; color: var(--text-dim); line-height: 1.6; max-width: 460px; margin-bottom: 24px;">
-            Thank you! Your question has been delivered to our engineering desk. We'll reply to your email address shortly.
+            Thank you! Your question has been delivered to our desk. We'll reply to your email address shortly.
           </p>
           <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;">
             <button type="button" class="btn-main" onclick="resetAndShowAskForm()" style="font-size: 13.5px; padding: 10px 22px;">Ask Another Question</button>
@@ -5009,13 +5009,8 @@ document.addEventListener('DOMContentLoaded', () => {
       </div><br>`;
     }
 
-    let summaryHtml = `Thank you, <strong>${data.name}</strong>! Your project blueprint for <strong>${data.service}</strong> (${data.project_type} • ${data.timeline} • ${data.budget}) has been received.<br>${templateMention}Our engineering team will review your scope and follow up with you at <strong>${data.email}</strong>${data.whatsapp ? ' and via WhatsApp at <strong>' + data.whatsapp + '</strong>' : ''} within 24 hours.`;
+    let summaryHtml = `Thank you, <strong>${data.name}</strong>! Your project blueprint for <strong>${data.service}</strong> (${data.project_type} • ${data.timeline} • ${data.budget}) has been received.<br>${templateMention}Our team will review your scope and reach out to you at <strong>${data.email}</strong>${data.whatsapp ? ' and via WhatsApp at <strong>' + data.whatsapp + '</strong>' : ''} within 24 hours.`;
 
-    if (isDemoKey) {
-      summaryHtml += `<br><br><span style="display:inline-block; font-size:12.5px; background:rgba(66,133,244,0.12); border:1px solid rgba(66,133,244,0.3); border-radius:10px; padding:10px 14px; text-align:left; color:#d2e3fc;">
-        ✨ <strong>Test Run Successful:</strong> Two-step service configuration, tailored field validation, and data capture are completely operational! To route real emails to your inbox, obtain your free key at <strong>web3forms.com</strong> and paste it into the <code>access_key</code> field in <code>index.html</code>.
-      </span>`;
-    }
 
     if (successSummary) successSummary.innerHTML = summaryHtml;
 
