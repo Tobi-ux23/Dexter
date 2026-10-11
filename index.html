@@ -181,6 +181,7 @@ nav {
   cursor: pointer;
 }
 .nav-links a:hover { color: var(--text); background: rgba(255,255,255,0.06); }
+.nav-links a.active { color: #fff; background: rgba(255,255,255,0.1); font-weight: 500; }
 
 .nav-right { display: flex; align-items: center; gap: 10px; }
 .nav-dl {
@@ -3198,22 +3199,22 @@ div#templates-view > main > div#templates-grid-container > div > div > span:nth-
 
 <!-- ─── NAV ─── -->
 <nav id="main-nav">
-  <a href="#home" onclick="showMainView()" class="nav-brand" id="brand-link" title="DexterTech Digital Agency">
+  <a href="#home" onclick="handleNav('home', event)" class="nav-brand" id="brand-link" title="DexterTech Digital Agency">
     <img src="/dexter-logo.png" alt="DexterTech Logo" class="brand-logo-img" width="30" height="30">
     <span style="font-weight: 600; letter-spacing: -0.02em;">Dexter</span>
   </a>
 
   <ul class="nav-links">
-    <li><a href="#home" onclick="showMainView()">Home</a></li>
-    <li><a href="#services" onclick="showMainView()">Services</a></li>
-    <li><a href="#about" onclick="showMainView()">About us</a></li>
-    <li><a href="#why-us" onclick="showMainView()">Why us ?</a></li>
-    <li><a href="#faq" onclick="showMainView()">FAQs</a></li>
-    <li><a href="#templates" onclick="showTemplatesView(event)">Templates</a></li>
+    <li><a href="#home" onclick="handleNav('home', event)">Home</a></li>
+    <li><a href="#services" onclick="handleNav('services', event)">Services</a></li>
+    <li><a href="#about" onclick="handleNav('about', event)">About us</a></li>
+    <li><a href="#why-us" onclick="handleNav('why-us', event)">Why us ?</a></li>
+    <li><a href="#faq" onclick="handleNav('faq', event)">FAQs</a></li>
+    <li><a href="#templates" onclick="handleNav('templates', event)">Templates</a></li>
   </ul>
 
   <div class="nav-right">
-    <button type="button" class="nav-dl" id="nav-intake-btn" onclick="showIntake(event)">
+    <button type="button" class="nav-dl" id="nav-intake-btn" onclick="handleNav('intake', event)">
       <span class="btn-text-desktop">Start your project</span>
       <span class="btn-text-mobile">Start Project</span>
     </button>
@@ -3345,8 +3346,8 @@ div#templates-view > main > div#templates-grid-container > div > div > span:nth-
     </p>
 
     <div class="hero-btns">
-      <button type="button" class="btn-main" id="hero-start-btn" onclick="showIntake(event)">Start a Project</button>
-      <a href="#services" class="btn-ghost" id="hero-explore-btn">Explore our services →</a>
+      <button type="button" class="btn-main" id="hero-start-btn" onclick="handleNav('intake', event)">Start a Project</button>
+      <a href="#services" class="btn-ghost" id="hero-explore-btn" onclick="handleNav('services', event)">Explore our services →</a>
     </div>
 
     <!-- Scrolling icon chip row -->
@@ -3601,7 +3602,7 @@ div#templates-view > main > div#templates-grid-container > div > div > span:nth-
     <div class="footer-wrap">
       
       <div class="footer-col brand-col">
-        <a href="#home" onclick="showMainView()" class="nav-brand" style="margin-bottom: 30px; display: inline-flex;" title="DexterCreate Digital Agency">
+        <a href="#home" onclick="handleNav('home', event)" class="nav-brand" style="margin-bottom: 30px; display: inline-flex;" title="DexterCreate Digital Agency">
           <img src="/dexter-logo.png" alt="DexterCreate Logo" class="brand-logo-img" style="width: 36px; height: 36px; border-radius: 9px;">
           <span style="display: inline-flex; align-items: baseline; font-size: 20px; font-weight: 600; letter-spacing: -0.01em; line-height: 1;"><span style="font-size: 20px; font-weight: 600; -webkit-font-smoothing: antialiased;">Dexter</span><span style="font-size: 20px; font-weight: 600; color: rgb(35, 35, 255); -webkit-font-smoothing: antialiased; -webkit-text-stroke: 0.35px rgb(35, 35, 255);">Create</span><span style="font-size: 20px; font-weight: 600; -webkit-font-smoothing: antialiased;">.</span></span>
         </a>
@@ -3609,7 +3610,7 @@ div#templates-view > main > div#templates-grid-container > div > div > span:nth-
         <h2 class="footer-h2">Ready to make<br>your digital art?</h2>
         
         <div class="footer-cta-box">
-          <button type="button" onclick="showIntake(event)" class="btn-main" id="footer-intake-btn" style="background:#fff; color:#000; padding:12px 24px;">Start a project ↗</button>
+          <button type="button" onclick="handleNav('intake', event)" class="btn-main" id="footer-intake-btn" style="background:#fff; color:#000; padding:12px 24px;">Start a project ↗</button>
           <div class="footer-subtext">
             <strong>Scope-led proposals</strong><br>
             <span style="color:var(--text-dim);">Built for scale</span>
@@ -3620,21 +3621,21 @@ div#templates-view > main > div#templates-grid-container > div > div > span:nth-
       <div class="footer-col links-col">
         <h4 class="footer-heading">LEARN</h4>
         <ul class="footer-list">
-          <li><a href="#about" onclick="showMainView()">About Us</a></li>
-          <li><a href="#why-us" onclick="showMainView()">Why Dexter</a></li>
-          <li><a href="#services" onclick="showMainView()">Our Process</a></li>
-          <li><a href="#faq" onclick="showMainView()">FAQs</a></li>
+          <li><a href="#about" onclick="handleNav('about', event)">About Us</a></li>
+          <li><a href="#why-us" onclick="handleNav('why-us', event)">Why Dexter</a></li>
+          <li><a href="#services" onclick="handleNav('services', event)">Our Process</a></li>
+          <li><a href="#faq" onclick="handleNav('faq', event)">FAQs</a></li>
         </ul>
       </div>
 
       <div class="footer-col links-col">
         <h4 class="footer-heading">EXPLORE</h4>
         <ul class="footer-list">
-          <li><a href="#home" onclick="showMainView()">Home</a></li>
-          <li><a href="#services" onclick="showMainView()">Website Development</a></li>
-          <li><a href="#services" onclick="showMainView()">Application Making</a></li>
-          <li><a href="#services" onclick="showMainView()">Video Editing</a></li>
-          <li><a href="#services" onclick="showMainView()">Graphics Designing</a></li>
+          <li><a href="#home" onclick="handleNav('home', event)">Home</a></li>
+          <li><a href="#services" onclick="handleNav('services', event)">Website Development</a></li>
+          <li><a href="#services" onclick="handleNav('services', event)">Application Making</a></li>
+          <li><a href="#services" onclick="handleNav('services', event)">Video Editing</a></li>
+          <li><a href="#services" onclick="handleNav('services', event)">Graphics Designing</a></li>
         </ul>
       </div>
 
@@ -3982,7 +3983,7 @@ div#templates-view > main > div#templates-grid-container > div > div > span:nth-
   <!-- Templates View Navigation Bar -->
   <header class="templates-nav-bar">
     <div class="templates-nav-left">
-      <a href="#home" class="brand-logo" onclick="showMainView()" style="text-decoration: none; display: flex; align-items: center; gap: 9px;">
+      <a href="#home" class="brand-logo" onclick="handleNav('home', event)" style="text-decoration: none; display: flex; align-items: center; gap: 9px;">
         <img src="/dexter-logo.png" alt="Dexter Logo" style="width: 28px; height: 28px; border-radius: 7px;">
         <span style="font-weight: 600; letter-spacing: -0.02em; color: #fff;">Dexter</span>
       </a>
@@ -3991,12 +3992,12 @@ div#templates-view > main > div#templates-grid-container > div > div > span:nth-
     </div>
 
     <div class="templates-nav-right">
-      <button type="button" class="btn-ghost templates-nav-back-btn" onclick="showMainView()" style="font-size: 13px; padding: 8px 18px;">
+      <button type="button" class="btn-ghost templates-nav-back-btn" onclick="handleNav('home', event)" style="font-size: 13px; padding: 8px 18px;">
         <span class="material-icons" style="font-size: 15px;">arrow_back</span>
         <span class="templates-back-text-full">Back to Home</span>
         <span class="templates-back-text-short">Back</span>
       </button>
-      <button type="button" class="nav-dl templates-nav-cta-btn" onclick="showIntake(event)" style="font-size: 13px; padding: 8px 20px;">
+      <button type="button" class="nav-dl templates-nav-cta-btn" onclick="handleNav('intake', event)" style="font-size: 13px; padding: 8px 20px;">
         Start Custom Project ↗
       </button>
     </div>
@@ -4935,49 +4936,92 @@ function toggleMobileMenu() {
   }
 }
 
-function handleMobileNav(sectionId, e) {
+function handleNav(target, e) {
   if (e) {
     if (typeof e.preventDefault === 'function') e.preventDefault();
     if (typeof e.stopPropagation === 'function') e.stopPropagation();
   }
   closeMobileMenu();
 
-  if (sectionId === 'templates') {
-    if (typeof showTemplatesView === 'function') {
-      showTemplatesView(e);
-    }
+  if (target === 'templates') {
+    showTemplatesView(e);
     return;
   }
 
+  if (target === 'intake' || target === 'start-project') {
+    showIntake(e);
+    return;
+  }
+
+  const intakeView = document.getElementById('intake-view');
+  const askView = document.getElementById('ask-question-view');
+  const adminView = document.getElementById('admin-view');
+  const templatesView = document.getElementById('templates-view');
   const mainView = document.getElementById('main-view');
-  const isMainHidden = !mainView || mainView.style.display === 'none' || getComputedStyle(mainView).display === 'none';
-  if (isMainHidden) {
-    showMainView(sectionId);
-    return;
-  }
 
-  setTimeout(() => {
-    if (sectionId === 'home' || sectionId === 'top') {
+  const isOtherActive = (intakeView && (intakeView.classList.contains('active') || (intakeView.style.display && intakeView.style.display !== 'none'))) ||
+                        (askView && (askView.classList.contains('active') || (askView.style.display && askView.style.display !== 'none'))) ||
+                        (adminView && (adminView.classList.contains('active') || (adminView.style.display && adminView.style.display !== 'none'))) ||
+                        (templatesView && templatesView.style.display && templatesView.style.display !== 'none');
+
+  const isMainVisible = mainView && mainView.style.display !== 'none' && !isOtherActive;
+
+  if (isMainVisible) {
+    // Already on the main view: smooth scroll directly without flashing or view reset
+    if (target === 'home' || target === 'top' || !target) {
       window.scrollTo({ top: 0, behavior: 'smooth' });
       document.documentElement.scrollTo({ top: 0, behavior: 'smooth' });
       document.body.scrollTo({ top: 0, behavior: 'smooth' });
-      const homeEl = document.getElementById('home');
-      if (homeEl) {
-        homeEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
       try { history.pushState(null, null, '#home'); } catch (_) {}
+      updateActiveNavLink('home');
       return;
     }
 
-    const targetEl = document.getElementById(sectionId);
+    const targetEl = document.getElementById(target);
     if (targetEl) {
       targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      try { history.pushState(null, null, '#' + sectionId); } catch (_) {}
+      try { history.pushState(null, null, '#' + target); } catch (_) {}
+      updateActiveNavLink(target);
     } else {
-      window.location.hash = '#' + sectionId;
+      window.location.hash = '#' + target;
     }
-  }, 60);
+    return;
+  }
+
+  // Not on main view: switch back to main view and smoothly scroll to the target section
+  showMainView(target);
 }
+
+function handleMobileNav(sectionId, e) {
+  handleNav(sectionId, e);
+}
+
+function updateActiveNavLink(sectionId) {
+  const links = document.querySelectorAll('.nav-links a');
+  links.forEach(link => {
+    const href = link.getAttribute('href');
+    if (href === '#' + sectionId) {
+      link.classList.add('active');
+    } else {
+      link.classList.remove('active');
+    }
+  });
+}
+
+// Active section scroll indicator for top navigation
+window.addEventListener('scroll', () => {
+  const mainView = document.getElementById('main-view');
+  if (!mainView || mainView.style.display === 'none') return;
+  const sections = ['faq', 'why-us', 'about', 'services', 'home'];
+  const scrollPos = window.scrollY + 120;
+  for (const id of sections) {
+    const el = document.getElementById(id);
+    if (el && el.offsetTop <= scrollPos) {
+      updateActiveNavLink(id);
+      break;
+    }
+  }
+}, { passive: true });
 
 // Global escape key listener & resize listener to dismiss mobile drawer
 document.addEventListener('keydown', function(e) {
@@ -4993,7 +5037,10 @@ window.addEventListener('resize', function() {
 
 /* ─── SPA VIEW ANIMATED TOGGLE LOGIC ─── */
 function showIntake(e, preselectedService) {
-  if (e) e.preventDefault();
+  if (e && typeof e.preventDefault === 'function') e.preventDefault();
+  if (typeof e === 'string' && !preselectedService) {
+    preselectedService = e;
+  }
   closeMobileMenu();
   const mainView = document.getElementById('main-view');
   const nav = document.getElementById('main-nav');
@@ -5134,6 +5181,32 @@ function showMainView(targetSection) {
   const adminView = document.getElementById('admin-view');
   const templatesView = document.getElementById('templates-view');
 
+  const isOtherActive = (intakeView && (intakeView.classList.contains('active') || (intakeView.style.display && intakeView.style.display !== 'none'))) ||
+                        (askView && (askView.classList.contains('active') || (askView.style.display && askView.style.display !== 'none'))) ||
+                        (adminView && (adminView.classList.contains('active') || (adminView.style.display && adminView.style.display !== 'none'))) ||
+                        (templatesView && templatesView.style.display && templatesView.style.display !== 'none');
+
+  const performScroll = () => {
+    if (targetSection && targetSection !== 'home' && targetSection !== 'top') {
+      const el = document.getElementById(targetSection);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        try { history.pushState(null, null, '#' + targetSection); } catch (_) {}
+        updateActiveNavLink(targetSection);
+        return;
+      }
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    try { history.pushState(null, null, '#home'); } catch (_) {}
+    updateActiveNavLink('home');
+  };
+
+  // If already on main view with no modal/overlay active, scroll directly
+  if (!isOtherActive && mainView && mainView.style.display !== 'none') {
+    performScroll();
+    return;
+  }
+
   if (intakeView) intakeView.classList.remove('active');
   if (askView) askView.classList.remove('active');
   if (adminView) adminView.classList.remove('active');
@@ -5148,27 +5221,25 @@ function showMainView(targetSection) {
     if (inspectPage) inspectPage.style.display = 'none';
     activeDrawerBlueprintId = null;
     
-    mainView.style.display = 'block';
-    nav.style.display = 'flex';
-    
-    if (targetSection && targetSection !== 'home') {
-      const el = document.getElementById(targetSection);
-      if (el) {
-        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        try { history.pushState(null, null, '#' + targetSection); } catch (_) {}
-      }
-    } else {
-      window.scrollTo({top: 0, behavior: 'instant'});
+    if (mainView) {
+      mainView.style.display = 'block';
+      void mainView.offsetWidth;
+      mainView.style.opacity = '1';
     }
-    void mainView.offsetWidth;
-    
-    mainView.style.opacity = '1';
-    nav.style.opacity = '1';
+    if (nav) {
+      nav.style.display = 'flex';
+      void nav.offsetWidth;
+      nav.style.opacity = '1';
+    }
+
+    setTimeout(() => {
+      performScroll();
+    }, 60);
 
     if (window.location.hash === '#admin23' || window.location.hash === '#admin') {
       history.replaceState(null, null, window.location.pathname);
     }
-  }, 250);
+  }, 200);
 }
 
 function showTemplatesView(e) {
