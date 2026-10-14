@@ -6,6 +6,8 @@ import nodemailer from 'nodemailer';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { createServer as createViteServer } from 'vite';
+// @ts-ignore
+import sendEmailHandler from './api/send-email.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -83,6 +85,14 @@ app.get('/api/email/status', (_req: Request, res: Response) => {
     appName: APP_NAME,
     activeOtps: otpStore.size,
   });
+});
+
+/**
+ * Root Serverless Endpoint for Vercel & Local Dev
+ * POST /api/send-email
+ */
+app.all('/api/send-email', (req: Request, res: Response) => {
+  return sendEmailHandler(req, res);
 });
 
 /**

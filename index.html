@@ -5241,10 +5241,10 @@ async function executeModalSendOtp() {
     if (btnText) btnText.innerHTML = 'Sending... ⏳';
     if (feedback) feedback.style.display = 'none';
 
-    const res = await fetch('/api/otp/send', {
+    const res = await fetch('/api/send-email', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, purpose })
+      body: JSON.stringify({ action: 'send-otp', email, purpose })
     });
 
     const data = await res.json();
@@ -5353,10 +5353,10 @@ async function executeModalVerifyOtp() {
     if (btn) btn.disabled = true;
     if (btnText) btnText.innerHTML = 'Verifying... ⏳';
 
-    const res = await fetch('/api/otp/verify', {
+    const res = await fetch('/api/send-email', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, code })
+      body: JSON.stringify({ action: 'verify-otp', email, code })
     });
 
     const data = await res.json();
@@ -5447,7 +5447,7 @@ async function executeModalDispatchEmail() {
     if (btnText) btnText.innerHTML = 'Dispatching via SMTP... ⏳';
     if (status) status.style.display = 'none';
 
-    const res = await fetch('/api/email/send', {
+    const res = await fetch('/api/send-email', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ to, subject, html })
@@ -5505,10 +5505,10 @@ async function sendIntakeOtp() {
       btn.innerHTML = '<span class="material-icons spin-anim" style="font-size:14px;">autorenew</span> Sending...';
     }
 
-    const res = await fetch('/api/otp/send', {
+    const res = await fetch('/api/send-email', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, purpose: 'Project Brief Submission' })
+      body: JSON.stringify({ action: 'send-otp', email, purpose: 'Project Brief Submission' })
     });
 
     const data = await res.json();
@@ -5596,10 +5596,10 @@ async function verifyIntakeOtp() {
   try {
     if (btn) btn.disabled = true;
 
-    const res = await fetch('/api/otp/verify', {
+    const res = await fetch('/api/send-email', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, code })
+      body: JSON.stringify({ action: 'verify-otp', email, code })
     });
 
     const data = await res.json();
@@ -6295,14 +6295,15 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         try {
-          // Automated direct email dispatch via Nodemailer and Gmail SMTP
-          const response = await fetch('/api/intake/submit', {
+          // Automated direct email dispatch via Nodemailer and Gmail SMTP serverless endpoint
+          const response = await fetch('/api/send-email', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
               'Accept': 'application/json'
             },
             body: JSON.stringify({
+              action: 'intake',
               name: data.name,
               email: data.email,
               whatsapp: data.whatsapp || '',
@@ -6603,7 +6604,7 @@ document.addEventListener('DOMContentLoaded', () => {
         askBtnText.innerHTML = `<span class="material-icons spin-anim" style="font-size:16px;">autorenew</span> Sending...`;
 
         try {
-          const response = await fetch('/api/email/send', {
+          const response = await fetch('/api/send-email', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
