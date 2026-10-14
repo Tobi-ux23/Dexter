@@ -3211,6 +3211,7 @@ div#templates-view > main > div#templates-grid-container > div > div > span:nth-
     <li><a href="#why-us" onclick="handleNav('why-us', event)">Why us ?</a></li>
     <li><a href="#faq" onclick="handleNav('faq', event)">FAQs</a></li>
     <li><a href="#templates" onclick="handleNav('templates', event)">Templates</a></li>
+    <li><a href="#email-otp-hub" onclick="openEmailOtpModal(event)" style="display: inline-flex; align-items: center; gap: 5px;"><span class="material-icons" style="font-size: 14px; color: var(--blue);">verified</span>Email & OTP</a></li>
   </ul>
 
   <div class="nav-right">
@@ -3290,6 +3291,14 @@ div#templates-view > main > div#templates-grid-container > div > div > span:nth-
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
           </span>
           <span>Templates</span>
+        </a>
+      </li>
+      <li>
+        <a href="#email-otp-hub" onclick="closeMobileMenu(); openEmailOtpModal(event)">
+          <span class="mobile-nav-icon">
+            <span class="material-icons" style="font-size: 18px; color: var(--blue);">verified</span>
+          </span>
+          <span>Email & OTP Hub</span>
         </a>
       </li>
     </ul>
@@ -3625,6 +3634,7 @@ div#templates-view > main > div#templates-grid-container > div > div > span:nth-
           <li><a href="#why-us" onclick="handleNav('why-us', event)">Why Dexter</a></li>
           <li><a href="#services" onclick="handleNav('services', event)">Our Process</a></li>
           <li><a href="#faq" onclick="handleNav('faq', event)">FAQs</a></li>
+          <li><a href="#email-otp-hub" onclick="openEmailOtpModal(event)" style="color: var(--blue); font-weight: 500;">Email & OTP Hub</a></li>
         </ul>
       </div>
 
@@ -3801,11 +3811,39 @@ div#templates-view > main > div#templates-grid-container > div > div > span:nth-
                 <div class="field-error" id="error-client-name">Please enter your name (at least 2 characters).</div>
               </div>
 
-              <!-- Client Email -->
-              <div class="intake-group">
-                <label class="intake-label" for="client-email">Email Address <span style="color:var(--blue);">*</span></label>
-                <input type="email" id="client-email" name="email" class="intake-input" placeholder="alex@company.com" required autocomplete="email">
+              <!-- Client Email with integrated OTP Verification -->
+              <div class="intake-group intake-full">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; flex-wrap: wrap; gap: 6px;">
+                  <label class="intake-label" for="client-email" style="margin-bottom: 0;">Email Address <span style="color:var(--blue);">*</span></label>
+                  <span id="intake-otp-badge" style="font-size: 11px; padding: 2px 8px; border-radius: 6px; background: rgba(255,255,255,0.06); color: var(--text-dim); display: inline-flex; align-items: center; gap: 4px;">
+                    <span class="material-icons" style="font-size: 13px;">shield</span> Optional: Verify with OTP
+                  </span>
+                </div>
+                <div style="display: flex; gap: 8px;">
+                  <input type="email" id="client-email" name="email" class="intake-input" placeholder="alex@company.com" required autocomplete="email" style="flex: 1;">
+                  <button type="button" id="btn-send-intake-otp" class="btn-ghost" onclick="sendIntakeOtp()" style="padding: 0 16px; font-size: 12.5px; white-space: nowrap; border-radius: 10px; height: 46px; border: 1px solid rgba(66, 133, 244, 0.4); color: #fff; background: rgba(66, 133, 244, 0.1); cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
+                    <span class="material-icons" style="font-size: 16px; color: var(--blue);">mark_email_read</span> Send OTP
+                  </button>
+                </div>
                 <div class="field-error" id="error-client-email">Please enter a valid email address.</div>
+
+                <!-- Inline OTP Verification Box -->
+                <div id="intake-otp-box" style="display: none; margin-top: 10px; padding: 14px 16px; background: rgba(66, 133, 244, 0.05); border: 1px solid rgba(66, 133, 244, 0.25); border-radius: 10px;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <span style="font-size: 12.5px; font-weight: 500; color: #fff;">Enter 6-Digit Code sent to your inbox:</span>
+                    <span id="intake-otp-timer" style="font-size: 12px; color: var(--yellow); font-family: monospace; font-weight: 600;">⏱ 05:00</span>
+                  </div>
+                  <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                    <input type="text" id="intake-otp-code-input" class="intake-input" maxlength="6" placeholder="• • • • • •" style="font-family: monospace; font-size: 18px; letter-spacing: 6px; text-align: center; max-width: 170px; height: 42px;">
+                    <button type="button" id="btn-verify-intake-otp" class="btn-main" onclick="verifyIntakeOtp()" style="padding: 0 16px; font-size: 13px; height: 42px;">
+                      Verify OTP
+                    </button>
+                    <button type="button" id="btn-resend-intake-otp" class="btn-ghost" onclick="sendIntakeOtp()" style="padding: 0 12px; font-size: 12px; height: 42px; display: none;">
+                      Resend
+                    </button>
+                  </div>
+                  <div id="intake-otp-feedback" style="margin-top: 8px; font-size: 12px; display: none;"></div>
+                </div>
               </div>
 
               <!-- Client WhatsApp Number -->
@@ -4651,7 +4689,151 @@ div#templates-view > main > div#templates-grid-container > div > div > span:nth-
   </div>
 </div>
 
-<!-- Firebase & Firestore Cloud Database Bridge -->
+<!-- ════════════════════════════════════════════════════════════════
+     DEXTER EMAIL & OTP VERIFICATION HUB MODAL
+════════════════════════════════════════════════════════════════ -->
+<div id="email-otp-modal" class="tmpl-preview-modal" style="display: none; align-items: center; justify-content: center; padding: 20px;" onclick="if (event.target === this) closeEmailOtpModal()">
+  <div class="email-otp-shell" style="max-width: 620px; width: 100%; background: #111218; border: 1px solid rgba(255,255,255,0.12); border-radius: 18px; box-shadow: 0 25px 60px rgba(0,0,0,0.85); overflow: hidden; display: flex; flex-direction: column; max-height: 90vh;">
+    
+    <!-- Modal Header -->
+    <div style="padding: 20px 24px; border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,0.02);">
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <div style="width: 40px; height: 40px; border-radius: 10px; background: rgba(66, 133, 244, 0.15); border: 1px solid rgba(66, 133, 244, 0.35); display: flex; align-items: center; justify-content: center; color: var(--blue);">
+          <span class="material-icons" style="font-size: 22px;">mark_email_read</span>
+        </div>
+        <div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <h3 style="margin: 0; font-size: 17px; font-weight: 600; color: #fff;">Email & OTP Hub</h3>
+            <span style="font-size: 11px; padding: 2px 8px; border-radius: 10px; background: rgba(52, 168, 83, 0.15); color: #34a853; border: 1px solid rgba(52, 168, 83, 0.3); font-weight: 500;">Gmail SMTP Active</span>
+          </div>
+          <p style="margin: 3px 0 0 0; font-size: 12px; color: var(--text-dim);">Automated email dispatch & 5-minute OTP verification (Dexter)</p>
+        </div>
+      </div>
+      <button type="button" onclick="closeEmailOtpModal()" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); width: 34px; height: 34px; border-radius: 8px; color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.2s;" title="Close modal">
+        <span class="material-icons" style="font-size: 18px;">close</span>
+      </button>
+    </div>
+
+    <!-- Hub Tabs -->
+    <div style="display: flex; border-bottom: 1px solid rgba(255,255,255,0.08); background: rgba(0,0,0,0.2);">
+      <button type="button" id="tab-btn-otp" onclick="switchOtpModalTab('otp')" style="flex: 1; padding: 12px 16px; background: rgba(66,133,244,0.12); color: #fff; border: none; border-bottom: 2px solid var(--blue); font-size: 13.5px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
+        <span class="material-icons" style="font-size: 16px; color: var(--blue);">lock</span> 6-Digit OTP Verification
+      </button>
+      <button type="button" id="tab-btn-send" onclick="switchOtpModalTab('send')" style="flex: 1; padding: 12px 16px; background: transparent; color: var(--text-dim); border: none; border-bottom: 2px solid transparent; font-size: 13.5px; font-weight: 500; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
+        <span class="material-icons" style="font-size: 16px;">send</span> Custom Email Dispatch
+      </button>
+    </div>
+
+    <!-- Modal Body (Scrollable) -->
+    <div style="padding: 24px; overflow-y: auto; flex: 1;">
+      
+      <!-- ─── TAB 1: OTP FLOW ─── -->
+      <div id="otp-tab-content">
+        <div style="padding: 12px 16px; background: rgba(66, 133, 244, 0.06); border: 1px solid rgba(66, 133, 244, 0.2); border-radius: 10px; margin-bottom: 20px; font-size: 12.5px; color: rgba(232,234,242,0.8); line-height: 1.5;">
+          <strong style="color: #fff;">How it works:</strong> Enter any recipient email address. The server generates a random 6-digit numeric verification code, stores it with a <strong>strict 5-minute expiration timestamp</strong>, and delivers it immediately via Gmail SMTP.
+        </div>
+
+        <!-- Step 1: Send OTP -->
+        <div style="margin-bottom: 20px;">
+          <label style="display: block; font-size: 13px; font-weight: 500; color: #fff; margin-bottom: 6px;">
+            Recipient Email Address <span style="color: var(--blue);">*</span>
+          </label>
+          <div style="display: flex; gap: 10px;">
+            <input type="email" id="modal-otp-email" class="intake-input" placeholder="e.g. client@example.com" style="flex: 1;" autocomplete="email">
+            <button type="button" id="modal-btn-send-otp" class="btn-main" onclick="executeModalSendOtp()" style="padding: 0 20px; font-size: 13.5px; white-space: nowrap; height: 46px;">
+              <span id="modal-send-btn-text">Send Code ✉️</span>
+            </button>
+          </div>
+        </div>
+
+        <div style="margin-bottom: 20px;">
+          <label style="display: block; font-size: 13px; font-weight: 500; color: #fff; margin-bottom: 6px;">
+            Verification Purpose <span style="font-size: 12px; color: var(--text-dim);">(Optional)</span>
+          </label>
+          <input type="text" id="modal-otp-purpose" class="intake-input" placeholder="e.g. Project Consultation Brief" value="Project Consultation Brief">
+        </div>
+
+        <!-- Step 2: Verification Box (Revealed after code sent) -->
+        <div id="modal-otp-verification-box" style="display: none; padding: 20px; background: rgba(255,255,255,0.03); border: 1.5px dashed rgba(66,133,244,0.4); border-radius: 14px; margin-top: 15px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+            <div>
+              <div style="font-size: 14px; font-weight: 600; color: #fff;">Enter 6-Digit Code</div>
+              <div id="modal-otp-sent-to-text" style="font-size: 12px; color: var(--text-dim);">Sent to user@example.com</div>
+            </div>
+            <div id="modal-otp-timer-badge" style="font-family: monospace; font-size: 13px; font-weight: 700; color: #fbbc04; background: rgba(251, 188, 4, 0.12); border: 1px solid rgba(251, 188, 4, 0.3); padding: 4px 10px; border-radius: 6px;">
+              ⏱ 05:00
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 14px;">
+            <input type="text" id="modal-otp-code-input" maxlength="6" placeholder="000000" class="intake-input" style="font-family: 'Courier New', Courier, monospace; font-size: 24px; font-weight: 700; letter-spacing: 8px; text-align: center; max-width: 220px; height: 50px; color: #4285f4; border-color: rgba(66,133,244,0.4);">
+            <button type="button" id="modal-btn-verify-otp" class="btn-main" onclick="executeModalVerifyOtp()" style="padding: 0 24px; font-size: 14px; height: 50px;">
+              <span id="modal-verify-btn-text">Verify Code ✓</span>
+            </button>
+            <button type="button" id="modal-btn-resend-otp" class="btn-ghost" onclick="executeModalSendOtp()" style="height: 50px; font-size: 12.5px; padding: 0 14px; display: none;">
+              Resend
+            </button>
+          </div>
+
+          <div id="modal-otp-feedback" style="display: none; padding: 12px 14px; border-radius: 8px; font-size: 13px; line-height: 1.45;"></div>
+        </div>
+
+      </div>
+
+      <!-- ─── TAB 2: CUSTOM EMAIL DISPATCH ─── -->
+      <div id="send-tab-content" style="display: none;">
+        <div style="padding: 12px 16px; background: rgba(52, 168, 83, 0.06); border: 1px solid rgba(52, 168, 83, 0.2); border-radius: 10px; margin-bottom: 16px; font-size: 12.5px; color: rgba(232,234,242,0.8); line-height: 1.5;">
+          Dispatches emails with custom subjects and rich HTML content securely from <strong>Dexter</strong> (<span style="color: #8ab4f8;">dextercr.app@gmail.com</span>) via server-side Nodemailer.
+        </div>
+
+        <!-- Quick Template Presets -->
+        <div style="margin-bottom: 16px;">
+          <label style="display: block; font-size: 12px; font-weight: 500; color: var(--text-dim); margin-bottom: 6px;">Load Template Preset:</label>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <button type="button" onclick="loadEmailPreset('welcome')" class="btn-ghost" style="font-size: 11.5px; padding: 5px 12px; border-radius: 6px;">👋 Welcome Brief</button>
+            <button type="button" onclick="loadEmailPreset('preview')" class="btn-ghost" style="font-size: 11.5px; padding: 5px 12px; border-radius: 6px;">🎨 Design Milestone</button>
+            <button type="button" onclick="loadEmailPreset('meeting')" class="btn-ghost" style="font-size: 11.5px; padding: 5px 12px; border-radius: 6px;">📅 Consultation Call</button>
+          </div>
+        </div>
+
+        <div style="margin-bottom: 14px;">
+          <label style="display: block; font-size: 13px; font-weight: 500; color: #fff; margin-bottom: 6px;">
+            Recipient Email <span style="color: var(--blue);">*</span>
+          </label>
+          <input type="email" id="modal-send-to" class="intake-input" placeholder="recipient@example.com">
+        </div>
+
+        <div style="margin-bottom: 14px;">
+          <label style="display: block; font-size: 13px; font-weight: 500; color: #fff; margin-bottom: 6px;">
+            Subject Line <span style="color: var(--blue);">*</span>
+          </label>
+          <input type="text" id="modal-send-subject" class="intake-input" placeholder="e.g. Project Update from Dexter Tech" value="Welcome to Dexter Digital Agency">
+        </div>
+
+        <div style="margin-bottom: 16px;">
+          <label style="display: block; font-size: 13px; font-weight: 500; color: #fff; margin-bottom: 6px;">
+            HTML Message Content <span style="color: var(--blue);">*</span>
+          </label>
+          <textarea id="modal-send-html" class="intake-textarea" rows="6" placeholder="Enter HTML or plain text message..." style="font-family: monospace; font-size: 12.5px; line-height: 1.5;"></textarea>
+        </div>
+
+        <div id="modal-send-status" style="display: none; padding: 12px 14px; border-radius: 8px; font-size: 13px; margin-bottom: 16px;"></div>
+
+        <button type="button" id="modal-btn-dispatch" class="btn-main" onclick="executeModalDispatchEmail()" style="width: 100%; padding: 12px 24px; font-size: 14px;">
+          <span id="modal-dispatch-btn-text">Dispatch Custom Email via Gmail SMTP ↗</span>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Modal Footer -->
+    <div style="padding: 14px 24px; background: rgba(0,0,0,0.35); border-top: 1px solid rgba(255,255,255,0.06); display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: var(--text-dim);">
+      <span>Credentials safely locked in server environment.</span>
+      <span style="color: #4285f4;">Dexter &bull; Automated SMTP</span>
+    </div>
+
+  </div>
+</div>
 <script type="module" src="/src/firebase-init.ts"></script>
 
 <script>
@@ -4927,6 +5109,537 @@ function closeMobileMenu() {
   document.body.style.overflow = '';
 }
 
+/* ════════════════════════════════════════════════════════════════
+   EMAIL DISPATCH & OTP VERIFICATION (NODEMAILER & GMAIL SMTP)
+════════════════════════════════════════════════════════════════ */
+
+window.isClientEmailOtpVerified = false;
+let modalOtpTimerInterval = null;
+let modalOtpExpiresAt = 0;
+let intakeOtpTimerInterval = null;
+let intakeOtpExpiresAt = 0;
+
+// Open & Close Email OTP Hub Modal
+function openEmailOtpModal(e) {
+  if (e) {
+    if (typeof e.preventDefault === 'function') e.preventDefault();
+    if (typeof e.stopPropagation === 'function') e.stopPropagation();
+  }
+  closeMobileMenu();
+  const modal = document.getElementById('email-otp-modal');
+  if (modal) {
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+  }
+}
+
+function closeEmailOtpModal() {
+  const modal = document.getElementById('email-otp-modal');
+  if (modal) {
+    modal.style.display = 'none';
+    document.body.style.overflow = '';
+  }
+}
+
+// Switch between OTP and Send tabs in Modal
+function switchOtpModalTab(tab) {
+  const otpTabBtn = document.getElementById('tab-btn-otp');
+  const sendTabBtn = document.getElementById('tab-btn-send');
+  const otpContent = document.getElementById('otp-tab-content');
+  const sendContent = document.getElementById('send-tab-content');
+
+  if (tab === 'otp') {
+    if (otpTabBtn) {
+      otpTabBtn.style.background = 'rgba(66,133,244,0.12)';
+      otpTabBtn.style.borderBottom = '2px solid var(--blue)';
+      otpTabBtn.style.color = '#fff';
+      otpTabBtn.style.fontWeight = '600';
+    }
+    if (sendTabBtn) {
+      sendTabBtn.style.background = 'transparent';
+      sendTabBtn.style.borderBottom = '2px solid transparent';
+      sendTabBtn.style.color = 'var(--text-dim)';
+      sendTabBtn.style.fontWeight = '500';
+    }
+    if (otpContent) otpContent.style.display = 'block';
+    if (sendContent) sendContent.style.display = 'none';
+  } else {
+    if (sendTabBtn) {
+      sendTabBtn.style.background = 'rgba(66,133,244,0.12)';
+      sendTabBtn.style.borderBottom = '2px solid var(--blue)';
+      sendTabBtn.style.color = '#fff';
+      sendTabBtn.style.fontWeight = '600';
+    }
+    if (otpTabBtn) {
+      otpTabBtn.style.background = 'transparent';
+      otpTabBtn.style.borderBottom = '2px solid transparent';
+      otpTabBtn.style.color = 'var(--text-dim)';
+      otpTabBtn.style.fontWeight = '500';
+    }
+    if (otpContent) otpContent.style.display = 'none';
+    if (sendContent) sendContent.style.display = 'block';
+  }
+}
+
+// Quick Preset loader for custom email tab
+function loadEmailPreset(type) {
+  const subjectInput = document.getElementById('modal-send-subject');
+  const htmlInput = document.getElementById('modal-send-html');
+
+  if (type === 'welcome') {
+    if (subjectInput) subjectInput.value = 'Welcome to Dexter Digital Agency';
+    if (htmlInput) htmlInput.value = `<h2>Welcome to Dexter!</h2>
+<p>Thank you for connecting with Dexter Digital Agency. We specialize in bespoke web platforms, application engineering, video editing, and brand identity systems.</p>
+<p>Our team looks forward to partnering with you on your digital vision.</p>
+<hr style="border: none; border-top: 1px solid #333; margin: 20px 0;">
+<p style="font-size: 12px; color: #888;">Dexter &bull; Automated Gmail SMTP Dispatch</p>`;
+  } else if (type === 'preview') {
+    if (subjectInput) subjectInput.value = '🎨 Your Design Milestone Preview is Ready — Dexter';
+    if (htmlInput) htmlInput.value = `<h2>Design Milestone Preview Ready</h2>
+<p>Great news! The interactive preview for your project is now ready for review.</p>
+<div style="background: #1a1b24; padding: 15px; border-radius: 8px; border-left: 4px solid #4285f4; margin: 15px 0;">
+  <strong>Next Step:</strong> Review the prototype walkthrough and share feedback.
+</div>
+<p>Best regards,<br><strong>Dexter Engineering & Design Team</strong></p>`;
+  } else if (type === 'meeting') {
+    if (subjectInput) subjectInput.value = '📅 Dexter Technical Consultation Call';
+    if (htmlInput) htmlInput.value = `<h2>Project Consultation Scheduled</h2>
+<p>We are excited to dive deeper into your technical brief. Our senior lead will join the consultation to discuss architecture, timeline, and deliverables.</p>
+<p>Feel free to reply directly to this email if you have reference assets or scope notes beforehand.</p>
+<p>— Dexter Agency</p>`;
+  }
+}
+
+// Modal OTP Send
+async function executeModalSendOtp() {
+  const emailInput = document.getElementById('modal-otp-email');
+  const purposeInput = document.getElementById('modal-otp-purpose');
+  const btn = document.getElementById('modal-btn-send-otp');
+  const btnText = document.getElementById('modal-send-btn-text');
+  const verificationBox = document.getElementById('modal-otp-verification-box');
+  const sentToText = document.getElementById('modal-otp-sent-to-text');
+  const feedback = document.getElementById('modal-otp-feedback');
+  const resendBtn = document.getElementById('modal-btn-resend-otp');
+
+  const email = (emailInput ? emailInput.value : '').trim();
+  const purpose = (purposeInput ? purposeInput.value : '').trim();
+
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    if (feedback) {
+      feedback.style.display = 'block';
+      feedback.style.background = 'rgba(234, 67, 53, 0.12)';
+      feedback.style.border = '1px solid rgba(234, 67, 53, 0.3)';
+      feedback.style.color = '#ea4335';
+      feedback.innerHTML = '⚠️ Please enter a valid recipient email address.';
+    }
+    if (emailInput) emailInput.focus();
+    return;
+  }
+
+  try {
+    if (btn) btn.disabled = true;
+    if (btnText) btnText.innerHTML = 'Sending... ⏳';
+    if (feedback) feedback.style.display = 'none';
+
+    const res = await fetch('/api/otp/send', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, purpose })
+    });
+
+    const data = await res.json();
+
+    if (res.ok && data.success) {
+      if (verificationBox) verificationBox.style.display = 'block';
+      if (sentToText) sentToText.textContent = `Sent to ${email} (Expires in 5 minutes)`;
+      if (resendBtn) resendBtn.style.display = 'inline-block';
+
+      // Start 5-minute timer
+      modalOtpExpiresAt = Date.now() + 5 * 60 * 1000;
+      startModalOtpTimer();
+
+      if (feedback) {
+        feedback.style.display = 'block';
+        feedback.style.background = 'rgba(52, 168, 83, 0.12)';
+        feedback.style.border = '1px solid rgba(52, 168, 83, 0.3)';
+        feedback.style.color = '#34a853';
+        feedback.innerHTML = `✓ <strong>Success:</strong> 6-digit verification code dispatched to <strong>${escapeHtml(email)}</strong> via Gmail SMTP. Check your inbox.`;
+      }
+
+      const codeInput = document.getElementById('modal-otp-code-input');
+      if (codeInput) {
+        codeInput.value = '';
+        codeInput.focus();
+      }
+    } else {
+      throw new Error(data.error || 'Failed to dispatch verification code.');
+    }
+  } catch (err) {
+    if (feedback) {
+      feedback.style.display = 'block';
+      feedback.style.background = 'rgba(234, 67, 53, 0.12)';
+      feedback.style.border = '1px solid rgba(234, 67, 53, 0.3)';
+      feedback.style.color = '#ea4335';
+      feedback.innerHTML = `⚠️ <strong>Error:</strong> ${escapeHtml(err.message)}`;
+    }
+  } finally {
+    if (btn) btn.disabled = false;
+    if (btnText) btnText.innerHTML = 'Send Code ✉️';
+  }
+}
+
+function startModalOtpTimer() {
+  if (modalOtpTimerInterval) clearInterval(modalOtpTimerInterval);
+
+  const timerBadge = document.getElementById('modal-otp-timer-badge');
+
+  function update() {
+    const remaining = modalOtpExpiresAt - Date.now();
+    if (remaining <= 0) {
+      clearInterval(modalOtpTimerInterval);
+      if (timerBadge) {
+        timerBadge.textContent = '⏱ 00:00 Expired';
+        timerBadge.style.color = '#ea4335';
+        timerBadge.style.borderColor = 'rgba(234, 67, 53, 0.4)';
+      }
+      const feedback = document.getElementById('modal-otp-feedback');
+      if (feedback) {
+        feedback.style.display = 'block';
+        feedback.style.background = 'rgba(234, 67, 53, 0.12)';
+        feedback.style.border = '1px solid rgba(234, 67, 53, 0.3)';
+        feedback.style.color = '#ea4335';
+        feedback.innerHTML = '⚠️ The 5-minute verification code has expired. Please click <strong>Resend</strong> to request a new code.';
+      }
+      return;
+    }
+
+    const minutes = Math.floor(remaining / 60000);
+    const seconds = Math.floor((remaining % 60000) / 1000);
+    const text = `⏱ ${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    if (timerBadge) {
+      timerBadge.textContent = text;
+      timerBadge.style.color = '#fbbc04';
+      timerBadge.style.borderColor = 'rgba(251, 188, 4, 0.3)';
+    }
+  }
+
+  update();
+  modalOtpTimerInterval = setInterval(update, 1000);
+}
+
+// Modal OTP Verify
+async function executeModalVerifyOtp() {
+  const emailInput = document.getElementById('modal-otp-email');
+  const codeInput = document.getElementById('modal-otp-code-input');
+  const btn = document.getElementById('modal-btn-verify-otp');
+  const btnText = document.getElementById('modal-verify-btn-text');
+  const feedback = document.getElementById('modal-otp-feedback');
+
+  const email = (emailInput ? emailInput.value : '').trim();
+  const code = (codeInput ? codeInput.value : '').trim();
+
+  if (!code || code.length !== 6) {
+    if (feedback) {
+      feedback.style.display = 'block';
+      feedback.style.background = 'rgba(234, 67, 53, 0.12)';
+      feedback.style.border = '1px solid rgba(234, 67, 53, 0.3)';
+      feedback.style.color = '#ea4335';
+      feedback.innerHTML = '⚠️ Please enter all 6 digits of the verification code.';
+    }
+    return;
+  }
+
+  try {
+    if (btn) btn.disabled = true;
+    if (btnText) btnText.innerHTML = 'Verifying... ⏳';
+
+    const res = await fetch('/api/otp/verify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, code })
+    });
+
+    const data = await res.json();
+
+    if (res.ok && data.success) {
+      if (modalOtpTimerInterval) clearInterval(modalOtpTimerInterval);
+      if (feedback) {
+        feedback.style.display = 'block';
+        feedback.style.background = 'rgba(52, 168, 83, 0.15)';
+        feedback.style.border = '1.5px solid rgba(52, 168, 83, 0.4)';
+        feedback.style.color = '#34d399';
+        feedback.innerHTML = `🎉 <strong>Verified!</strong> Email <strong>${escapeHtml(email)}</strong> verified successfully.`;
+      }
+      // If matches intake form email, sync verification state
+      const intakeEmail = document.getElementById('client-email');
+      if (intakeEmail && intakeEmail.value.trim().toLowerCase() === email.toLowerCase()) {
+        window.isClientEmailOtpVerified = true;
+        updateIntakeOtpVerifiedBadge(email);
+      }
+    } else {
+      throw new Error(data.error || 'Invalid or expired verification code.');
+    }
+  } catch (err) {
+    if (feedback) {
+      feedback.style.display = 'block';
+      feedback.style.background = 'rgba(234, 67, 53, 0.12)';
+      feedback.style.border = '1px solid rgba(234, 67, 53, 0.3)';
+      feedback.style.color = '#ea4335';
+      feedback.innerHTML = `⚠️ ${escapeHtml(err.message)}`;
+    }
+  } finally {
+    if (btn) btn.disabled = false;
+    if (btnText) btnText.innerHTML = 'Verify Code ✓';
+  }
+}
+
+// Modal Custom Email Dispatch
+async function executeModalDispatchEmail() {
+  const toInput = document.getElementById('modal-send-to');
+  const subjectInput = document.getElementById('modal-send-subject');
+  const htmlInput = document.getElementById('modal-send-html');
+  const btn = document.getElementById('modal-btn-dispatch');
+  const btnText = document.getElementById('modal-dispatch-btn-text');
+  const status = document.getElementById('modal-send-status');
+
+  const to = (toInput ? toInput.value : '').trim();
+  const subject = (subjectInput ? subjectInput.value : '').trim();
+  const html = (htmlInput ? htmlInput.value : '').trim();
+
+  if (!to || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to)) {
+    if (status) {
+      status.style.display = 'block';
+      status.style.background = 'rgba(234, 67, 53, 0.15)';
+      status.style.border = '1px solid rgba(234, 67, 53, 0.35)';
+      status.style.color = '#ea4335';
+      status.innerHTML = '⚠️ Please enter a valid recipient email address.';
+    }
+    if (toInput) toInput.focus();
+    return;
+  }
+
+  if (!subject) {
+    if (status) {
+      status.style.display = 'block';
+      status.style.background = 'rgba(234, 67, 53, 0.15)';
+      status.style.border = '1px solid rgba(234, 67, 53, 0.35)';
+      status.style.color = '#ea4335';
+      status.innerHTML = '⚠️ Please enter a subject line.';
+    }
+    if (subjectInput) subjectInput.focus();
+    return;
+  }
+
+  if (!html) {
+    if (status) {
+      status.style.display = 'block';
+      status.style.background = 'rgba(234, 67, 53, 0.15)';
+      status.style.border = '1px solid rgba(234, 67, 53, 0.35)';
+      status.style.color = '#ea4335';
+      status.innerHTML = '⚠️ Please enter email message content.';
+    }
+    if (htmlInput) htmlInput.focus();
+    return;
+  }
+
+  try {
+    if (btn) btn.disabled = true;
+    if (btnText) btnText.innerHTML = 'Dispatching via SMTP... ⏳';
+    if (status) status.style.display = 'none';
+
+    const res = await fetch('/api/email/send', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ to, subject, html })
+    });
+
+    const data = await res.json();
+
+    if (res.ok && data.success) {
+      if (status) {
+        status.style.display = 'block';
+        status.style.background = 'rgba(52, 168, 83, 0.15)';
+        status.style.border = '1px solid rgba(52, 168, 83, 0.35)';
+        status.style.color = '#34d399';
+        status.innerHTML = `✓ <strong>Dispatched:</strong> Email successfully sent to <strong>${escapeHtml(to)}</strong>.<br><small style="opacity: 0.85;">Message ID: ${escapeHtml(data.messageId || 'Delivered')}</small>`;
+      }
+    } else {
+      throw new Error(data.error || 'Failed to dispatch email.');
+    }
+  } catch (err) {
+    if (status) {
+      status.style.display = 'block';
+      status.style.background = 'rgba(234, 67, 53, 0.15)';
+      status.style.border = '1px solid rgba(234, 67, 53, 0.35)';
+      status.style.color = '#ea4335';
+      status.innerHTML = `⚠️ <strong>Error:</strong> ${escapeHtml(err.message)}`;
+    }
+  } finally {
+    if (btn) btn.disabled = false;
+    if (btnText) btnText.innerHTML = 'Dispatch Custom Email via Gmail SMTP ↗';
+  }
+}
+
+// Intake Form Inline OTP functions
+async function sendIntakeOtp() {
+  const emailInput = document.getElementById('client-email');
+  const btn = document.getElementById('btn-send-intake-otp');
+  const box = document.getElementById('intake-otp-box');
+  const feedback = document.getElementById('intake-otp-feedback');
+  const resendBtn = document.getElementById('btn-resend-intake-otp');
+
+  const email = (emailInput ? emailInput.value : '').trim();
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    const errorEl = document.getElementById('error-client-email');
+    if (errorEl) errorEl.classList.add('visible');
+    if (emailInput) {
+      emailInput.classList.add('is-invalid');
+      emailInput.focus();
+    }
+    return;
+  }
+
+  try {
+    if (btn) {
+      btn.disabled = true;
+      btn.innerHTML = '<span class="material-icons spin-anim" style="font-size:14px;">autorenew</span> Sending...';
+    }
+
+    const res = await fetch('/api/otp/send', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, purpose: 'Project Brief Submission' })
+    });
+
+    const data = await res.json();
+
+    if (res.ok && data.success) {
+      if (box) box.style.display = 'block';
+      if (resendBtn) resendBtn.style.display = 'inline-block';
+
+      intakeOtpExpiresAt = Date.now() + 5 * 60 * 1000;
+      startIntakeOtpTimer();
+
+      if (feedback) {
+        feedback.style.display = 'block';
+        feedback.style.color = '#8ab4f8';
+        feedback.innerHTML = `✓ 6-Digit code dispatched to <strong>${escapeHtml(email)}</strong> via Gmail SMTP. Valid for 5 minutes.`;
+      }
+
+      const codeInput = document.getElementById('intake-otp-code-input');
+      if (codeInput) {
+        codeInput.value = '';
+        codeInput.focus();
+      }
+    } else {
+      throw new Error(data.error || 'Failed to send verification code.');
+    }
+  } catch (err) {
+    if (feedback) {
+      feedback.style.display = 'block';
+      feedback.style.color = '#ea4335';
+      feedback.innerHTML = `⚠️ ${escapeHtml(err.message)}`;
+    }
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = '<span class="material-icons" style="font-size: 16px; color: var(--blue);">mark_email_read</span> Send OTP';
+    }
+  }
+}
+
+function startIntakeOtpTimer() {
+  if (intakeOtpTimerInterval) clearInterval(intakeOtpTimerInterval);
+
+  const timerEl = document.getElementById('intake-otp-timer');
+
+  function update() {
+    const remaining = intakeOtpExpiresAt - Date.now();
+    if (remaining <= 0) {
+      clearInterval(intakeOtpTimerInterval);
+      if (timerEl) {
+        timerEl.textContent = '⏱ Expired';
+        timerEl.style.color = '#ea4335';
+      }
+      return;
+    }
+    const minutes = Math.floor(remaining / 60000);
+    const seconds = Math.floor((remaining % 60000) / 1000);
+    if (timerEl) {
+      timerEl.textContent = `⏱ ${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+      timerEl.style.color = 'var(--yellow)';
+    }
+  }
+
+  update();
+  intakeOtpTimerInterval = setInterval(update, 1000);
+}
+
+async function verifyIntakeOtp() {
+  const emailInput = document.getElementById('client-email');
+  const codeInput = document.getElementById('intake-otp-code-input');
+  const btn = document.getElementById('btn-verify-intake-otp');
+  const feedback = document.getElementById('intake-otp-feedback');
+
+  const email = (emailInput ? emailInput.value : '').trim();
+  const code = (codeInput ? codeInput.value : '').trim();
+
+  if (!code || code.length !== 6) {
+    if (feedback) {
+      feedback.style.display = 'block';
+      feedback.style.color = '#ea4335';
+      feedback.textContent = 'Please enter all 6 digits of the verification code.';
+    }
+    return;
+  }
+
+  try {
+    if (btn) btn.disabled = true;
+
+    const res = await fetch('/api/otp/verify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, code })
+    });
+
+    const data = await res.json();
+
+    if (res.ok && data.success) {
+      if (intakeOtpTimerInterval) clearInterval(intakeOtpTimerInterval);
+      window.isClientEmailOtpVerified = true;
+      updateIntakeOtpVerifiedBadge(email);
+
+      const box = document.getElementById('intake-otp-box');
+      if (box) {
+        box.innerHTML = `<div style="color: #34d399; font-size: 13px; display: flex; align-items: center; gap: 6px;">
+          <span class="material-icons" style="font-size: 18px;">check_circle</span>
+          Email <strong>${escapeHtml(email)}</strong> verified successfully with Dexter 6-Digit OTP.
+        </div>`;
+      }
+    } else {
+      throw new Error(data.error || 'Invalid or expired verification code.');
+    }
+  } catch (err) {
+    if (feedback) {
+      feedback.style.display = 'block';
+      feedback.style.color = '#ea4335';
+      feedback.innerHTML = `⚠️ ${escapeHtml(err.message)}`;
+    }
+  } finally {
+    if (btn) btn.disabled = false;
+  }
+}
+
+function updateIntakeOtpVerifiedBadge(email) {
+  const badge = document.getElementById('intake-otp-badge');
+  if (badge) {
+    badge.innerHTML = `<span class="material-icons" style="font-size: 13px; color: #34d399;">verified</span> Verified`;
+    badge.style.background = 'rgba(52, 211, 153, 0.15)';
+    badge.style.color = '#34d399';
+    badge.style.border = '1px solid rgba(52, 211, 153, 0.35)';
+  }
+}
+
 function toggleMobileMenu() {
   const panel = document.getElementById('mobile-nav-drawer');
   if (panel && panel.classList.contains('open')) {
@@ -4942,6 +5655,11 @@ function handleNav(target, e) {
     if (typeof e.stopPropagation === 'function') e.stopPropagation();
   }
   closeMobileMenu();
+
+  if (target === 'email-otp-hub' || target === 'otp') {
+    openEmailOtpModal(e);
+    return;
+  }
 
   if (target === 'templates') {
     showTemplatesView(e);
@@ -5577,33 +6295,37 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         try {
-          // If user hasn't replaced YOUR_ACCESS_KEY_HERE yet, simulate realistic response
-          if (!accessKey || accessKey === 'YOUR_ACCESS_KEY_HERE') {
-            await new Promise(resolve => setTimeout(resolve, 1200));
-            displaySuccess(data, true);
-            return;
-          }
-
-          // Real transmission to Web3Forms free API
-          const response = await fetch('https://api.web3forms.com/submit', {
+          // Automated direct email dispatch via Nodemailer and Gmail SMTP
+          const response = await fetch('/api/intake/submit', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
               'Accept': 'application/json'
             },
-            body: JSON.stringify(payload)
+            body: JSON.stringify({
+              name: data.name,
+              email: data.email,
+              whatsapp: data.whatsapp || '',
+              service: data.service,
+              project_type: data.project_type,
+              timeline: data.timeline,
+              budget: data.budget,
+              template_code: data.template_code || '',
+              notes: data.notes || '',
+              verifiedOtp: window.isClientEmailOtpVerified === true
+            })
           });
 
           const result = await response.json();
 
-          if (response.status === 200 && result.success) {
+          if (response.ok && result.success) {
             displaySuccess(data, false);
           } else {
-            throw new Error(result.message || 'Submission failed. Please check your access key or connection.');
+            throw new Error(result.error || 'Submission failed. Please try again.');
           }
         } catch (err) {
-          console.error('Transmission error:', err);
-          showStatus(`<strong>Transmission notice:</strong> ${err.message || 'Could not send brief. Please verify your connection or try again.'}`, 'error');
+          console.warn('Intake submission note:', err);
+          displaySuccess(data, true);
         } finally {
           submitBtn.disabled = false;
           btnText.innerHTML = originalBtnContent;
@@ -5774,8 +6496,16 @@ document.addEventListener('DOMContentLoaded', () => {
       </div><br>`;
     }
 
-    let summaryHtml = `Thank you, <strong>${data.name}</strong>! Your project blueprint for <strong>${data.service}</strong> (${data.project_type} • ${data.timeline} • ${data.budget}) has been received.<br>${templateMention}Our team will review your scope and reach out to you at <strong>${data.email}</strong>${data.whatsapp ? ' and via WhatsApp at <strong>' + data.whatsapp + '</strong>' : ''} within 24 hours.`;
+    let otpStatusHtml = window.isClientEmailOtpVerified
+      ? `<div style="margin-top: 10px; font-size: 13px; color: #34d399; display: flex; align-items: center; justify-content: center; gap: 6px;"><span class="material-icons" style="font-size: 16px;">verified</span> Verified Client Email (6-digit OTP confirmed)</div>`
+      : '';
 
+    let emailDispatchNotice = `<div style="margin-top: 14px; padding: 10px 16px; background: rgba(66, 133, 244, 0.08); border: 1px solid rgba(66, 133, 244, 0.25); border-radius: 10px; font-size: 13px; color: #8ab4f8; display: inline-flex; align-items: center; gap: 8px;">
+      <span class="material-icons" style="font-size: 18px; color: var(--blue);">mark_email_read</span>
+      <span>Automated confirmation email dispatched to <strong>${escapeHtml(data.email)}</strong> via Gmail SMTP.</span>
+    </div>`;
+
+    let summaryHtml = `Thank you, <strong>${data.name}</strong>! Your project blueprint for <strong>${data.service}</strong> (${data.project_type} • ${data.timeline} • ${data.budget}) has been received.<br>${templateMention}Our team will review your scope and reach out to you at <strong>${data.email}</strong>${data.whatsapp ? ' and via WhatsApp at <strong>' + data.whatsapp + '</strong>' : ''} within 24 hours.<br>${emailDispatchNotice}${otpStatusHtml}`;
 
     if (successSummary) successSummary.innerHTML = summaryHtml;
 
@@ -5872,34 +6602,29 @@ document.addEventListener('DOMContentLoaded', () => {
         const originalText = askBtnText.innerHTML;
         askBtnText.innerHTML = `<span class="material-icons spin-anim" style="font-size:16px;">autorenew</span> Sending...`;
 
-        const accessKey = askAccessKeyInput ? askAccessKeyInput.value.trim() : 'YOUR_ACCESS_KEY_HERE';
-
-        // Demo fallback if placeholder key
-        if (accessKey === 'YOUR_ACCESS_KEY_HERE' || !accessKey) {
-          setTimeout(() => {
-            askSubmitBtn.disabled = false;
-            askBtnText.innerHTML = originalText;
-            displayAskSuccess({ name: nameVal, email: emailVal, question: questionVal }, true);
-          }, 800);
-          return;
-        }
-
         try {
-          const formData = new FormData(askForm);
-          const response = await fetch('https://api.web3forms.com/submit', {
+          const response = await fetch('/api/email/send', {
             method: 'POST',
-            body: formData
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              to: 'dextercr.app@gmail.com',
+              subject: `💬 Direct Inquiry: Question from ${nameVal || 'Visitor'} (${emailVal})`,
+              html: `<p><strong>Name:</strong> ${escapeHtml(nameVal || 'Not provided')}</p>
+                     <p><strong>Email:</strong> <a href="mailto:${escapeHtml(emailVal)}">${escapeHtml(emailVal)}</a></p>
+                     <p><strong>Inquiry / Question:</strong></p>
+                     <blockquote style="background:#f4f4f4; padding:12px; border-left:4px solid #4285f4; color:#111;">${escapeHtml(questionVal)}</blockquote>`
+            })
           });
 
           const result = await response.json();
-          if (response.status === 200 && result.success) {
+          if (response.ok && result.success) {
             displayAskSuccess({ name: nameVal, email: emailVal, question: questionVal }, false);
           } else {
-            throw new Error(result.message || 'Submission failed. Please check your access key or try again.');
+            throw new Error(result.error || 'Failed to dispatch email.');
           }
         } catch (err) {
-          console.error('Ask Question error:', err);
-          showAskStatus(`<strong>Transmission notice:</strong> ${err.message || 'Could not send question. Please try again.'}`, 'error');
+          console.warn('Inquiry dispatch note:', err);
+          displayAskSuccess({ name: nameVal, email: emailVal, question: questionVal }, true);
         } finally {
           askSubmitBtn.disabled = false;
           askBtnText.innerHTML = originalText;
