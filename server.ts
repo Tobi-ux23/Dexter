@@ -23,6 +23,7 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 const EMAIL_USER = process.env.EMAIL_USER || 'dextercr.app@gmail.com';
 const EMAIL_PASS = (process.env.EMAIL_PASS || 'bcth nlmx mkkq vqsc').replace(/\s+/g, '');
 const APP_NAME = process.env.APP_NAME || 'Dexter';
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'bungorajesh23@gmail.com';
 
 // Create Nodemailer transporter using Gmail SMTP
 const transporter = nodemailer.createTransport({
@@ -122,9 +123,16 @@ app.post('/api/email/send', async (req: Request, res: Response) => {
     const mailOptions = {
       from: `"${APP_NAME}" <${EMAIL_USER}>`,
       to: to.trim(),
+      replyTo: req.body.replyTo || ADMIN_EMAIL,
       subject: subject.trim(),
       text: text || undefined,
       html: html || undefined,
+      headers: {
+        'X-Priority': '3',
+        'X-MSMail-Priority': 'Normal',
+        'Importance': 'Normal',
+        'X-Auto-Response-Suppress': 'OOF, AutoReply',
+      },
     };
 
     const info = await transporter.sendMail(mailOptions);
@@ -197,91 +205,94 @@ app.post('/api/otp/send', async (req: Request, res: Response) => {
     // Clean, modern branded email HTML
     const formattedPurpose = purpose ? purpose.charAt(0).toUpperCase() + purpose.slice(1) : 'Account & Project Verification';
 
-    const htmlContent = `
-<!DOCTYPE html>
-<html>
+    const htmlContent = `<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="x-apple-disable-message-reformatting">
   <title>${APP_NAME} Verification Code</title>
 </head>
-<body style="margin: 0; padding: 0; background-color: #0b0c10; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #e8eaf2;">
-  <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #0b0c10; padding: 40px 15px;">
+<body style="margin: 0; padding: 0; background-color: #f4f6f9; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #0f172a;">
+  <!-- Anti-Spam Hidden Preheader -->
+  <div style="display: none; font-size: 1px; color: #ffffff; line-height: 1px; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden; mso-hide: all;">
+    Your one-time verification code is ${otpCode}. Valid for 5 minutes.
+  </div>
+  <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #f4f6f9; padding: 40px 15px;">
     <tr>
       <td align="center">
-        <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 540px; background: #13141b; border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; overflow: hidden; box-shadow: 0 12px 40px rgba(0,0,0,0.6);">
-          
-          <!-- Header -->
+        <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 520px; background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 16px rgba(0,0,0,0.04);">
           <tr>
-            <td style="padding: 32px 32px 20px 32px; border-bottom: 1px solid rgba(255,255,255,0.06); text-align: center;">
-              <div style="display: inline-block; font-size: 24px; font-weight: 700; letter-spacing: -0.5px; color: #ffffff;">
-                <span style="color: #4285f4;">DEXTER</span>
+            <td style="padding: 28px 32px 20px 32px; border-bottom: 1px solid #f1f5f9; text-align: left;">
+              <div style="font-size: 20px; font-weight: 700; color: #0f172a; letter-spacing: -0.5px;">
+                <span style="color: #2563eb;">DEXTER</span>
               </div>
-              <p style="margin: 6px 0 0 0; font-size: 13px; color: rgba(232,234,242,0.5); text-transform: uppercase; letter-spacing: 1.5px;">Digital Agency & Technology</p>
             </td>
           </tr>
-
-          <!-- Content Body -->
           <tr>
-            <td style="padding: 36px 32px 24px 32px; text-align: center;">
-              <h1 style="margin: 0 0 12px 0; font-size: 21px; font-weight: 600; color: #ffffff;">Verification Code</h1>
-              <p style="margin: 0 0 28px 0; font-size: 14.5px; line-height: 1.6; color: rgba(232,234,242,0.75);">
-                Use the one-time code below for your <strong style="color: #fff;">${formattedPurpose}</strong> with ${APP_NAME}.
+            <td style="padding: 32px;">
+              <h1 style="margin: 0 0 12px 0; font-size: 20px; font-weight: 600; color: #0f172a;">Verification Code</h1>
+              <p style="margin: 0 0 24px 0; font-size: 14.5px; line-height: 1.6; color: #475569;">
+                Please use the one-time code below to verify your email for <strong style="color: #0f172a;">${escapeHtml(formattedPurpose)}</strong>:
               </p>
-
-              <!-- OTP Code Display Card -->
-              <div style="background: rgba(255,255,255,0.03); border: 1.5px dashed rgba(66, 133, 244, 0.4); border-radius: 12px; padding: 22px 16px; margin: 0 auto 28px auto; max-width: 340px;">
-                <div style="font-size: 38px; font-weight: 700; letter-spacing: 10px; color: #4285f4; font-family: 'Courier New', Courier, monospace; text-shadow: 0 0 20px rgba(66, 133, 244, 0.3);">
+              <div style="background-color: #f8fafc; border: 1.5px solid #cbd5e1; border-radius: 10px; padding: 20px; margin: 0 auto 24px auto; text-align: center;">
+                <div style="font-size: 36px; font-weight: 700; letter-spacing: 8px; color: #2563eb; font-family: 'Courier New', Courier, monospace;">
                   ${otpCode}
                 </div>
-                <div style="margin-top: 10px; font-size: 12px; color: rgba(232,234,242,0.5); font-weight: 500;">
-                  ⏱ Valid for <span style="color: #fbbc04;">5 minutes</span> only
+                <div style="margin-top: 8px; font-size: 12.5px; color: #64748b; font-weight: 500;">
+                  Valid for 5 minutes
                 </div>
               </div>
-
-              <!-- Security Information -->
-              <p style="margin: 0; font-size: 13px; line-height: 1.5; color: rgba(232,234,242,0.5);">
-                Do not share this code with anyone. If you did not initiate this verification request, you can safely ignore this email.
+              <p style="margin: 0; font-size: 13px; line-height: 1.5; color: #64748b;">
+                Never share this verification code with anyone. If you did not request this verification, you can safely ignore this email.
               </p>
             </td>
           </tr>
-
-          <!-- Footer -->
           <tr>
-            <td style="padding: 24px 32px; background: rgba(0,0,0,0.3); border-top: 1px solid rgba(255,255,255,0.06); text-align: center;">
-              <p style="margin: 0; font-size: 12px; color: rgba(232,234,242,0.4); line-height: 1.5;">
-                Sent securely by ${APP_NAME} Automated Dispatch<br>
-                ${EMAIL_USER} &bull; dextertech.com
+            <td style="padding: 20px 32px; background-color: #f8fafc; border-top: 1px solid #e2e8f0; text-align: center;">
+              <p style="margin: 0 0 4px 0; font-size: 13px; font-weight: 600; color: #475569;">
+                Our Team
+              </p>
+              <p style="margin: 0 0 6px 0; font-size: 12px; line-height: 1.5; color: #94a3b8;">
+                This is an automated verification code sent on behalf of ${APP_NAME}.<br>
+                Questions? Reach out to us at <a href="mailto:dextercr.app@gmail.com" style="color: #2563eb; text-decoration: underline;">dextercr.app@gmail.com</a>.
+              </p>
+              <p style="margin: 0; font-size: 11px; color: #64748b;">
+                WhatsApp: <a href="https://wa.me/919366440834" style="color: #10b981; text-decoration: none;">+91 9366440834</a> &nbsp;•&nbsp; Web: <a href="https://dextercr.vercel.app" style="color: #2563eb; text-decoration: none;">dextercr.vercel.app</a>
               </p>
             </td>
           </tr>
-
         </table>
       </td>
     </tr>
   </table>
 </body>
-</html>
-    `;
+</html>`;
 
-    const textContent = `
-${APP_NAME} Verification Code
+    const textContent = `${APP_NAME} Verification Code
 
 Your 6-digit one-time verification code is: ${otpCode}
 
 This code is valid for 5 minutes.
 If you did not request this verification, please disregard this email.
 
-— ${APP_NAME} Digital Agency
-${EMAIL_USER}
-    `;
+— Our Team
+Reach out to us at dextercr.app@gmail.com
+WhatsApp: +91 9366440834 | Web: dextercr.vercel.app`;
 
     await transporter.sendMail({
       from: `"${APP_NAME}" <${EMAIL_USER}>`,
       to: cleanEmail,
-      subject: `[${APP_NAME}] Your Verification Code is ${otpCode}`,
+      replyTo: 'dextercr.app@gmail.com',
+      subject: `${APP_NAME} Verification Code: ${otpCode}`,
       text: textContent,
       html: htmlContent,
+      headers: {
+        'X-Priority': '3',
+        'X-MSMail-Priority': 'Normal',
+        'Importance': 'Normal',
+        'X-Auto-Response-Suppress': 'OOF, AutoReply',
+      },
     });
 
     console.log(`🔐 [OTP Dispatched] Sent code to: ${cleanEmail} (Valid for 5m)`);
@@ -395,56 +406,142 @@ app.post('/api/intake/submit', async (req: Request, res: Response) => {
     const serviceName = service || 'Custom Digital Solution';
 
     // 1. Client Confirmation Email
-    const clientHtml = `
-<!DOCTYPE html>
-<html>
-<head><meta charset="utf-8"></head>
-<body style="margin: 0; padding: 0; background-color: #0b0c10; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #e8eaf2;">
-  <table role="presentation" width="100%" style="background-color: #0b0c10; padding: 35px 15px;">
+    const clientHtml = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="x-apple-disable-message-reformatting">
+  <title>Your Project Brief [${refCode}] — ${APP_NAME}</title>
+</head>
+<body style="margin: 0; padding: 0; background-color: #f4f6f9; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #0f172a;">
+  <!-- Anti-Spam Hidden Preheader -->
+  <div style="display: none; font-size: 1px; color: #ffffff; line-height: 1px; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden; mso-hide: all;">
+    Thank you for submitting your project brief. We have received your requirements and our team will review and reach out soon.
+  </div>
+
+  <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #f4f6f9; padding: 40px 15px;">
     <tr><td align="center">
-      <table role="presentation" width="100%" style="max-width: 580px; background: #13141b; border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; overflow: hidden;">
+      <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 580px; background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 16px rgba(0,0,0,0.04);">
+        
+        <!-- Brand Header -->
         <tr>
-          <td style="padding: 28px; border-bottom: 1px solid rgba(255,255,255,0.08); text-align: center;">
-            <div style="font-size: 24px; font-weight: 700; color: #4285f4;">DEXTER</div>
-            <p style="margin: 4px 0 0 0; font-size: 13px; color: rgba(232,234,242,0.5); text-transform: uppercase; letter-spacing: 1px;">Project Brief Received</p>
-          </td>
-        </tr>
-        <tr>
-          <td style="padding: 30px;">
-            <h2 style="margin: 0 0 10px 0; font-size: 19px; color: #fff;">Hello ${escapeHtml(name)},</h2>
-            <p style="margin: 0 0 20px 0; font-size: 14.5px; line-height: 1.6; color: rgba(232,234,242,0.75);">
-              Thank you for submitting your project brief to <strong>${APP_NAME}</strong>. Our engineering and design team is reviewing your requirements.
-            </p>
-            <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 20px; margin-bottom: 24px;">
-              <div style="font-size: 12px; color: #4285f4; font-weight: 600; text-transform: uppercase; margin-bottom: 12px;">Reference: ${refCode}</div>
-              <div style="font-size: 14px; margin-bottom: 8px;"><strong>Selected Service:</strong> ${escapeHtml(serviceName)}</div>
-              ${timeline ? `<div style="font-size: 14px; margin-bottom: 8px;"><strong>Estimated Timeline:</strong> ${escapeHtml(timeline)}</div>` : ''}
-              ${budget ? `<div style="font-size: 14px; margin-bottom: 8px;"><strong>Budget Tier:</strong> ${escapeHtml(budget)}</div>` : ''}
-              ${template_code ? `<div style="font-size: 14px; margin-bottom: 8px;"><strong>Template Code:</strong> ${escapeHtml(template_code)}</div>` : ''}
-              ${whatsapp ? `<div style="font-size: 14px; margin-bottom: 8px;"><strong>WhatsApp Contact:</strong> ${escapeHtml(whatsapp)}</div>` : ''}
-              ${notes ? `<div style="font-size: 13.5px; margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.06); color: rgba(232,234,242,0.8);"><strong>Project Scope:</strong><br>${escapeHtml(notes)}</div>` : ''}
+          <td style="padding: 28px 32px 20px 32px; border-bottom: 1px solid #f1f5f9; text-align: left;">
+            <div style="font-size: 20px; font-weight: 700; letter-spacing: -0.5px; color: #0f172a;">
+              <span style="color: #2563eb;">DEXTER</span>
             </div>
-            <p style="margin: 0; font-size: 13.5px; color: rgba(232,234,242,0.6); line-height: 1.5;">
-              We will reach out to you within 24 hours via email or WhatsApp to schedule an exploratory discussion.
+          </td>
+        </tr>
+
+        <!-- Main Content -->
+        <tr>
+          <td style="padding: 32px;">
+            <h2 style="margin: 0 0 12px 0; font-size: 19px; font-weight: 600; color: #0f172a;">
+              Hello ${escapeHtml(name)},
+            </h2>
+            <p style="margin: 0 0 24px 0; font-size: 14.5px; line-height: 1.6; color: #475569;">
+              Thank you for submitting your project brief. We have received your requirements, and our team is already reviewing them.
+            </p>
+
+            <!-- Itemized Scope Breakdown -->
+            <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 20px; margin-bottom: 24px;">
+              <div style="font-size: 11.5px; color: #2563eb; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 14px;">
+                Reference: ${refCode}
+              </div>
+
+              <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse: collapse;">
+                <tr>
+                  <td style="padding: 7px 0; font-size: 13.5px; color: #64748b; width: 145px; vertical-align: top;">Service Discipline:</td>
+                  <td style="padding: 7px 0; font-size: 14px; font-weight: 600; color: #0f172a;">${escapeHtml(serviceName)}</td>
+                </tr>
+                ${req.body.project_type ? `<tr>
+                  <td style="padding: 7px 0; font-size: 13.5px; color: #64748b; vertical-align: top;">Deliverable:</td>
+                  <td style="padding: 7px 0; font-size: 14px; color: #0f172a;">${escapeHtml(req.body.project_type)}</td>
+                </tr>` : ''}
+                <tr>
+                  <td style="padding: 7px 0; font-size: 13.5px; color: #64748b; vertical-align: top;">Estimated Timeline:</td>
+                  <td style="padding: 7px 0; font-size: 14px; font-weight: 500; color: #0f172a;">${escapeHtml(timeline || 'Flexible')}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 7px 0; font-size: 13.5px; color: #64748b; vertical-align: top;">Budget Tier:</td>
+                  <td style="padding: 7px 0; font-size: 14px; font-weight: 500; color: #0f172a;">${escapeHtml(budget || 'Discuss')}</td>
+                </tr>
+                ${template_code ? `<tr>
+                  <td style="padding: 7px 0; font-size: 13.5px; color: #64748b; vertical-align: top;">Template Code:</td>
+                  <td style="padding: 7px 0; font-size: 13.5px; font-family: monospace; color: #0f172a;">${escapeHtml(template_code)}</td>
+                </tr>` : ''}
+                ${whatsapp ? `<tr>
+                  <td style="padding: 7px 0; font-size: 13.5px; color: #64748b; vertical-align: top;">WhatsApp Contact:</td>
+                  <td style="padding: 7px 0; font-size: 14px; color: #0f172a;">${escapeHtml(whatsapp)}</td>
+                </tr>` : ''}
+              </table>
+
+              ${notes ? `
+              <div style="margin-top: 14px; padding-top: 14px; border-top: 1px solid #e2e8f0;">
+                <div style="font-size: 12px; font-weight: 600; color: #64748b; text-transform: uppercase; margin-bottom: 6px;">Scope &amp; Notes:</div>
+                <div style="font-size: 13.5px; line-height: 1.55; color: #334155; white-space: pre-wrap;">${escapeHtml(notes)}</div>
+              </div>` : ''}
+            </div>
+
+            <!-- Informational Next Step -->
+            <div style="padding: 16px 20px; background-color: #eff6ff; border: 1px solid #dbeafe; border-radius: 10px;">
+              <p style="margin: 0; font-size: 14px; line-height: 1.6; color: #1e40af;">
+                <strong>What happens next?</strong><br>
+                We'll review your project brief and reach out to you soon.
+              </p>
+            </div>
+          </td>
+        </tr>
+
+        <!-- Anti-Spam Compliant Footer with 'Our Team' and NO geographical address -->
+        <tr>
+          <td style="padding: 22px 32px; background-color: #f8fafc; border-top: 1px solid #e2e8f0; text-align: center;">
+            <p style="margin: 0 0 6px 0; font-size: 13px; font-weight: 600; color: #475569;">
+              Our Team
+            </p>
+            <p style="margin: 0 0 8px 0; font-size: 12px; line-height: 1.5; color: #94a3b8;">
+              You received this automated confirmation because you submitted a project inquiry on our website.<br>
+              If you have any questions, feel free to reach out to us at <a href="mailto:dextercr.app@gmail.com" style="color: #2563eb; text-decoration: underline;">dextercr.app@gmail.com</a>.
+            </p>
+            <p style="margin: 0; font-size: 12px; color: #64748b;">
+              WhatsApp: <a href="https://wa.me/919366440834" style="color: #10b981; text-decoration: none; font-weight: 500;">+91 9366440834</a> &nbsp;•&nbsp; Web: <a href="https://dextercr.vercel.app" style="color: #2563eb; text-decoration: none;">dextercr.vercel.app</a>
             </p>
           </td>
         </tr>
-        <tr>
-          <td style="padding: 20px; background: rgba(0,0,0,0.25); border-top: 1px solid rgba(255,255,255,0.06); text-align: center; font-size: 12px; color: rgba(232,234,242,0.4);">
-            ${APP_NAME} &bull; ${EMAIL_USER} &bull; Imphal, Manipur, India
-          </td>
-        </tr>
+
       </table>
     </td></tr>
   </table>
 </body>
 </html>`;
 
+    const clientText = `Project Brief Received [${refCode}]
+
+Hello ${name},
+
+Thank you for submitting your project brief. We have received your requirements, and our team is already reviewing them.
+
+Project Scope Breakdown:
+• Reference Code: ${refCode}
+• Service Discipline: ${serviceName}
+${req.body.project_type ? `• Deliverable: ${req.body.project_type}\n` : ''}• Estimated Timeline: ${timeline || 'Flexible'}
+• Budget Tier: ${budget || 'Discuss'}
+${template_code ? `• Template Code: ${template_code}\n` : ''}${whatsapp ? `• WhatsApp Contact: ${whatsapp}\n` : ''}${notes ? `• Scope & Notes: ${notes}\n` : ''}
+What happens next?
+We'll review your project brief and reach out to you soon.
+
+— Our Team
+
+---
+You received this confirmation because you submitted a project inquiry on our website.
+If you have any questions, reach out to us at dextercr.app@gmail.com
+WhatsApp: +91 9366440834 | Web: dextercr.vercel.app`;
+
     // 2. Admin Alert Email to Dexter Team
     const adminHtml = `
 <!DOCTYPE html>
-<html>
-<head><meta charset="utf-8"></head>
+<html lang="en">
+<head><meta charset="utf-8"><title>New Project Brief: [${refCode}]</title></head>
 <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #111; padding: 20px;">
   <h2>🚀 New Project Brief Received [${refCode}]</h2>
   <p><strong>Client Name:</strong> ${escapeHtml(name)}</p>
@@ -459,18 +556,42 @@ app.post('/api/intake/submit', async (req: Request, res: Response) => {
 </body>
 </html>`;
 
+    const adminText = `New Project Brief Alert [${refCode}]
+
+Client Name: ${name}
+Client Email: ${cleanEmail}
+${whatsapp ? `WhatsApp: ${whatsapp}\n` : ''}Service Discipline: ${serviceName}
+${req.body.project_type ? `Deliverable: ${req.body.project_type}\n` : ''}Estimated Timeline: ${timeline || 'Flexible'}
+Budget Tier: ${budget || 'Discuss'}
+${template_code ? `Template Code: ${template_code}\n` : ''}
+Scope & Notes:
+${notes || 'None'}
+
+Delivered to ${ADMIN_EMAIL}`;
+
     // Dispatch emails concurrently
     await Promise.allSettled([
       transporter.sendMail({
         from: `"${APP_NAME}" <${EMAIL_USER}>`,
         to: cleanEmail,
-        subject: `[${refCode}] We received your project brief — ${APP_NAME}`,
+        replyTo: 'dextercr.app@gmail.com',
+        subject: `Project Brief Received: ${serviceName} (Ref: ${refCode})`,
+        text: clientText,
         html: clientHtml,
+        headers: {
+          'X-Priority': '3',
+          'X-MSMail-Priority': 'Normal',
+          'Importance': 'Normal',
+          'X-Auto-Response-Suppress': 'OOF, AutoReply',
+        },
       }),
       transporter.sendMail({
-        from: `"${APP_NAME} Intake" <${EMAIL_USER}>`,
-        to: EMAIL_USER,
-        subject: `[New Brief] ${name} - ${serviceName} (${refCode})`,
+        from: `"${APP_NAME} Alerts" <${EMAIL_USER}>`,
+        to: ADMIN_EMAIL,
+        replyTo: cleanEmail,
+        cc: EMAIL_USER !== ADMIN_EMAIL ? EMAIL_USER : undefined,
+        subject: `[New Project Brief] ${name} — ${serviceName} (${refCode})`,
+        text: adminText,
         html: adminHtml,
       }),
     ]);
