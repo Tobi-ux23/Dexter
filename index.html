@@ -6482,12 +6482,7 @@ document.addEventListener('DOMContentLoaded', () => {
       ? `<div style="margin-top: 10px; font-size: 13px; color: #34d399; display: flex; align-items: center; justify-content: center; gap: 6px;"><span class="material-icons" style="font-size: 16px;">verified</span> Verified Client Email (6-digit OTP confirmed)</div>`
       : '';
 
-    let emailDispatchNotice = `<div style="margin-top: 14px; padding: 10px 16px; background: rgba(66, 133, 244, 0.08); border: 1px solid rgba(66, 133, 244, 0.25); border-radius: 10px; font-size: 13px; color: #8ab4f8; display: inline-flex; align-items: center; gap: 8px;">
-      <span class="material-icons" style="font-size: 18px; color: var(--blue);">mark_email_read</span>
-      <span>Automated confirmation email dispatched to <strong>${escapeHtml(data.email)}</strong> via Gmail SMTP.</span>
-    </div>`;
-
-    let summaryHtml = `Thank you, <strong>${data.name}</strong>! Your project blueprint for <strong>${data.service}</strong> (${data.project_type} • ${data.timeline} • ${data.budget}) has been received.<br>${templateMention}Our team will review your scope and reach out to you at <strong>${data.email}</strong>${data.whatsapp ? ' and via WhatsApp at <strong>' + data.whatsapp + '</strong>' : ''} within 24 hours.<br>${emailDispatchNotice}${otpStatusHtml}`;
+    let summaryHtml = `Thank you, <strong>${data.name}</strong>! Your project blueprint for <strong>${data.service}</strong> (${data.project_type} • ${data.timeline} • ${data.budget}) has been received.<br>${templateMention}Our team will review your scope and reach out to you at <strong>${data.email}</strong>${data.whatsapp ? ' and via WhatsApp at <strong>' + data.whatsapp + '</strong>' : ''} within 24 hours.${otpStatusHtml ? '<br>' + otpStatusHtml : ''}`;
 
     if (successSummary) successSummary.innerHTML = summaryHtml;
 
