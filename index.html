@@ -1843,7 +1843,7 @@ hr.divide {
     border-radius: 8px !important;
   }
 
-  /* Interactive Device Preview Modal on Phone */
+  /* Interactive Desktop Preview Modal on Phone */
   .tmpl-preview-modal {
     padding: 0 !important;
   }
@@ -1854,39 +1854,111 @@ hr.divide {
     border: none !important;
   }
   .tmpl-preview-bar {
-    padding: 10px 12px !important;
-    gap: 8px !important;
-    flex-wrap: nowrap !important;
+    padding: 10px 14px 8px !important;
+    gap: 8px 6px !important;
+    display: flex !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    background: #111318 !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
+  }
+  .tmpl-preview-info {
+    order: 1 !important;
+    flex: 1 1 auto !important;
+    max-width: calc(100% - 155px) !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    min-width: 0 !important;
   }
   .tmpl-preview-info h3 {
-    font-size: 13px !important;
-    max-width: 130px !important;
+    font-size: 13.5px !important;
+    font-weight: 600 !important;
+    color: #fff !important;
     overflow: hidden !important;
     text-overflow: ellipsis !important;
     white-space: nowrap !important;
+    margin: 0 !important;
   }
-  .tmpl-viewport-controls {
-    display: none !important;
+  .tmpl-preview-info .service-chip {
+    font-size: 10px !important;
+    padding: 2px 6px !important;
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
   }
   .tmpl-preview-actions {
-    gap: 6px !important;
+    order: 2 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    flex-shrink: 0 !important;
     margin-left: auto !important;
   }
   #modal-use-template-btn {
-    padding: 6px 10px !important;
-    font-size: 11.5px !important;
+    padding: 7px 12px !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    border-radius: 8px !important;
+    white-space: nowrap !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
   }
   .modal-close-icon {
-    width: 28px !important;
-    height: 28px !important;
+    width: 32px !important;
+    height: 32px !important;
+    border-radius: 8px !important;
+    flex-shrink: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+  .tmpl-preview-center-controls {
+    order: 3 !important;
+    width: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 8px !important;
+    padding-top: 6px !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+    margin-top: 2px !important;
+  }
+  .tmpl-desktop-view-pill {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 5px !important;
+    padding: 3px 8px !important;
+    font-size: 11px !important;
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 6px !important;
+    color: #cbd5e1 !important;
+  }
+  .tmpl-preview-scale-controls {
+    display: inline-flex !important;
+    align-items: center !important;
+    background: rgba(255, 255, 255, 0.06) !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    border-radius: 8px !important;
+    padding: 2px !important;
+    gap: 2px !important;
+  }
+  .tmpl-scale-btn {
+    padding: 4px 10px !important;
+    font-size: 11.5px !important;
+    border-radius: 6px !important;
+    gap: 4px !important;
   }
   .tmpl-frame-viewport-wrap {
     padding: 0 !important;
+    overflow: hidden !important;
+    -webkit-overflow-scrolling: touch !important;
   }
   .tmpl-preview-iframe {
     border-radius: 0 !important;
     border: none !important;
-    width: 100% !important;
   }
 }
 
@@ -2786,24 +2858,25 @@ hr.divide {
   height: 100%;
   overflow: hidden;
   pointer-events: none;
-  background: #090a10;
+  background: #ffffff;
 }
 
 .tmpl-hero-iframe {
   position: absolute;
   top: 0;
   left: 0;
-  width: 1200px;
-  height: 750px;
+  width: 1280px;
+  height: 800px;
   border: none;
   pointer-events: none;
   transform-origin: 0 0;
-  background: #090a10;
+  background: #ffffff;
   transition: filter 0.25s ease;
+  display: block;
 }
 
 .tmpl-card:hover .tmpl-hero-iframe {
-  filter: brightness(1.08);
+  filter: brightness(1.05);
 }
 
 .tmpl-admin-thumb-wrap {
@@ -2813,7 +2886,7 @@ hr.divide {
   overflow: hidden;
   position: relative;
   border: 1px solid rgba(255, 255, 255, 0.12);
-  background: #0c0d12;
+  background: #ffffff;
   pointer-events: none;
   display: flex;
   align-items: center;
@@ -2822,16 +2895,17 @@ hr.divide {
 }
 
 .tmpl-admin-thumb-iframe {
-  width: 1200px;
-  height: 814px;
+  width: 1280px;
+  height: 868px;
   border: none;
   pointer-events: none;
   transform-origin: 0 0;
-  transform: scale(0.0467);
+  transform: scale(0.04375);
   position: absolute;
   top: 0;
   left: 0;
-  background: #090a10;
+  background: #ffffff;
+  display: block;
 }
 
 .tmpl-source-badge {
@@ -3032,39 +3106,57 @@ div#templates-view > main > div#templates-grid-container > div > div > span:nth-
   gap: 12px;
 }
 
-.tmpl-viewport-controls {
+.tmpl-preview-center-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.tmpl-desktop-view-pill {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  padding: 5px 13px;
+  font-size: 12px;
+  color: #e2e8f0;
+}
+
+.tmpl-preview-scale-controls {
   display: flex;
   align-items: center;
   background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 10px;
   padding: 3px;
-  gap: 4px;
+  gap: 3px;
 }
 
-.viewport-btn {
+.tmpl-scale-btn {
   background: transparent;
   border: none;
   color: var(--text-dim);
-  padding: 6px 12px;
+  padding: 5px 11px;
   border-radius: 7px;
-  font-size: 12px;
+  font-size: 11.5px;
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
   transition: all 0.2s ease;
 }
 
-.viewport-btn:hover {
+.tmpl-scale-btn:hover {
   color: #fff;
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.08);
 }
 
-.viewport-btn.active {
-  background: rgba(255, 255, 255, 0.16);
+.tmpl-scale-btn.active {
+  background: rgba(255, 255, 255, 0.18);
   color: #fff;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .tmpl-preview-actions {
@@ -3101,10 +3193,24 @@ div#templates-view > main > div#templates-grid-container > div > div > span:nth-
   background: #090a0d;
   overflow: hidden;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-  padding: 16px;
+  padding: 0;
   position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.tmpl-desktop-stage {
+  width: 1280px;
+  min-width: 1280px;
+  height: 100%;
+  position: relative;
+  background: #fff;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .tmpl-preview-iframe {
@@ -3112,23 +3218,7 @@ div#templates-view > main > div#templates-grid-container > div > div > span:nth-
   height: 100%;
   border: none;
   background: #fff;
-  border-radius: 10px;
-  transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s;
-}
-
-.tmpl-preview-iframe.tablet {
-  width: 768px !important;
-  max-width: 100%;
-  box-shadow: 0 0 40px rgba(0, 0, 0, 0.7);
-  border: 8px solid #20222a;
-}
-
-.tmpl-preview-iframe.mobile {
-  width: 375px !important;
-  max-width: 100%;
-  box-shadow: 0 0 40px rgba(0, 0, 0, 0.7);
-  border: 8px solid #20222a;
-  border-radius: 24px;
+  display: block;
 }
 
 /* Admin Template Modal Overlay */
@@ -4059,20 +4149,23 @@ div#templates-view > main > div#templates-grid-container > div > div > span:nth-
         <span id="modal-template-category" class="service-chip" style="font-size: 11px; padding: 2px 8px;">SaaS</span>
       </div>
 
-      <!-- Responsive Frame Switcher -->
-      <div class="tmpl-viewport-controls">
-        <button type="button" class="viewport-btn active" onclick="setPreviewViewport('desktop', this)" title="Desktop View (100%)">
-          <span class="material-icons" style="font-size: 16px;">desktop_windows</span>
-          <span>Desktop</span>
-        </button>
-        <button type="button" class="viewport-btn" onclick="setPreviewViewport('tablet', this)" title="Tablet View (768px)">
-          <span class="material-icons" style="font-size: 16px;">tablet_mac</span>
-          <span>Tablet</span>
-        </button>
-        <button type="button" class="viewport-btn" onclick="setPreviewViewport('mobile', this)" title="Mobile View (375px)">
-          <span class="material-icons" style="font-size: 16px;">smartphone</span>
-          <span>Mobile</span>
-        </button>
+      <!-- Desktop Only Frame Controls (Center on Desktop / Sub-bar Row on Mobile) -->
+      <div class="tmpl-preview-center-controls">
+        <div class="tmpl-desktop-view-pill" title="Locked to Desktop Dimension (1280px)">
+          <span class="material-icons" style="font-size: 14px; color: var(--accent);">desktop_windows</span>
+          <span style="font-weight: 600; font-size: 11.5px; color: #fff; letter-spacing: 0.2px;">Desktop (1280px)</span>
+        </div>
+
+        <div class="tmpl-preview-scale-controls">
+          <button type="button" class="tmpl-scale-btn active" id="tmpl-scale-fit-btn" onclick="setPreviewScaleMode('fit')" title="Fit desktop view to screen width">
+            <span class="material-icons" style="font-size: 14px;">fit_screen</span>
+            <span>Fit Screen</span>
+          </button>
+          <button type="button" class="tmpl-scale-btn" id="tmpl-scale-full-btn" onclick="setPreviewScaleMode('full')" title="Show 100% full desktop dimensions with scroll">
+            <span class="material-icons" style="font-size: 14px;">open_in_full</span>
+            <span>100% Size</span>
+          </button>
+        </div>
       </div>
 
       <div class="tmpl-preview-actions">
@@ -4081,7 +4174,7 @@ div#templates-view > main > div#templates-grid-container > div > div > span:nth-
           <span>Edit Details</span>
         </button>
         <button type="button" id="modal-use-template-btn" class="admin-btn primary" onclick="useCurrentPreviewTemplate()" style="padding: 7px 14px; font-size: 12px;">
-          <span>Use This Template</span>
+          <span>Use Template</span>
         </button>
         <button type="button" class="modal-close-icon" onclick="closeTemplatePreviewModal()" title="Close preview">
           <span class="material-icons">close</span>
@@ -4089,9 +4182,11 @@ div#templates-view > main > div#templates-grid-container > div > div > span:nth-
       </div>
     </div>
 
-    <!-- Frame Container with Device Scaling -->
+    <!-- Frame Container with Desktop Stage (1280px standard) -->
     <div class="tmpl-frame-viewport-wrap" id="tmpl-frame-wrapper">
-      <iframe id="tmpl-preview-iframe" class="tmpl-preview-iframe" sandbox="allow-scripts allow-same-origin" title="Live Template Preview"></iframe>
+      <div id="tmpl-desktop-stage" class="tmpl-desktop-stage">
+        <iframe id="tmpl-preview-iframe" class="tmpl-preview-iframe" sandbox="allow-scripts allow-same-origin" title="Live Template Preview"></iframe>
+      </div>
     </div>
   </div>
 </div>
@@ -7420,11 +7515,11 @@ function prepareTemplateThumbnailHtml(rawHtml) {
     -ms-overflow-style: none !important;
     user-select: none !important;
     pointer-events: none !important;
-    width: 1200px !important;
-    min-height: 750px !important;
+    width: 1280px !important;
+    min-width: 1280px !important;
+    min-height: 800px !important;
     margin: 0 !important;
     padding-top: 0 !important;
-    background: transparent !important;
   }
   html::-webkit-scrollbar, body::-webkit-scrollbar {
     display: none !important;
@@ -7433,25 +7528,48 @@ function prepareTemplateThumbnailHtml(rawHtml) {
     -webkit-user-select: none !important;
     user-select: none !important;
     pointer-events: none !important;
-    animation: none !important;
-    transition: none !important;
   }
 </style>
 `;
 
-  // Strip script tags and inline event handlers for instant, lightweight, secure rendering
+  const isolationScript = `
+<script>
+(function() {
+  window.alert = function(){};
+  window.confirm = function(){ return false; };
+  window.prompt = function(){ return null; };
+  window.open = function(){ return null; };
+  window.showIntake = function(){ return false; };
+  // Stop audio and video playback in thumbnail card preview
+  document.addEventListener('DOMContentLoaded', function() {
+    try {
+      var media = document.querySelectorAll('video, audio');
+      media.forEach(function(m) { m.pause(); m.muted = true; });
+    } catch(e) {}
+  });
+})();
+<\/script>
+`;
+
+  // Sanitize inline event handlers and window escaping while preserving scripts & stylesheets (Tailwind, fonts, frameworks)
   let processed = rawHtml
-    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
     .replace(/\son\w+\s*=\s*(?:'[^']*'|"[^"]*"|[^\s>]+)/gi, '')
     .replace(/target\s*=\s*["']_top["']/gi, 'target="_self"')
     .replace(/target\s*=\s*["']_parent["']/gi, 'target="_self"');
 
-  if (/<head[^>]*>/i.test(processed)) {
-    return processed.replace(/<head[^>]*>/i, function(m) { return m + '\n<base target="_self">\n' + isolationCss; });
-  } else if (/<html[^>]*>/i.test(processed)) {
-    return processed.replace(/<html[^>]*>/i, function(m) { return m + '\n<head><base target="_self">' + isolationCss + '</head>'; });
+  // Enforce desktop viewport (1280px) so responsive layouts render their full desktop front page
+  if (/<meta[^>]*name=["']viewport["'][^>]*>/i.test(processed)) {
+    processed = processed.replace(/<meta[^>]*name=["']viewport["'][^>]*>/i, '<meta name="viewport" content="width=1280, initial-scale=1.0">');
   }
-  return '<base target="_self">\n' + isolationCss + '\n' + processed;
+
+  const headInject = '\n<meta name="viewport" content="width=1280, initial-scale=1.0">\n<base target="_self">\n' + isolationScript + '\n' + isolationCss;
+
+  if (/<head[^>]*>/i.test(processed)) {
+    return processed.replace(/<head[^>]*>/i, function(m) { return m + headInject; });
+  } else if (/<html[^>]*>/i.test(processed)) {
+    return processed.replace(/<html[^>]*>/i, function(m) { return m + '\n<head>' + headInject + '</head>'; });
+  }
+  return headInject + '\n' + processed;
 }
 
 function fitAllTemplateThumbnails() {
@@ -7460,7 +7578,7 @@ function fitAllTemplateThumbnails() {
     if (!iframe) return;
     const w = wrap.offsetWidth;
     if (w > 0) {
-      iframe.style.transform = `scale(${w / 1200})`;
+      iframe.style.transform = `scale(${w / 1280})`;
     }
   });
 }
@@ -7475,7 +7593,7 @@ function observeTemplateThumbnails() {
           if (iframe) {
             const w = entry.contentRect.width;
             if (w > 0) {
-              iframe.style.transform = `scale(${w / 1200})`;
+              iframe.style.transform = `scale(${w / 1280})`;
             }
           }
         }
@@ -7486,25 +7604,35 @@ function observeTemplateThumbnails() {
     });
   }
   requestAnimationFrame(fitAllTemplateThumbnails);
-  setTimeout(fitAllTemplateThumbnails, 100);
+  setTimeout(fitAllTemplateThumbnails, 80);
+  setTimeout(fitAllTemplateThumbnails, 250);
 }
 
 window.addEventListener('resize', fitAllTemplateThumbnails);
 
 function renderDefaultTemplateThumbnail(thumbWrap, t) {
-  // 1. If template has HTML bundle: render live HTML hero preview
+  // 1. If template has HTML bundle: render front page of the template file in full desktop styling
   if (t.htmlContent && t.htmlContent.trim().length > 0) {
     const frameWrap = document.createElement('div');
     frameWrap.className = 'tmpl-thumb-frame-wrap';
 
     const iframe = document.createElement('iframe');
     iframe.className = 'tmpl-hero-iframe';
-    iframe.setAttribute('sandbox', 'allow-same-origin');
+    iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin');
     iframe.setAttribute('scrolling', 'no');
     iframe.setAttribute('tabindex', '-1');
-    iframe.setAttribute('title', `${t.title} Hero Landing Preview`);
+    iframe.setAttribute('title', `${t.title} Front Page Preview`);
     iframe.srcdoc = prepareTemplateThumbnailHtml(t.htmlContent);
-    iframe.style.transform = 'scale(0.315)';
+
+    const initialW = thumbWrap.offsetWidth || 360;
+    iframe.style.transform = `scale(${initialW / 1280})`;
+
+    iframe.onload = () => {
+      const currentW = frameWrap.offsetWidth || thumbWrap.offsetWidth;
+      if (currentW > 0) {
+        iframe.style.transform = `scale(${currentW / 1280})`;
+      }
+    };
 
     frameWrap.appendChild(iframe);
     thumbWrap.appendChild(frameWrap);
@@ -7520,10 +7648,18 @@ function renderDefaultTemplateThumbnail(thumbWrap, t) {
     iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin');
     iframe.setAttribute('scrolling', 'no');
     iframe.setAttribute('tabindex', '-1');
-    iframe.setAttribute('title', `${t.title} Live Demo Preview`);
+    iframe.setAttribute('title', `${t.title} Live Front Page Preview`);
     iframe.src = t.liveUrl;
-    iframe.style.transform = 'scale(0.315)';
-    iframe.style.pointerEvents = 'none';
+
+    const initialW = thumbWrap.offsetWidth || 360;
+    iframe.style.transform = `scale(${initialW / 1280})`;
+
+    iframe.onload = () => {
+      const currentW = frameWrap.offsetWidth || thumbWrap.offsetWidth;
+      if (currentW > 0) {
+        iframe.style.transform = `scale(${currentW / 1280})`;
+      }
+    };
 
     // Watermark behind iframe in case external site restricts embedding
     const backdrop = document.createElement('div');
@@ -7758,21 +7894,92 @@ function prepareTemplatePreviewHtml(rawHtml) {
 <\/script>
 `;
 
+  // Enforce desktop viewport meta (1280px) so responsive frameworks render their desktop layout
+  if (/<meta[^>]*name=["']viewport["'][^>]*>/i.test(processed)) {
+    processed = processed.replace(/<meta[^>]*name=["']viewport["'][^>]*>/i, '<meta name="viewport" content="width=1280, initial-scale=1.0">');
+  }
+
   // Inject base target and isolation script
   if (/<head[^>]*>/i.test(processed)) {
     processed = processed.replace(/<head[^>]*>/i, function(match) {
-      return match + '\n<base target="_self">\n' + isolationScript;
+      var vp = /<meta[^>]*name=["']viewport["'][^>]*>/i.test(processed) ? '' : '\n<meta name="viewport" content="width=1280, initial-scale=1.0">';
+      return match + vp + '\n<base target="_self">\n' + isolationScript;
     });
   } else if (/<html[^>]*>/i.test(processed)) {
     processed = processed.replace(/<html[^>]*>/i, function(match) {
-      return match + '\n<head><base target="_self">' + isolationScript + '</head>';
+      return match + '\n<head><meta name="viewport" content="width=1280, initial-scale=1.0"><base target="_self">' + isolationScript + '</head>';
     });
   } else {
-    processed = '<base target="_self">\n' + isolationScript + '\n' + processed;
+    processed = '<meta name="viewport" content="width=1280, initial-scale=1.0">\n<base target="_self">\n' + isolationScript + '\n' + processed;
   }
 
   return processed;
 }
+
+let previewScaleMode = 'fit'; // 'fit' (scale to fit mobile screen) or 'full' (100% 1280px scrollable)
+
+function setPreviewScaleMode(mode) {
+  previewScaleMode = mode;
+  const fitBtn = document.getElementById('tmpl-scale-fit-btn');
+  const fullBtn = document.getElementById('tmpl-scale-full-btn');
+  if (fitBtn && fullBtn) {
+    if (mode === 'fit') {
+      fitBtn.classList.add('active');
+      fullBtn.classList.remove('active');
+    } else {
+      fullBtn.classList.add('active');
+      fitBtn.classList.remove('active');
+    }
+  }
+  applyPreviewScale();
+}
+
+function applyPreviewScale() {
+  const wrapper = document.getElementById('tmpl-frame-wrapper');
+  const stage = document.getElementById('tmpl-desktop-stage');
+  const iframe = document.getElementById('tmpl-preview-iframe');
+  if (!wrapper || !stage || !iframe) return;
+
+  const wrapperWidth = wrapper.clientWidth || window.innerWidth;
+  const wrapperHeight = wrapper.clientHeight || Math.max(300, window.innerHeight - 80);
+
+  // Desktop standard dimension is 1280px width
+  const DESKTOP_WIDTH = 1280;
+
+  if (previewScaleMode === 'fit' && wrapperWidth < DESKTOP_WIDTH && wrapperWidth > 0) {
+    const scale = wrapperWidth / DESKTOP_WIDTH;
+    const scaledHeight = Math.round(wrapperHeight / scale);
+
+    stage.style.width = DESKTOP_WIDTH + 'px';
+    stage.style.minWidth = DESKTOP_WIDTH + 'px';
+    stage.style.height = scaledHeight + 'px';
+    stage.style.position = 'absolute';
+    stage.style.top = '0';
+    stage.style.left = '0';
+    stage.style.transformOrigin = 'top left';
+    stage.style.transform = 'scale(' + scale + ')';
+    wrapper.style.overflow = 'hidden';
+  } else {
+    // 100% actual desktop dimension (1280px) with horizontal/vertical scrolling on mobile
+    stage.style.width = DESKTOP_WIDTH + 'px';
+    stage.style.minWidth = DESKTOP_WIDTH + 'px';
+    stage.style.height = '100%';
+    stage.style.position = 'relative';
+    stage.style.top = '';
+    stage.style.left = '';
+    stage.style.transformOrigin = '';
+    stage.style.transform = 'none';
+    wrapper.style.overflow = 'auto';
+  }
+}
+
+// Window resize handler to maintain desktop scaling dynamically
+window.addEventListener('resize', function() {
+  const modal = document.getElementById('template-preview-modal');
+  if (modal && modal.style.display !== 'none') {
+    applyPreviewScale();
+  }
+});
 
 function openTemplatePreview(id) {
   const t = TemplateStore.getById(id);
@@ -7802,18 +8009,6 @@ function openTemplatePreview(id) {
     }
   }
 
-  // Reset viewport to desktop
-  const wrapper = document.getElementById('tmpl-frame-wrapper');
-  if (wrapper) {
-    document.querySelectorAll('.viewport-btn').forEach((b, idx) => {
-      if (idx === 0) b.classList.add('active');
-      else b.classList.remove('active');
-    });
-    if (iframe) {
-      iframe.classList.remove('tablet', 'mobile');
-    }
-  }
-
   const editBtn = document.getElementById('modal-edit-template-btn');
   if (editBtn) {
     const adminView = document.getElementById('admin-view');
@@ -7826,6 +8021,11 @@ function openTemplatePreview(id) {
   if (modal) {
     modal.style.display = 'flex';
   }
+
+  // Ensure desktop view scaling is applied after modal becomes visible
+  requestAnimationFrame(function() {
+    setPreviewScaleMode(previewScaleMode || 'fit');
+  });
 }
 
 function editFromPreviewModal() {
@@ -7850,18 +8050,9 @@ function closeTemplatePreviewModal() {
   currentPreviewTemplateId = null;
 }
 
+// Backward-compatibility shim
 function setPreviewViewport(mode, btnEl) {
-  const iframe = document.getElementById('tmpl-preview-iframe');
-  if (!iframe) return;
-  document.querySelectorAll('.viewport-btn').forEach(b => b.classList.remove('active'));
-  if (btnEl) btnEl.classList.add('active');
-
-  iframe.classList.remove('tablet', 'mobile');
-  if (mode === 'tablet') {
-    iframe.classList.add('tablet');
-  } else if (mode === 'mobile') {
-    iframe.classList.add('mobile');
-  }
+  setPreviewScaleMode(mode === 'mobile' ? 'full' : 'fit');
 }
 
 function useCurrentPreviewTemplate() {
@@ -7960,7 +8151,7 @@ function renderAdminTemplatesTable() {
       ? `<img src="${escapeHtml(t.thumbnail)}" alt="${escapeHtml(t.title)}" style="width: 54px; height: 38px; border-radius: 6px; object-fit: cover; border: 1px solid rgba(255,255,255,0.1);">`
       : (isHtmlWithContent
           ? `<div class="tmpl-admin-thumb-wrap" title="${escapeHtml(t.title)} default live preview">
-               <iframe class="tmpl-admin-thumb-iframe" srcdoc="${escapeHtml(prepareTemplateThumbnailHtml(t.htmlContent))}" sandbox="allow-same-origin" scrolling="no" tabindex="-1"></iframe>
+               <iframe class="tmpl-admin-thumb-iframe" srcdoc="${escapeHtml(prepareTemplateThumbnailHtml(t.htmlContent))}" sandbox="allow-scripts allow-same-origin" scrolling="no" tabindex="-1"></iframe>
              </div>`
           : (t.liveUrl
               ? `<div class="tmpl-admin-thumb-wrap" title="${escapeHtml(t.title)} default live preview">
