@@ -7101,8 +7101,12 @@ window.FaqQuestionsStore = FaqQuestionsStore;
 ════════════════════════════════════════════════════════════════ */
 const TEMPLATE_STORAGE_KEY = 'dextertech_templates_v1';
 
-const INITIAL_SEED_TEMPLATES = [];
-const PLACEHOLDER_TEMPLATE_IDS = new Set(['tmpl_apex', 'tmpl_veloce', 'tmpl_kroma', 'tmpl_pulse']);
+const PLACEHOLDER_TEMPLATE_IDS = new Set([
+  'tmpl_apex', 'tmpl_veloce', 'tmpl_kroma', 'tmpl_pulse',
+  'tmpl_mv25wztql13w', // Marlow
+  'tmpl_mv3fi9smdqow', // SKYLARQ & CO
+  'tmpl_mv3gil1zm371'  // CANVAS & CODE
+]);
 
 const DELETED_TEMPLATES_STORAGE_KEY = 'dextertech_deleted_templates_v1';
 
@@ -7337,44 +7341,11 @@ function initFirestoreSyncBridge() {
   window.FirebaseSync.listenTemplates(remoteTemplates => {
     const deletedIds = getDeletedTemplateIds();
     const cleanRemote = (remoteTemplates || [])
-      .filter(t => t && t.id && !PLACEHOLDER_TEMPLATE_IDS.has(t.id) && !deletedIds.has(t.id));
-
-    // Smart merge: retain newer local edits
-    const localList = TemplateStore.getAll();
-    const localMap = new Map();
-    localList.forEach(item => {
-      if (item && item.id) localMap.set(String(item.id).trim(), item);
-    });
-
-    const mergedMap = new Map();
-    cleanRemote.forEach(remoteItem => {
-      const idKey = String(remoteItem.id).trim();
-      const localItem = localMap.get(idKey);
-      if (localItem) {
-        const localTime = localItem.updatedAt ? new Date(localItem.updatedAt).getTime() : 0;
-        const remoteTime = remoteItem.updatedAt ? new Date(remoteItem.updatedAt).getTime() : 0;
-        // If local update is newer than or equal to remote update, keep local changes
-        if (localTime >= remoteTime && localTime > 0) {
-          mergedMap.set(idKey, { ...remoteItem, ...localItem });
-          return;
-        }
-      }
-      mergedMap.set(idKey, remoteItem);
-    });
-
-    // Also keep any local template that remote hasn't ingested yet
-    localList.forEach(localItem => {
-      const idKey = String(localItem.id).trim();
-      if (!mergedMap.has(idKey) && !deletedIds.has(idKey)) {
-        mergedMap.set(idKey, localItem);
-      }
-    });
-
-    const mergedList = Array.from(mergedMap.values())
+      .filter(t => t && t.id && !PLACEHOLDER_TEMPLATE_IDS.has(t.id) && !deletedIds.has(t.id))
       .sort((a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime());
 
     try {
-      localStorage.setItem(TEMPLATE_STORAGE_KEY, JSON.stringify(mergedList));
+      localStorage.setItem(TEMPLATE_STORAGE_KEY, JSON.stringify(cleanRemote));
     } catch (e) {}
 
     if (typeof renderTemplatesGallery === 'function') {

@@ -323,7 +323,10 @@ const FirebaseSync = {
   },
 
   async purgePlaceholderTemplates() {
-    const placeholderIds = ['tmpl_apex', 'tmpl_veloce', 'tmpl_kroma', 'tmpl_pulse'];
+    const placeholderIds = [
+      'tmpl_apex', 'tmpl_veloce', 'tmpl_kroma', 'tmpl_pulse',
+      'tmpl_mv25wztql13w', 'tmpl_mv3fi9smdqow', 'tmpl_mv3gil1zm371'
+    ];
     for (const id of placeholderIds) {
       try {
         await deleteDoc(doc(db, "templates", id));
@@ -332,7 +335,10 @@ const FirebaseSync = {
   },
 
   listenTemplates(callback: (items: any[]) => void) {
-    const placeholderIds = new Set(['tmpl_apex', 'tmpl_veloce', 'tmpl_kroma', 'tmpl_pulse']);
+    const placeholderIds = new Set([
+      'tmpl_apex', 'tmpl_veloce', 'tmpl_kroma', 'tmpl_pulse',
+      'tmpl_mv25wztql13w', 'tmpl_mv3fi9smdqow', 'tmpl_mv3gil1zm371'
+    ]);
     // Proactively clean legacy placeholder templates from the database
     this.purgePlaceholderTemplates().catch(() => {});
     try {
