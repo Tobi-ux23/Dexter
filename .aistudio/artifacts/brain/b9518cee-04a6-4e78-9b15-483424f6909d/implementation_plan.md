@@ -37,7 +37,7 @@ Redesign the client confirmation email sent upon project brief submission to ach
 
 ### Direct Contact & Anti-Spam Footer
 - Quick concierge access:
-  - **WhatsApp**: Direct chat link to `+91 9366440834`
+  - **WhatsApp**: Direct chat link to `+91 9383072492`
   - **Email**: `dextercr.app@gmail.com`
   - **Portfolio / Web**: `dextercr.vercel.app`
 - Anti-spam compliant closing:
