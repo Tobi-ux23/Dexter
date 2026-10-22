@@ -14,7 +14,23 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-const port = parseInt(process.env.PORT || '3000', 10);
+
+// Parse CLI arguments (--port, --host) passed by dev runner
+const args = process.argv.slice(2);
+const portArgIdx = args.indexOf('--port');
+const port = portArgIdx !== -1 && args[portArgIdx + 1]
+  ? parseInt(args[portArgIdx + 1], 10)
+  : parseInt(process.env.PORT || '3000', 10);
+
+const hostArgIdx = args.indexOf('--host');
+const host = hostArgIdx !== -1 && args[hostArgIdx + 1] && !args[hostArgIdx + 1].startsWith('-')
+  ? args[hostArgIdx + 1]
+  : (process.env.HOST || '0.0.0.0');
+
+// Health check endpoint for rapid readiness validation
+app.get('/health', (_req: Request, res: Response) => {
+  res.status(200).json({ status: 'ok', uptime: process.uptime() });
+});
 
 // Parse JSON request bodies
 app.use(express.json({ limit: '10mb' }));
@@ -22,7 +38,7 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Server-side SMTP configuration (never exposed to frontend)
 const EMAIL_USER = process.env.EMAIL_USER || 'dextercr.app@gmail.com';
-const EMAIL_PASS = (process.env.EMAIL_PASS || 'bcth nlmx mkkq vqsc').replace(/\s+/g, '');
+const EMAIL_PASS = (process.env.EMAIL_PASS || '').replace(/\s+/g, '');
 const APP_NAME = process.env.APP_NAME || 'Dexter';
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'bungorajesh23@gmail.com';
 
@@ -727,11 +743,19 @@ async function startServer() {
   const isProduction = process.env.NODE_ENV === 'production';
 
   if (!isProduction) {
-    const vite = await createViteServer({
-      server: { middlewareMode: true },
-      appType: 'spa',
-    });
-    app.use(vite.middlewares);
+    try {
+      const vite = await createViteServer({
+        server: { middlewareMode: true },
+        appType: 'spa',
+      });
+      app.use(vite.middlewares);
+    } catch (viteErr) {
+      console.error('⚠️ [Vite Dev Middleware Warning]:', viteErr);
+      app.use(express.static(path.resolve(__dirname)));
+      app.get('*', (_req: Request, res: Response) => {
+        res.sendFile(path.resolve(__dirname, 'index.html'));
+      });
+    }
   } else {
     app.use(express.static(path.resolve(__dirname, 'dist')));
     app.get('*', (_req: Request, res: Response) => {
@@ -739,8 +763,8 @@ async function startServer() {
     });
   }
 
-  app.listen(port, '0.0.0.0', () => {
-    console.log(`🚀 [Server] Dexter server running at http://0.0.0.0:${port}`);
+  app.listen(port, host, () => {
+    console.log(`🚀 [Server] Dexter server running at http://${host}:${port}`);
   });
 }
 

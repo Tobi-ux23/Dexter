@@ -20,15 +20,15 @@ import {
   User
 } from "firebase/auth";
 
-// User-provided Firebase Configuration
+// Firebase Configuration loaded securely via Vite environment variables
 export const firebaseConfig = {
-  apiKey: "AIzaSyAldTkWbpPDl9OWDeNraYKlu1A9w_WX0ps",
-  authDomain: "dexter-908fe.firebaseapp.com",
-  projectId: "dexter-908fe",
-  storageBucket: "dexter-908fe.firebasestorage.app",
-  messagingSenderId: "770214303009",
-  appId: "1:770214303009:web:d2a1786c2eee5ec23a9a60",
-  measurementId: "G-GG3H3N55N8"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "",
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "dexter-908fe.firebaseapp.com",
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "dexter-908fe",
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "dexter-908fe.firebasestorage.app",
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "770214303009",
+  appId: import.meta.env.VITE_FIREBASE_APP_ID || "1:770214303009:web:d2a1786c2eee5ec23a9a60",
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID || "G-GG3H3N55N8"
 };
 
 // Initialize Firebase App & Services
@@ -408,7 +408,9 @@ const FirebaseSync = {
 
 // Expose to window for the vanilla HTML application
 if (typeof window !== "undefined") {
+  (FirebaseSync as any).firebaseConfig = firebaseConfig;
   (window as any).FirebaseSync = FirebaseSync;
+  (window as any).firebaseConfig = firebaseConfig;
   window.dispatchEvent(new CustomEvent("firebase:ready", { detail: FirebaseSync }));
 }
 

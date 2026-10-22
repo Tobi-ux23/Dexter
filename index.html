@@ -17,6 +17,7 @@
 <link rel="apple-touch-icon" href="/dexter-logo.png">
 <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@300;400;500;600&family=Google+Sans+Display:wght@400;500;600&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <style>
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -558,6 +559,7 @@ nav {
   color: #fff;
   max-width: 860px;
   margin-bottom: 26px;
+  will-change: transform, opacity;
 }
 
 .hero-h1 .g-gradient {
@@ -574,11 +576,13 @@ nav {
   line-height: 1.65;
   margin-bottom: 48px;
   font-weight: 400;
+  will-change: transform, opacity;
 }
 
 .hero-btns {
   display: flex; align-items: center; justify-content: center;
   gap: 12px; flex-wrap: wrap;
+  will-change: transform, opacity;
 }
 .btn-main {
   display: inline-flex; align-items: center; justify-content: center; gap: 7px;
@@ -4919,6 +4923,62 @@ div#templates-view > main > div#templates-grid-container > div > div > span:nth-
 
 <script>
 /* ════════════════════════════════════════════════════════════════
+   HERO GSAP ANIMATION (SEQUENTIAL FADE & SLIDE UP)
+════════════════════════════════════════════════════════════════ */
+(function setupHeroGsapAnimation() {
+  let hasHeroAnimated = false;
+
+  function runHeroAnimation() {
+    if (hasHeroAnimated) return;
+    if (typeof gsap === 'undefined') return;
+
+    const h1 = document.querySelector('.hero-h1');
+    const sub = document.querySelector('.hero-sub');
+    if (!h1 || !sub) return;
+
+    hasHeroAnimated = true;
+
+    // Honor reduced motion accessibility preference
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      gsap.set(['.hero-h1', '.hero-sub', '.hero-btns'], { opacity: 1, y: 0 });
+      return;
+    }
+
+    const tl = gsap.timeline({
+      defaults: {
+        ease: 'power3.out'
+      }
+    });
+
+    // Headline fades and slides up first
+    tl.fromTo('.hero-h1',
+      { opacity: 0, y: 38 },
+      { opacity: 1, y: 0, duration: 0.95, delay: 0.12, clearProps: 'transform' }
+    )
+    // Sub-headline fades and slides up sequentially
+    .fromTo('.hero-sub',
+      { opacity: 0, y: 26 },
+      { opacity: 1, y: 0, duration: 0.85, clearProps: 'transform' },
+      '-=0.52'
+    )
+    // CTA action buttons follow to finish the entry
+    .fromTo('.hero-btns',
+      { opacity: 0, y: 18 },
+      { opacity: 1, y: 0, duration: 0.75, clearProps: 'transform' },
+      '-=0.45'
+    );
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', runHeroAnimation);
+  } else {
+    runHeroAnimation();
+  }
+
+  // Safety trigger on window load if GSAP CDN loaded asynchronously
+  window.addEventListener('load', runHeroAnimation);
+})();
+/* ════════════════════════════════════════════════════════════════
    TWO-STEP INTAKE CONFIGURATION & STATE
 ════════════════════════════════════════════════════════════════ */
 const SERVICE_CONFIGS = {
@@ -6742,8 +6802,9 @@ const DEFAULT_ADMIN_EMAILS = [
 ];
 
 /* ─── CLOUD DATABASE CONFIGURATION ADAPTER (Firestore Connected) ─── */
-const FIREBASE_CONFIG = {
-  apiKey: "AIzaSyAldTkWbpPDl9OWDeNraYKlu1A9w_WX0ps",
+const FIREBASE_CONFIG = (typeof window !== 'undefined' && window.firebaseConfig) ||
+  (typeof window !== 'undefined' && window.FirebaseSync && window.FirebaseSync.firebaseConfig) || {
+  apiKey: "",
   authDomain: "dexter-908fe.firebaseapp.com",
   projectId: "dexter-908fe",
   storageBucket: "dexter-908fe.firebasestorage.app",

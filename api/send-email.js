@@ -4,7 +4,7 @@ import path from 'path';
 
 // Server-side environment variables for Gmail SMTP
 const EMAIL_USER = process.env.EMAIL_USER || 'dextercr.app@gmail.com';
-const EMAIL_PASS = (process.env.EMAIL_PASS || 'bcth nlmx mkkq vqsc').replace(/\s+/g, '');
+const EMAIL_PASS = (process.env.EMAIL_PASS || '').replace(/\s+/g, '');
 const APP_NAME = process.env.APP_NAME || 'Dexter';
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'bungorajesh23@gmail.com';
 
