@@ -6802,15 +6802,14 @@ const DEFAULT_ADMIN_EMAILS = [
 ];
 
 /* ─── CLOUD DATABASE CONFIGURATION ADAPTER (Firestore Connected) ─── */
-const FIREBASE_CONFIG = (typeof window !== 'undefined' && window.firebaseConfig) ||
-  (typeof window !== 'undefined' && window.FirebaseSync && window.FirebaseSync.firebaseConfig) || {
+const FIREBASE_CONFIG = (typeof window !== 'undefined' && (window.firebaseConfig || (window.FirebaseSync && window.FirebaseSync.firebaseConfig))) || {
   apiKey: "",
-  authDomain: "dexter-908fe.firebaseapp.com",
-  projectId: "dexter-908fe",
-  storageBucket: "dexter-908fe.firebasestorage.app",
-  messagingSenderId: "770214303009",
-  appId: "1:770214303009:web:d2a1786c2eee5ec23a9a60",
-  measurementId: "G-GG3H3N55N8"
+  authDomain: "",
+  projectId: "",
+  storageBucket: "",
+  messagingSenderId: "",
+  appId: "",
+  measurementId: ""
 };
 const USE_FIRESTORE = true;
 
@@ -8745,11 +8744,30 @@ async function handleGoogleAdminSignIn() {
   }
 
   if (!window.FirebaseSync || typeof window.FirebaseSync.signInAdminWithGoogle !== 'function') {
-    if (alertEl) {
-      alertEl.innerHTML = `<strong>Authentication Service:</strong> Initializing secure Firebase Authentication. Please try again in a moment.`;
-      alertEl.classList.add('visible');
+    if (btnText) btnText.textContent = 'Connecting to Firebase...';
+    const isReady = await new Promise(resolve => {
+      if (window.FirebaseSync && typeof window.FirebaseSync.signInAdminWithGoogle === 'function') {
+        return resolve(true);
+      }
+      const onReady = () => {
+        window.removeEventListener('firebase:ready', onReady);
+        resolve(true);
+      };
+      window.addEventListener('firebase:ready', onReady);
+      setTimeout(() => {
+        window.removeEventListener('firebase:ready', onReady);
+        resolve(Boolean(window.FirebaseSync && typeof window.FirebaseSync.signInAdminWithGoogle === 'function'));
+      }, 2500);
+    });
+
+    if (!isReady) {
+      if (btnText) btnText.textContent = 'Sign In with Google';
+      if (alertEl) {
+        alertEl.innerHTML = `<strong>Authentication Service:</strong> Initializing secure Firebase Authentication. If this persists, please refresh the page.`;
+        alertEl.classList.add('visible');
+      }
+      return;
     }
-    return;
   }
 
   if (btn) btn.style.pointerEvents = 'none';
@@ -8788,8 +8806,15 @@ async function handleGoogleAdminSignIn() {
     console.warn('Admin Google Sign-In notice:', err);
     if (alertEl) {
       const msg = err && err.message ? err.message : '';
-      if (msg.includes('Access Denied')) {
-        alertEl.innerHTML = `<strong>Access Denied.</strong>`;
+      const code = err && err.code ? err.code : '';
+      if (code === 'auth/unauthorized-domain' || msg.includes('unauthorized-domain')) {
+        alertEl.innerHTML = `<strong>Domain Authorization Needed:</strong> The domain <code>${window.location.hostname}</code> is not in your Firebase Authorized Domains.<br><span style="font-size: 12px; opacity: 0.85; margin-top: 4px; display: inline-block;">To fix: Go to <strong>Firebase Console &rarr; Authentication &rarr; Settings &rarr; Authorized domains</strong> and add <code>${window.location.hostname}</code>.</span>`;
+      } else if (code === 'auth/popup-closed-by-user' || msg.includes('popup-closed-by-user')) {
+        alertEl.innerHTML = `<strong>Sign-In Canceled:</strong> Google sign-in popup was closed before completing.`;
+      } else if (code === 'auth/popup-blocked' || msg.includes('popup-blocked')) {
+        alertEl.innerHTML = `<strong>Popup Blocked:</strong> Please allow popups for this site in your browser to sign in with Google.`;
+      } else if (msg.includes('Access Denied')) {
+        alertEl.innerHTML = `<strong>Access Denied:</strong> This dashboard is restricted to designated administrator accounts.`;
       } else {
         alertEl.innerHTML = `<strong>Access Notice:</strong> ${escapeHtml(msg || 'Google authentication could not be completed.')}`;
       }
