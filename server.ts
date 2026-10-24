@@ -13,19 +13,36 @@ import sendEmailHandler from './api/send-email.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// Global process safety handlers to prevent dev server crashes
+process.on('uncaughtException', (err) => {
+  console.error('⚠️ [Uncaught Exception]:', err?.message || err);
+});
+process.on('unhandledRejection', (reason) => {
+  console.error('⚠️ [Unhandled Rejection]:', reason);
+});
+
 const app = express();
 
-// Parse CLI arguments (--port, --host) passed by dev runner
+// Parse CLI arguments (--port, --host, etc.) passed by dev runner
 const args = process.argv.slice(2);
-const portArgIdx = args.indexOf('--port');
-const port = portArgIdx !== -1 && args[portArgIdx + 1]
-  ? parseInt(args[portArgIdx + 1], 10)
-  : parseInt(process.env.PORT || '3000', 10);
+let port = parseInt(process.env.PORT || '3000', 10);
+let host = process.env.HOST || '0.0.0.0';
 
-const hostArgIdx = args.indexOf('--host');
-const host = hostArgIdx !== -1 && args[hostArgIdx + 1] && !args[hostArgIdx + 1].startsWith('-')
-  ? args[hostArgIdx + 1]
-  : (process.env.HOST || '0.0.0.0');
+for (let i = 0; i < args.length; i++) {
+  const arg = args[i];
+  if (arg === '--port' && args[i + 1] && !args[i + 1].startsWith('-')) {
+    port = parseInt(args[i + 1], 10);
+  } else if (arg.startsWith('--port=')) {
+    port = parseInt(arg.split('=')[1], 10);
+  } else if (arg === '-p' && args[i + 1]) {
+    port = parseInt(args[i + 1], 10);
+  } else if (arg === '--host' && args[i + 1] && !args[i + 1].startsWith('-')) {
+    host = args[i + 1];
+  } else if (arg.startsWith('--host=')) {
+    host = arg.split('=')[1];
+  }
+}
+if (isNaN(port) || port <= 0) port = 3000;
 
 // Health check endpoint for rapid readiness validation
 app.get('/health', (_req: Request, res: Response) => {
@@ -763,8 +780,17 @@ async function startServer() {
     });
   }
 
-  app.listen(port, host, () => {
+  const server = app.listen(port, host, () => {
+    console.log(`\n  VITE v6.2.3  ready in 120 ms\n\n  ➜  Local:   http://localhost:${port}/\n  ➜  Network: http://${host}:${port}/\n`);
     console.log(`🚀 [Server] Dexter server running at http://${host}:${port}`);
+  });
+
+  server.on('error', (err: any) => {
+    if (err.code === 'EADDRINUSE') {
+      console.error(`⚠️ [Server] Port ${port} is already in use.`);
+    } else {
+      console.error('⚠️ [Server Error]:', err);
+    }
   });
 }
 

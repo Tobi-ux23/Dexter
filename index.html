@@ -1187,6 +1187,29 @@ hr.divide {
   justify-content: space-between;
   align-items: center;
 }
+.intake-explore-tmpl-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(66, 133, 244, 0.12);
+  border: 1px solid rgba(66, 133, 244, 0.32);
+  color: #8ab4f8;
+  font-size: 11.5px;
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: 7px;
+  cursor: pointer;
+  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  text-decoration: none;
+  line-height: 1;
+}
+.intake-explore-tmpl-btn:hover {
+  background: rgba(66, 133, 244, 0.24);
+  border-color: rgba(66, 133, 244, 0.55);
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 12px rgba(66, 133, 244, 0.25);
+}
 .intake-input, .intake-textarea, .intake-select {
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -2713,6 +2736,124 @@ hr.divide {
   flex: 1;
 }
 
+/* ─── Templates Desktop View Suggestion Banner (Mobile Only <768px) ─── */
+.templates-desktop-hint-banner {
+  display: none !important; /* Strict hidden state on desktop & tablet screens */
+}
+
+@media (max-width: 767px) {
+  .templates-desktop-hint-banner {
+    display: block !important;
+    margin: 0 0 16px 0;
+    max-height: 180px;
+    opacity: 1;
+    overflow: hidden;
+    transform: translateY(0);
+    transition: opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+                max-height 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+                margin-bottom 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .templates-desktop-hint-banner.collapsing {
+    opacity: 0 !important;
+    max-height: 0 !important;
+    margin-bottom: 0 !important;
+    transform: translateY(-6px) !important;
+    pointer-events: none;
+  }
+
+  .desktop-hint-inner {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 14px;
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.22) 0%, rgba(36, 12, 16, 0.96) 55%, rgba(24, 8, 11, 0.98) 100%);
+    border: 1px solid rgba(239, 68, 68, 0.45);
+    border-radius: 14px;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    box-shadow: 0 6px 24px -2px rgba(239, 68, 68, 0.22), 0 4px 14px rgba(0, 0, 0, 0.5);
+  }
+
+  .desktop-hint-icon-wrap {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    border-radius: 8px;
+    background: rgba(239, 68, 68, 0.22);
+    border: 1px solid rgba(239, 68, 68, 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #f87171;
+    margin-top: 1px;
+    flex-shrink: 0;
+  }
+
+  .desktop-hint-icon {
+    font-size: 18px !important;
+    line-height: 1 !important;
+  }
+
+  .desktop-hint-content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .desktop-hint-title-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 3px;
+  }
+
+  .desktop-hint-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #ffffff;
+    letter-spacing: -0.01em;
+  }
+
+  .desktop-hint-desc {
+    font-size: 11.5px;
+    line-height: 1.45;
+    color: #cbd5e1;
+    margin: 0;
+  }
+
+  .desktop-hint-close-btn {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    background: rgba(239, 68, 68, 0.14);
+    border: 1px solid rgba(239, 68, 68, 0.32);
+    color: #fca5a5;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    padding: 0;
+    margin-left: 2px;
+    flex-shrink: 0;
+  }
+
+  .desktop-hint-close-btn:hover,
+  .desktop-hint-close-btn:active {
+    background: rgba(239, 68, 68, 0.28);
+    color: #ffffff;
+    border-color: rgba(239, 68, 68, 0.55);
+  }
+
+  .desktop-hint-close-btn .material-icons {
+    font-size: 16px;
+    line-height: 1;
+  }
+}
+
 .templates-hero {
   margin-bottom: 36px;
 }
@@ -3832,7 +3973,7 @@ div#templates-view > main > div#templates-grid-container > div > div > span:nth-
                 <span class="material-icons">web</span>
               </div>
               <h4>Website Development</h4>
-              <p>Corporate, SaaS, Web Apps, Portfolios & E-Commerce platforms.</p>
+              <p>Corporate, SaaS, Web Apps, Brands & E-Commerce platforms.</p>
               <div class="service-select-cta">Select & Configure <span>→</span></div>
             </div>
 
@@ -3930,13 +4071,22 @@ div#templates-view > main > div#templates-grid-container > div > div > span:nth-
 
               <!-- Template Code (Optional / Auto-filled from Showcase) -->
               <div class="intake-group intake-full">
-                <label class="intake-label" for="client-template-code">
-                  <span>Template Code <span style="font-size: 11.5px; color: var(--text-dim); font-weight: 400;">(Optional — if basing project on a Showcase template)</span></span>
-                  <span id="intake-template-badge" style="display: none; font-size: 11px; background: rgba(176,34,255,0.2); border: 1px solid #b022ff; color: #fff; padding: 2px 8px; border-radius: 6px; font-family: monospace;"></span>
-                </label>
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 7px; flex-wrap: wrap; gap: 8px;">
+                  <label class="intake-label" for="client-template-code" style="margin-bottom: 0;">
+                    <span>Template Code <span style="font-size: 11.5px; color: var(--text-dim); font-weight: 400;">(Optional — if basing project on a Showcase template)</span></span>
+                  </label>
+                  <button type="button" class="intake-explore-tmpl-btn" onclick="handleNav('templates', event)" title="Browse available designs & copy code">
+                    <span>Explore Templates ↗</span>
+                  </button>
+                </div>
+                <div id="intake-template-badge" style="display: none; font-size: 11px; background: rgba(176,34,255,0.2); border: 1px solid #b022ff; color: #fff; padding: 3px 10px; border-radius: 6px; font-family: monospace; margin-bottom: 8px;"></div>
                 <div style="position: relative;">
                   <input type="text" id="client-template-code" name="template_code" class="intake-input" placeholder="e.g. DT-SAAS-01 or leave blank for custom build" style="text-transform: uppercase; font-family: monospace; letter-spacing: 0.05em; font-weight: 600;">
                   <span class="material-icons" style="position: absolute; right: 14px; top: 50%; transform: translateY(-50%); font-size: 18px; color: var(--text-dim); pointer-events: none;">tag</span>
+                </div>
+                <div style="margin-top: 6px; font-size: 11.5px; color: var(--text-dim); display: flex; align-items: center; gap: 5px; flex-wrap: wrap;">
+                  <span>Want to choose an existing architecture?</span>
+                  <a href="#templates" onclick="handleNav('templates', event)" style="color: #60a5fa; text-decoration: underline; text-underline-offset: 2px; font-weight: 500; cursor: pointer;">Browse Templates Gallery ↗</a>
                 </div>
               </div>
 
@@ -4100,13 +4250,30 @@ div#templates-view > main > div#templates-grid-container > div > div > span:nth-
 
   <!-- Templates Hero & Filter Container -->
   <main class="templates-container">
+    <!-- Mobile Desktop View Suggestion Banner (<768px only) -->
+    <div id="templates-desktop-hint-banner" class="templates-desktop-hint-banner" style="display: none;" role="region" aria-label="Desktop view suggestion">
+      <div class="desktop-hint-inner">
+        <div class="desktop-hint-icon-wrap" aria-hidden="true">
+          <span class="material-icons desktop-hint-icon">desktop_windows</span>
+        </div>
+        <div class="desktop-hint-content">
+          <div class="desktop-hint-title-row">
+            <span class="desktop-hint-title">Desktop Recommended</span>
+          </div>
+          <p class="desktop-hint-desc">For full interactive viewport simulations, multi-screen testing, and source code previews, explore this page on a desktop browser.</p>
+        </div>
+        <button type="button" class="desktop-hint-close-btn" onclick="dismissDesktopHint()" aria-label="Dismiss recommendation" title="Dismiss">
+          <span class="material-icons">close</span>
+        </button>
+      </div>
+    </div>
+
     <section class="templates-hero">
       <div class="hero-pill" style="margin-bottom: 14px;">
         <span class="live"></span>
         Ready-to-Deploy Architectures
       </div>
       <h1 class="templates-title">Design Architectures & Production Templates.</h1>
-      <p class="templates-sub">Explore pre-engineered web systems, SaaS platforms, and digital storefronts crafted by DexterTech engineers. Preview live or request a custom deployment tailored to your brand.</p>
 
       <!-- Search & Category Filters -->
       <div class="templates-controls-wrap">
@@ -4119,7 +4286,7 @@ div#templates-view > main > div#templates-grid-container > div > div > span:nth-
           <button type="button" class="tmpl-pill active" onclick="filterTemplatesByCategory('ALL', this)">All Templates</button>
           <button type="button" class="tmpl-pill" onclick="filterTemplatesByCategory('SaaS & Web App', this)">SaaS & Web Apps</button>
           <button type="button" class="tmpl-pill" onclick="filterTemplatesByCategory('E-Commerce', this)">E-Commerce</button>
-          <button type="button" class="tmpl-pill" onclick="filterTemplatesByCategory('Corporate & Portfolios', this)">Portfolios</button>
+          <button type="button" class="tmpl-pill" onclick="filterTemplatesByCategory('Brands', this)">Brands</button>
           <button type="button" class="tmpl-pill" onclick="filterTemplatesByCategory('Application Making', this)">Mobile & Web Apps</button>
         </div>
       </div>
@@ -4428,7 +4595,7 @@ div#templates-view > main > div#templates-grid-container > div > div > span:nth-
           <option value="ALL">All Categories</option>
           <option value="SaaS & Web App">SaaS & Web App</option>
           <option value="E-Commerce">E-Commerce</option>
-          <option value="Corporate & Portfolios">Corporate & Portfolios</option>
+          <option value="Brands">Brands</option>
           <option value="Application Making">Application Making</option>
           <option value="Website Development">Website Development</option>
         </select>
@@ -4651,7 +4818,7 @@ div#templates-view > main > div#templates-grid-container > div > div > span:nth-
               <select id="tmpl-upload-category" class="intake-select">
                 <option value="SaaS & Web App">SaaS & Web App</option>
                 <option value="E-Commerce">E-Commerce</option>
-                <option value="Corporate & Portfolios">Corporate & Portfolios</option>
+                <option value="Brands">Brands</option>
                 <option value="Application Making">Application Making</option>
                 <option value="Website Development">Website Development</option>
               </select>
@@ -4977,6 +5144,153 @@ div#templates-view > main > div#templates-grid-container > div > div > span:nth-
 
   // Safety trigger on window load if GSAP CDN loaded asynchronously
   window.addEventListener('load', runHeroAnimation);
+})();
+
+/* ════════════════════════════════════════════════════════════════
+   OUR SERVICES SECTION GSAP ANIMATION (SEQUENTIAL FADE & SLIDE UP)
+════════════════════════════════════════════════════════════════ */
+(function setupServicesGsapAnimation() {
+  let hasServicesAnimated = false;
+  let activeTimeline = null;
+  let isPrepared = false;
+
+  function getServicesElements() {
+    const section = document.getElementById('services');
+    if (!section) return null;
+    const eyebrow = section.querySelector('.eyebrow');
+    const title = section.querySelector('.sec-title');
+    const cards = Array.from(section.querySelectorAll('.grid-3 .card'));
+    return { section, eyebrow, title, cards, all: [eyebrow, title, ...cards].filter(Boolean) };
+  }
+
+  // Pre-hide elements while still completely offscreen to eliminate flash-before-animation glitch
+  function prepareServicesOffscreen() {
+    if (isPrepared || hasServicesAnimated) return;
+    if (typeof gsap === 'undefined') return;
+
+    // Do not pre-hide if reduced motion is requested
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      return;
+    }
+
+    const els = getServicesElements();
+    if (!els || !els.section) return;
+
+    const rect = els.section.getBoundingClientRect();
+    // Only pre-hide if the section is currently BELOW the visible viewport
+    if (rect.top >= window.innerHeight * 0.95) {
+      gsap.set(els.all, { opacity: 0, y: 34 });
+      isPrepared = true;
+    }
+  }
+
+  function runServicesAnimation(force = false) {
+    if (hasServicesAnimated && !force) return;
+    if (typeof gsap === 'undefined') return;
+
+    const els = getServicesElements();
+    if (!els || !els.title || els.cards.length === 0) return;
+
+    hasServicesAnimated = true;
+    isPrepared = true;
+
+    // Honor reduced motion accessibility preference
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      gsap.set(els.all, { opacity: 1, y: 0, clearProps: 'all' });
+      return;
+    }
+
+    if (activeTimeline) {
+      activeTimeline.kill();
+    }
+
+    activeTimeline = gsap.timeline({
+      defaults: {
+        ease: 'power3.out'
+      }
+    });
+
+    // 1. Eyebrow badge ("Our Services") fades and slides up first
+    if (els.eyebrow) {
+      activeTimeline.fromTo(els.eyebrow,
+        { opacity: 0, y: 22 },
+        { opacity: 1, y: 0, duration: 0.65, delay: 0.04, clearProps: 'transform' }
+      );
+    }
+
+    // 2. Section Title ("We give our best service in") slides up sequentially
+    activeTimeline.fromTo(els.title,
+      { opacity: 0, y: 34 },
+      { opacity: 1, y: 0, duration: 0.85, clearProps: 'transform' },
+      els.eyebrow ? '-=0.45' : '+=0.04'
+    )
+    // 3. Service cards stagger-fade and slide up smoothly into view
+    .fromTo(els.cards,
+      { opacity: 0, y: 32 },
+      { opacity: 1, y: 0, duration: 0.75, stagger: 0.1, clearProps: 'transform' },
+      '-=0.5'
+    );
+  }
+
+  window.runServicesAnimation = runServicesAnimation;
+
+  function setupObserver() {
+    const els = getServicesElements();
+    if (!els || !els.section) return;
+
+    const rect = els.section.getBoundingClientRect();
+    // If already in viewport on initial load (or direct hash navigation)
+    if (rect.top < window.innerHeight && rect.bottom > 0) {
+      setTimeout(() => runServicesAnimation(), 100);
+      return;
+    }
+
+    // Pre-hide while safely offscreen before user scrolls down to it
+    prepareServicesOffscreen();
+
+    if ('IntersectionObserver' in window) {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            runServicesAnimation();
+            observer.unobserve(entry.target);
+          }
+        });
+      }, {
+        threshold: 0.05,
+        rootMargin: '0px 0px -40px 0px'
+      });
+      observer.observe(els.section);
+    } else {
+      runServicesAnimation();
+    }
+
+    // Safety fallback: ensure elements are revealed if observer does not fire
+    setTimeout(() => {
+      if (!hasServicesAnimated) {
+        runServicesAnimation();
+      }
+    }, 4000);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      prepareServicesOffscreen();
+      setupObserver();
+    });
+  } else {
+    prepareServicesOffscreen();
+    setupObserver();
+  }
+
+  window.addEventListener('load', () => {
+    if (window.location.hash === '#services') {
+      setTimeout(() => runServicesAnimation(true), 120);
+    } else {
+      prepareServicesOffscreen();
+      setupObserver();
+    }
+  });
 })();
 /* ════════════════════════════════════════════════════════════════
    TWO-STEP INTAKE CONFIGURATION & STATE
@@ -5836,6 +6150,9 @@ function handleNav(target, e) {
       targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
       try { history.pushState(null, null, '#' + target); } catch (_) {}
       updateActiveNavLink(target);
+      if (target === 'services' && typeof window.runServicesAnimation === 'function') {
+        setTimeout(() => window.runServicesAnimation(true), 120);
+      }
     } else {
       window.location.hash = '#' + target;
     }
@@ -6047,6 +6364,9 @@ function showMainView(targetSection) {
         el.scrollIntoView({ behavior: 'smooth', block: 'start' });
         try { history.pushState(null, null, '#' + targetSection); } catch (_) {}
         updateActiveNavLink(targetSection);
+        if (targetSection === 'services' && typeof window.runServicesAnimation === 'function') {
+          setTimeout(() => window.runServicesAnimation(true), 150);
+        }
         return;
       }
     }
@@ -6139,6 +6459,9 @@ function showTemplatesView(e) {
     }
 
     renderTemplatesGallery();
+    if (typeof checkAndShowDesktopHint === 'function') {
+      checkAndShowDesktopHint();
+    }
     setTimeout(() => {
       if (typeof fitAllTemplateThumbnails === 'function') fitAllTemplateThumbnails();
     }, 280);
@@ -7718,6 +8041,59 @@ function renderDefaultTemplateThumbnail(thumbWrap, t) {
     thumbWrap.appendChild(placeholder);
   }
 }
+
+/* ─── Templates Mobile Desktop Recommendation Banner Logic ─── */
+const DESKTOP_HINT_SESSION_KEY = 'dexter_templates_desktop_hint_dismissed';
+
+function checkAndShowDesktopHint() {
+  const banner = document.getElementById('templates-desktop-hint-banner');
+  if (!banner) return;
+
+  // Strict guard: only show on mobile smartphones below 768px
+  if (window.innerWidth >= 768) {
+    banner.style.display = 'none';
+    return;
+  }
+
+  // Check if previously dismissed in this browser session
+  try {
+    if (sessionStorage.getItem(DESKTOP_HINT_SESSION_KEY) === 'true') {
+      banner.style.display = 'none';
+      return;
+    }
+  } catch (_) {}
+
+  // Reveal banner with smooth entrance
+  banner.classList.remove('collapsing');
+  banner.style.display = 'block';
+}
+
+function dismissDesktopHint() {
+  const banner = document.getElementById('templates-desktop-hint-banner');
+  if (!banner) return;
+
+  try {
+    sessionStorage.setItem(DESKTOP_HINT_SESSION_KEY, 'true');
+  } catch (_) {}
+
+  banner.classList.add('collapsing');
+  setTimeout(() => {
+    banner.style.display = 'none';
+  }, 220);
+}
+
+// Window resize listener to hide/show banner dynamically across viewport thresholds
+window.addEventListener('resize', function() {
+  if (window.innerWidth >= 768) {
+    const banner = document.getElementById('templates-desktop-hint-banner');
+    if (banner) banner.style.display = 'none';
+  } else {
+    const templatesView = document.getElementById('templates-view');
+    if (templatesView && templatesView.style.display !== 'none') {
+      checkAndShowDesktopHint();
+    }
+  }
+});
 
 function renderTemplatesGallery() {
   const list = TemplateStore.getAll();
