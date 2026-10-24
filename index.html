@@ -17,7 +17,6 @@
 <link rel="apple-touch-icon" href="/dexter-logo.png">
 <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@300;400;500;600&family=Google+Sans+Display:wght@400;500;600&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <style>
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -559,7 +558,6 @@ nav {
   color: #fff;
   max-width: 860px;
   margin-bottom: 26px;
-  will-change: transform, opacity;
 }
 
 .hero-h1 .g-gradient {
@@ -5090,209 +5088,6 @@ div#templates-view > main > div#templates-grid-container > div > div > span:nth-
 
 <script>
 /* ════════════════════════════════════════════════════════════════
-   HERO GSAP ANIMATION (SEQUENTIAL FADE & SLIDE UP)
-════════════════════════════════════════════════════════════════ */
-(function setupHeroGsapAnimation() {
-  let hasHeroAnimated = false;
-
-  function runHeroAnimation() {
-    if (hasHeroAnimated) return;
-    if (typeof gsap === 'undefined') return;
-
-    const h1 = document.querySelector('.hero-h1');
-    const sub = document.querySelector('.hero-sub');
-    if (!h1 || !sub) return;
-
-    hasHeroAnimated = true;
-
-    // Honor reduced motion accessibility preference
-    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      gsap.set(['.hero-h1', '.hero-sub', '.hero-btns'], { opacity: 1, y: 0 });
-      return;
-    }
-
-    const tl = gsap.timeline({
-      defaults: {
-        ease: 'power3.out'
-      }
-    });
-
-    // Headline fades and slides up first
-    tl.fromTo('.hero-h1',
-      { opacity: 0, y: 38 },
-      { opacity: 1, y: 0, duration: 0.95, delay: 0.12, clearProps: 'transform' }
-    )
-    // Sub-headline fades and slides up sequentially
-    .fromTo('.hero-sub',
-      { opacity: 0, y: 26 },
-      { opacity: 1, y: 0, duration: 0.85, clearProps: 'transform' },
-      '-=0.52'
-    )
-    // CTA action buttons follow to finish the entry
-    .fromTo('.hero-btns',
-      { opacity: 0, y: 18 },
-      { opacity: 1, y: 0, duration: 0.75, clearProps: 'transform' },
-      '-=0.45'
-    );
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', runHeroAnimation);
-  } else {
-    runHeroAnimation();
-  }
-
-  // Safety trigger on window load if GSAP CDN loaded asynchronously
-  window.addEventListener('load', runHeroAnimation);
-})();
-
-/* ════════════════════════════════════════════════════════════════
-   OUR SERVICES SECTION GSAP ANIMATION (SEQUENTIAL FADE & SLIDE UP)
-════════════════════════════════════════════════════════════════ */
-(function setupServicesGsapAnimation() {
-  let hasServicesAnimated = false;
-  let activeTimeline = null;
-  let isPrepared = false;
-
-  function getServicesElements() {
-    const section = document.getElementById('services');
-    if (!section) return null;
-    const eyebrow = section.querySelector('.eyebrow');
-    const title = section.querySelector('.sec-title');
-    const cards = Array.from(section.querySelectorAll('.grid-3 .card'));
-    return { section, eyebrow, title, cards, all: [eyebrow, title, ...cards].filter(Boolean) };
-  }
-
-  // Pre-hide elements while still completely offscreen to eliminate flash-before-animation glitch
-  function prepareServicesOffscreen() {
-    if (isPrepared || hasServicesAnimated) return;
-    if (typeof gsap === 'undefined') return;
-
-    // Do not pre-hide if reduced motion is requested
-    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      return;
-    }
-
-    const els = getServicesElements();
-    if (!els || !els.section) return;
-
-    const rect = els.section.getBoundingClientRect();
-    // Only pre-hide if the section is currently BELOW the visible viewport
-    if (rect.top >= window.innerHeight * 0.95) {
-      gsap.set(els.all, { opacity: 0, y: 34 });
-      isPrepared = true;
-    }
-  }
-
-  function runServicesAnimation(force = false) {
-    if (hasServicesAnimated && !force) return;
-    if (typeof gsap === 'undefined') return;
-
-    const els = getServicesElements();
-    if (!els || !els.title || els.cards.length === 0) return;
-
-    hasServicesAnimated = true;
-    isPrepared = true;
-
-    // Honor reduced motion accessibility preference
-    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      gsap.set(els.all, { opacity: 1, y: 0, clearProps: 'all' });
-      return;
-    }
-
-    if (activeTimeline) {
-      activeTimeline.kill();
-    }
-
-    activeTimeline = gsap.timeline({
-      defaults: {
-        ease: 'power3.out'
-      }
-    });
-
-    // 1. Eyebrow badge ("Our Services") fades and slides up first
-    if (els.eyebrow) {
-      activeTimeline.fromTo(els.eyebrow,
-        { opacity: 0, y: 22 },
-        { opacity: 1, y: 0, duration: 0.65, delay: 0.04, clearProps: 'transform' }
-      );
-    }
-
-    // 2. Section Title ("We give our best service in") slides up sequentially
-    activeTimeline.fromTo(els.title,
-      { opacity: 0, y: 34 },
-      { opacity: 1, y: 0, duration: 0.85, clearProps: 'transform' },
-      els.eyebrow ? '-=0.45' : '+=0.04'
-    )
-    // 3. Service cards stagger-fade and slide up smoothly into view
-    .fromTo(els.cards,
-      { opacity: 0, y: 32 },
-      { opacity: 1, y: 0, duration: 0.75, stagger: 0.1, clearProps: 'transform' },
-      '-=0.5'
-    );
-  }
-
-  window.runServicesAnimation = runServicesAnimation;
-
-  function setupObserver() {
-    const els = getServicesElements();
-    if (!els || !els.section) return;
-
-    const rect = els.section.getBoundingClientRect();
-    // If already in viewport on initial load (or direct hash navigation)
-    if (rect.top < window.innerHeight && rect.bottom > 0) {
-      setTimeout(() => runServicesAnimation(), 100);
-      return;
-    }
-
-    // Pre-hide while safely offscreen before user scrolls down to it
-    prepareServicesOffscreen();
-
-    if ('IntersectionObserver' in window) {
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            runServicesAnimation();
-            observer.unobserve(entry.target);
-          }
-        });
-      }, {
-        threshold: 0.05,
-        rootMargin: '0px 0px -40px 0px'
-      });
-      observer.observe(els.section);
-    } else {
-      runServicesAnimation();
-    }
-
-    // Safety fallback: ensure elements are revealed if observer does not fire
-    setTimeout(() => {
-      if (!hasServicesAnimated) {
-        runServicesAnimation();
-      }
-    }, 4000);
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-      prepareServicesOffscreen();
-      setupObserver();
-    });
-  } else {
-    prepareServicesOffscreen();
-    setupObserver();
-  }
-
-  window.addEventListener('load', () => {
-    if (window.location.hash === '#services') {
-      setTimeout(() => runServicesAnimation(true), 120);
-    } else {
-      prepareServicesOffscreen();
-      setupObserver();
-    }
-  });
-})();
-/* ════════════════════════════════════════════════════════════════
    TWO-STEP INTAKE CONFIGURATION & STATE
 ════════════════════════════════════════════════════════════════ */
 const SERVICE_CONFIGS = {
@@ -6150,9 +5945,6 @@ function handleNav(target, e) {
       targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
       try { history.pushState(null, null, '#' + target); } catch (_) {}
       updateActiveNavLink(target);
-      if (target === 'services' && typeof window.runServicesAnimation === 'function') {
-        setTimeout(() => window.runServicesAnimation(true), 120);
-      }
     } else {
       window.location.hash = '#' + target;
     }
@@ -6364,9 +6156,6 @@ function showMainView(targetSection) {
         el.scrollIntoView({ behavior: 'smooth', block: 'start' });
         try { history.pushState(null, null, '#' + targetSection); } catch (_) {}
         updateActiveNavLink(targetSection);
-        if (targetSection === 'services' && typeof window.runServicesAnimation === 'function') {
-          setTimeout(() => window.runServicesAnimation(true), 150);
-        }
         return;
       }
     }
@@ -10001,7 +9790,12 @@ if (track) {
   const STILL_THRESHOLD = 2.5;
   const STILL_GRACE = 20;
 
-  const COUNT = 180;
+  const DESKTOP_COUNT = 180;
+  // On phone screens (< 768px), reduce particle density into 80-85% (82% = 148 balls)
+  function getParticleTargetCount() {
+    return window.innerWidth < 768 ? Math.round(DESKTOP_COUNT * 0.82) : DESKTOP_COUNT;
+  }
+
   const ATTRACT_RADIUS = 150;
   const ORBIT_RADIUS = 55;
   const ATTRACT_FORCE = 0.18;
@@ -10042,6 +9836,16 @@ if (track) {
   function resize() {
     W = canvas.width = window.innerWidth;
     H = canvas.height = window.innerHeight;
+
+    // Dynamically adjust particle count when transitioning between mobile and desktop/tablet
+    const target = getParticleTargetCount();
+    if (particles.length > target) {
+      particles.length = target;
+    } else if (particles.length < target) {
+      while (particles.length < target) {
+        particles.push(new Particle(true));
+      }
+    }
   }
 
   class Particle {
@@ -10058,7 +9862,8 @@ if (track) {
       this.y = randomPos ? Math.random() * H : H + Math.random() * 80;
       this.vx = (Math.random() - 0.5) * 0.45;
       this.vy = -(Math.random() * 0.25 + 0.04);
-      this.r = 1.2 + Math.random() * 1.8;
+      const isPhone = W < 768;
+      this.r = (1.2 + Math.random() * 1.8) * (isPhone ? 0.9 : 1.0);
       this.baseR = this.r;
       this.baseAlpha = 0.15 + Math.random() * 0.40;
       this.alpha = this.baseAlpha;
@@ -10202,7 +10007,7 @@ if (track) {
 
   function init() {
     resize();
-    particles = Array.from({ length: COUNT }, () => new Particle(true));
+    particles = Array.from({ length: getParticleTargetCount() }, () => new Particle(true));
   }
 
   function drawMouseGlow() {
