@@ -5212,17 +5212,34 @@ function updateIntakeBackButton() {
 
 function handleIntakeBack() {
   if (currentIntakeStep === 2) {
-    goToStep1();
+    if (window.history.length > 1 && window.location.hash === '#intake-step2') {
+      window.history.back();
+    } else {
+      goToStep1();
+    }
   } else {
-    showMainView();
+    if (window.history.length > 1 && (window.location.hash === '#intake' || window.location.hash === '#start-project')) {
+      window.history.back();
+    } else {
+      showMainView();
+    }
   }
 }
 
-function selectServiceAndAdvance(serviceName) {
+function selectServiceAndAdvance(serviceName, fromHistory) {
   if (!SERVICE_CONFIGS[serviceName]) return;
   currentSelectedService = serviceName;
   currentIntakeStep = 2;
   updateIntakeBackButton();
+
+  if (!fromHistory && !(typeof isNavigatingFromHistory !== 'undefined' && isNavigatingFromHistory)) {
+    if (window.location.hash !== '#intake-step2') {
+      try {
+        history.pushState({ view: 'intake', step: 2, service: serviceName }, '', '#intake-step2');
+      } catch (_) {}
+    }
+  }
+
   const cfg = SERVICE_CONFIGS[serviceName];
 
   // Update hidden service input
@@ -5299,9 +5316,18 @@ function selectServiceAndAdvance(serviceName) {
   }
 }
 
-function goToStep1() {
+function goToStep1(fromHistory) {
   currentIntakeStep = 1;
   updateIntakeBackButton();
+
+  if (!fromHistory && !(typeof isNavigatingFromHistory !== 'undefined' && isNavigatingFromHistory)) {
+    if (window.location.hash !== '#intake') {
+      try {
+        history.pushState({ view: 'intake', step: 1 }, '', '#intake');
+      } catch (_) {}
+    }
+  }
+
   const step1 = document.getElementById('intake-step-1');
   const step2 = document.getElementById('intake-step-2');
   const eyebrow = document.getElementById('intake-eyebrow');
@@ -5999,12 +6025,22 @@ window.addEventListener('resize', function() {
 });
 
 /* ─── SPA VIEW ANIMATED TOGGLE LOGIC ─── */
-function showIntake(e, preselectedService) {
+function showIntake(e, preselectedService, fromHistory) {
   if (e && typeof e.preventDefault === 'function') e.preventDefault();
   if (typeof e === 'string' && !preselectedService) {
     preselectedService = e;
   }
   closeMobileMenu();
+
+  if (!fromHistory && !(typeof isNavigatingFromHistory !== 'undefined' && isNavigatingFromHistory)) {
+    const targetHash = preselectedService ? '#intake-step2' : '#intake';
+    if (window.location.hash !== targetHash) {
+      try {
+        history.pushState({ view: 'intake', step: preselectedService ? 2 : 1, service: preselectedService || null }, '', targetHash);
+      } catch (_) {}
+    }
+  }
+
   const mainView = document.getElementById('main-view');
   const nav = document.getElementById('main-nav');
   const intakeView = document.getElementById('intake-view');
@@ -6034,7 +6070,7 @@ function showIntake(e, preselectedService) {
     if (successView) successView.classList.remove('active');
 
     if (preselectedService && SERVICE_CONFIGS[preselectedService]) {
-      selectServiceAndAdvance(preselectedService);
+      selectServiceAndAdvance(preselectedService, true);
     } else {
       currentIntakeStep = 1;
       updateIntakeBackButton();
@@ -6057,9 +6093,17 @@ function showIntake(e, preselectedService) {
   }, 200);
 }
 
-function showAskQuestion(e) {
-  if (e) e.preventDefault();
+function showAskQuestion(e, fromHistory) {
+  if (e && typeof e.preventDefault === 'function') e.preventDefault();
   closeMobileMenu();
+
+  if (!fromHistory && !(typeof isNavigatingFromHistory !== 'undefined' && isNavigatingFromHistory)) {
+    if (window.location.hash !== '#ask-question') {
+      try {
+        history.pushState({ view: 'ask' }, '', '#ask-question');
+      } catch (_) {}
+    }
+  }
   const mainView = document.getElementById('main-view');
   const nav = document.getElementById('main-nav');
   const intakeView = document.getElementById('intake-view');
@@ -6134,9 +6178,9 @@ function toggleFaq(btn) {
   }
 }
 
-function showMainView(targetSection) {
+function showMainView(targetSection, fromHistory) {
   closeMobileMenu();
-  closeTemplatePreviewModal();
+  closeTemplatePreviewModal(true);
   const mainView = document.getElementById('main-view');
   const nav = document.getElementById('main-nav');
   const intakeView = document.getElementById('intake-view');
@@ -6154,15 +6198,26 @@ function showMainView(targetSection) {
       const el = document.getElementById(targetSection);
       if (el) {
         el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        try { history.pushState(null, null, '#' + targetSection); } catch (_) {}
+        if (!fromHistory && !(typeof isNavigatingFromHistory !== 'undefined' && isNavigatingFromHistory)) {
+          try { history.pushState({ view: 'main', section: targetSection }, null, '#' + targetSection); } catch (_) {}
+        }
         updateActiveNavLink(targetSection);
         return;
       }
     }
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    try { history.pushState(null, null, '#home'); } catch (_) {}
+    if (!fromHistory && !(typeof isNavigatingFromHistory !== 'undefined' && isNavigatingFromHistory)) {
+      try { history.pushState({ view: 'main', section: 'home' }, null, '#home'); } catch (_) {}
+    }
     updateActiveNavLink('home');
   };
+
+  if (!fromHistory && !(typeof isNavigatingFromHistory !== 'undefined' && isNavigatingFromHistory)) {
+    const hash = targetSection && targetSection !== 'home' && targetSection !== 'top' ? '#' + targetSection : '#home';
+    if (window.location.hash !== hash) {
+      try { history.pushState({ view: 'main', section: targetSection || 'home' }, '', hash); } catch (_) {}
+    }
+  }
 
   // If already on main view with no modal/overlay active, scroll directly
   if (!isOtherActive && mainView && mainView.style.display !== 'none') {
@@ -6175,7 +6230,7 @@ function showMainView(targetSection) {
   if (adminView) adminView.classList.remove('active');
 
   setTimeout(() => {
-    closeTemplatePreviewModal();
+    closeTemplatePreviewModal(true);
     if (intakeView) intakeView.style.display = 'none';
     if (askView) askView.style.display = 'none';
     if (adminView) adminView.style.display = 'none';
@@ -6200,15 +6255,23 @@ function showMainView(targetSection) {
     }, 60);
 
     if (window.location.hash === '#admin23' || window.location.hash === '#admin') {
-      history.replaceState(null, null, window.location.pathname);
+      try { history.replaceState({ view: 'main', section: 'home' }, null, window.location.pathname); } catch (_) {}
     }
   }, 200);
 }
 
-function showTemplatesView(e) {
-  if (e) e.preventDefault();
+function showTemplatesView(e, fromHistory) {
+  if (e && typeof e.preventDefault === 'function') e.preventDefault();
   closeMobileMenu();
-  closeTemplatePreviewModal();
+  closeTemplatePreviewModal(true);
+
+  if (!fromHistory && !(typeof isNavigatingFromHistory !== 'undefined' && isNavigatingFromHistory)) {
+    if (window.location.hash !== '#templates') {
+      try {
+        history.pushState({ view: 'templates' }, '', '#templates');
+      } catch (_) {}
+    }
+  }
   const mainView = document.getElementById('main-view');
   const nav = document.getElementById('main-nav');
   const intakeView = document.getElementById('intake-view');
@@ -8177,10 +8240,16 @@ window.addEventListener('resize', function() {
   }
 });
 
-function openTemplatePreview(id) {
+function openTemplatePreview(id, fromHistory) {
   const t = TemplateStore.getById(id);
   if (!t) return;
   currentPreviewTemplateId = id;
+
+  if (!fromHistory && !(typeof isNavigatingFromHistory !== 'undefined' && isNavigatingFromHistory)) {
+    try {
+      history.pushState({ view: 'templates', modal: 'preview', templateId: id }, '', '#preview-' + id);
+    } catch (_) {}
+  }
 
   const modal = document.getElementById('template-preview-modal');
   const titleEl = document.getElementById('modal-template-title');
@@ -8231,7 +8300,7 @@ function editFromPreviewModal() {
   openAdminEditTemplateModal(id);
 }
 
-function closeTemplatePreviewModal() {
+function closeTemplatePreviewModal(fromHistory) {
   const modal = document.getElementById('template-preview-modal');
   const iframe = document.getElementById('tmpl-preview-iframe');
   const editBtn = document.getElementById('modal-edit-template-btn');
@@ -8244,6 +8313,12 @@ function closeTemplatePreviewModal() {
     iframe.removeAttribute('srcdoc');
   }
   currentPreviewTemplateId = null;
+
+  if (!fromHistory && !(typeof isNavigatingFromHistory !== 'undefined' && isNavigatingFromHistory) && window.location.hash.startsWith('#preview-')) {
+    try {
+      history.replaceState({ view: 'templates' }, '', '#templates');
+    } catch (_) {}
+  }
 }
 
 // Backward-compatibility shim
@@ -8820,8 +8895,18 @@ function handleAdminTemplateSubmit(e) {
 ════════════════════════════════════════════════════════════════ */
 let activeDrawerBlueprintId = null;
 
-function showAdminView(e) {
-  if (e) e.preventDefault();
+function showAdminView(e, fromHistory) {
+  if (e && typeof e.preventDefault === 'function') e.preventDefault();
+  closeMobileMenu();
+
+  if (!fromHistory && !(typeof isNavigatingFromHistory !== 'undefined' && isNavigatingFromHistory)) {
+    if (window.location.hash !== '#admin23') {
+      try {
+        history.pushState({ view: 'admin' }, '', '#admin23');
+      } catch (_) {}
+    }
+  }
+
   const mainView = document.getElementById('main-view');
   const nav = document.getElementById('main-nav');
   const intakeView = document.getElementById('intake-view');
@@ -9677,15 +9762,174 @@ function escapeHtml(str) {
     .replace(/'/g, '&#039;');
 }
 
-function checkAdminRoute() {
-  const hash = window.location.hash;
-  const search = window.location.search;
-  if (hash === '#admin23' || search.includes('view=admin23')) {
-    showAdminView();
-  } else if (hash === '#templates' || search.includes('view=templates')) {
-    showTemplatesView();
+/* ════════════════════════════════════════════════════════════════
+   UNIFIED SPA ROUTER & POPSTATE / MOBILE BACK BUTTON CONTROLLER
+════════════════════════════════════════════════════════════════ */
+let isNavigatingFromHistory = false;
+
+function closeAnyOpenModal() {
+  let closed = false;
+
+  // 1. Template Preview Modal
+  const previewModal = document.getElementById('template-preview-modal');
+  if (previewModal && previewModal.style.display !== 'none' && previewModal.style.display !== '') {
+    closeTemplatePreviewModal(true);
+    closed = true;
+  }
+
+  // 2. Mobile Nav Drawer
+  const mobileDrawer = document.getElementById('mobile-nav-drawer');
+  if (mobileDrawer && mobileDrawer.classList.contains('open')) {
+    closeMobileMenu();
+    closed = true;
+  }
+
+  // 3. Admin Edit Modal
+  const editModal = document.getElementById('admin-edit-template-modal');
+  if (editModal && editModal.style.display !== 'none' && editModal.style.display !== '') {
+    if (typeof closeAdminEditTemplateModal === 'function') closeAdminEditTemplateModal();
+    else editModal.style.display = 'none';
+    closed = true;
+  }
+
+  // 4. Admin Upload Modal
+  const uploadModal = document.getElementById('admin-upload-template-modal');
+  if (uploadModal && uploadModal.style.display !== 'none' && uploadModal.style.display !== '') {
+    if (typeof closeAdminUploadTemplateModal === 'function') closeAdminUploadTemplateModal();
+    else uploadModal.style.display = 'none';
+    closed = true;
+  }
+
+  const tmplModal = document.getElementById('admin-template-modal');
+  if (tmplModal && tmplModal.style.display !== 'none' && tmplModal.style.display !== '') {
+    if (typeof closeAdminUploadTemplateModal === 'function') closeAdminUploadTemplateModal();
+    else tmplModal.style.display = 'none';
+    closed = true;
+  }
+
+  // 5. Admin Confirm Modal
+  const confirmModal = document.getElementById('admin-confirm-modal');
+  if (confirmModal && confirmModal.style.display !== 'none' && confirmModal.style.display !== '') {
+    if (typeof closeAdminConfirmModal === 'function') closeAdminConfirmModal();
+    else confirmModal.style.display = 'none';
+    closed = true;
+  }
+
+  // 6. Admin Inspect Container
+  const inspectPage = document.getElementById('admin-inspect-container');
+  if (inspectPage && inspectPage.style.display !== 'none' && inspectPage.style.display !== '') {
+    if (typeof closeAdminInspectPage === 'function') closeAdminInspectPage();
+    else inspectPage.style.display = 'none';
+    closed = true;
+  }
+
+  return closed;
+}
+
+function handleAppPopState(event) {
+  isNavigatingFromHistory = true;
+
+  try {
+    // Dismiss any active overlay/modal first before changing underlying view
+    if (closeAnyOpenModal()) {
+      return;
+    }
+
+    const state = event && event.state;
+    const hash = window.location.hash || '';
+    const search = window.location.search || '';
+
+    if (state && state.view) {
+      if (state.view === 'templates') {
+        showTemplatesView(null, true);
+        return;
+      }
+      if (state.view === 'intake') {
+        showIntake(null, state.service, true);
+        if (state.step === 2 && state.service) {
+          selectServiceAndAdvance(state.service, true);
+        } else {
+          goToStep1(true);
+        }
+        return;
+      }
+      if (state.view === 'ask') {
+        showAskQuestion(null, true);
+        return;
+      }
+      if (state.view === 'admin') {
+        showAdminView(null, true);
+        return;
+      }
+      if (state.view === 'main') {
+        showMainView(state.section || 'home', true);
+        return;
+      }
+    }
+
+    // Hash & query routing fallback
+    if (hash === '#admin23' || search.includes('view=admin23')) {
+      showAdminView(null, true);
+    } else if (hash === '#templates' || search.includes('view=templates')) {
+      showTemplatesView(null, true);
+    } else if (hash.startsWith('#preview-')) {
+      const templateId = hash.replace('#preview-', '');
+      openTemplatePreview(templateId, true);
+    } else if (hash === '#intake' || hash === '#start-project') {
+      showIntake(null, null, true);
+      goToStep1(true);
+    } else if (hash === '#intake-step2') {
+      showIntake(null, currentSelectedService, true);
+    } else if (hash === '#ask' || hash === '#ask-question') {
+      showAskQuestion(null, true);
+    } else {
+      const targetSection = hash && hash.length > 1 ? hash.substring(1) : 'home';
+      showMainView(targetSection, true);
+    }
+  } finally {
+    isNavigatingFromHistory = false;
   }
 }
+
+function initAppHistoryRouting() {
+  const hash = window.location.hash;
+  const search = window.location.search;
+  let initialView = 'main';
+  let initialSection = 'home';
+
+  if (hash === '#admin23' || search.includes('view=admin23')) {
+    initialView = 'admin';
+  } else if (hash === '#templates' || search.includes('view=templates')) {
+    initialView = 'templates';
+  } else if (hash === '#intake' || hash === '#start-project') {
+    initialView = 'intake';
+  } else if (hash === '#intake-step2') {
+    initialView = 'intake';
+  } else if (hash === '#ask' || hash === '#ask-question') {
+    initialView = 'ask';
+  } else if (hash && hash.length > 1) {
+    initialSection = hash.substring(1);
+  }
+
+  try {
+    history.replaceState({ view: initialView, section: initialSection }, '', window.location.href);
+  } catch (_) {}
+
+  // Route directly to specified view if URL on initial load indicates it
+  if (initialView === 'admin') {
+    showAdminView(null, true);
+  } else if (initialView === 'templates') {
+    showTemplatesView(null, true);
+  } else if (initialView === 'intake') {
+    showIntake(null, null, true);
+  } else if (initialView === 'ask') {
+    showAskQuestion(null, true);
+  }
+}
+
+window.addEventListener('popstate', handleAppPopState);
+window.addEventListener('hashchange', handleAppPopState);
+window.addEventListener('DOMContentLoaded', initAppHistoryRouting);
 
 window.addEventListener('firebase:ready', function(evt) {
   var sync = (evt && evt.detail) || window.FirebaseSync;
@@ -9716,9 +9960,6 @@ window.addEventListener('firebase:ready', function(evt) {
     });
   }
 });
-
-window.addEventListener('hashchange', checkAdminRoute);
-window.addEventListener('DOMContentLoaded', checkAdminRoute);
 window.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
     const confirmModal = document.getElementById('admin-confirm-modal');
