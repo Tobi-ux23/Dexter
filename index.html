@@ -3809,7 +3809,7 @@ div#templates-view > main > div#templates-grid-container > div > div > span:nth-
             <div class="faq-collapse">
               <div class="faq-collapse-inner">
                 <div class="faq-answer">
-                  We provide the first 1 full year of hosting completely free with all our web development projects. Following the complimentary first year, reliable high-performance hosting charges start from just ₹350/- per month.
+                  We provide 6 Months / 1 Year of hosting completely free depending on the website tier. Following the complimentary period, reliable high-performance hosting charges start from just ₹350/- per month.
                 </div>
               </div>
             </div>
@@ -7232,7 +7232,7 @@ const INITIAL_SEED_FAQS = [
   {
     id: "faq_4",
     question: "How much does web hosting cost?",
-    answer: "We provide the first 1 full year of hosting completely free with all our web development projects. Following the complimentary first year, reliable high-performance hosting charges start from just ₹350/- per month.",
+    answer: "We provide 6 Months / 1 Year of hosting completely free depending on the website tier. Following the complimentary period, reliable high-performance hosting charges start from just ₹350/- per month.",
     order: 4
   },
   {
@@ -7598,7 +7598,7 @@ function initFirestoreSyncBridge() {
   if (typeof window.FirebaseSync.listenFaqs === 'function') {
     window.FirebaseSync.listenFaqs(remoteFaqs => {
       if (remoteFaqs && remoteFaqs.length > 0) {
-        // Auto-migrate any stale records from Firestore that still contain old pricing
+        // Auto-migrate any stale records from Firestore that still contain old pricing or terms
         remoteFaqs.forEach(f => {
           let updated = false;
           if ((f.id === 'faq_5' || (f.question && f.question.includes('charges for website development'))) &&
@@ -7606,10 +7606,12 @@ function initFirestoreSyncBridge() {
             f.answer = f.answer.replace(/₹?\s*3,999\/?-?/g, '₹4,999/-');
             updated = true;
           }
-          if ((f.id === 'faq_4' || (f.question && f.question.includes('hosting cost'))) &&
-              f.answer && f.answer.includes('399')) {
-            f.answer = f.answer.replace(/₹?\s*399\/?-?/g, '₹350/-');
-            updated = true;
+          if (f.id === 'faq_4' || (f.question && f.question.includes('hosting cost'))) {
+            const needsUpdate = f.answer && (f.answer.includes('399') || f.answer.includes('first 1 full year') || !f.answer.includes('6 Months / 1 Year'));
+            if (needsUpdate) {
+              f.answer = "We provide 6 Months / 1 Year of hosting completely free depending on the website tier. Following the complimentary period, reliable high-performance hosting charges start from just ₹350/- per month.";
+              updated = true;
+            }
           }
           if (updated && typeof window.FirebaseSync.addFaq === 'function') {
             window.FirebaseSync.addFaq(f);
@@ -7632,8 +7634,10 @@ function renderFaqAccordion(faqs) {
     if (f.id === 'faq_5' || answerText.includes('3,999')) {
       answerText = answerText.replace(/₹?\s*3,999\/?-?/g, '₹4,999/-');
     }
-    if (f.id === 'faq_4' || (f.question && f.question.includes('hosting cost') && answerText.includes('399'))) {
-      answerText = answerText.replace(/₹?\s*399\/?-?/g, '₹350/-');
+    if (f.id === 'faq_4' || (f.question && f.question.includes('hosting cost'))) {
+      if (answerText.includes('first 1 full year') || answerText.includes('399') || !answerText.includes('6 Months / 1 Year')) {
+        answerText = "We provide 6 Months / 1 Year of hosting completely free depending on the website tier. Following the complimentary period, reliable high-performance hosting charges start from just ₹350/- per month.";
+      }
     }
     return `
     <div class="faq-item">
