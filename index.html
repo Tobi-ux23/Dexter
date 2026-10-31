@@ -3809,7 +3809,7 @@ div#templates-view > main > div#templates-grid-container > div > div > span:nth-
             <div class="faq-collapse">
               <div class="faq-collapse-inner">
                 <div class="faq-answer">
-                  We provide the first 1 full year of hosting completely free with all our web development projects. Following the complimentary first year, reliable high-performance hosting charges start from just ₹399/- per month.
+                  We provide the first 1 full year of hosting completely free with all our web development projects. Following the complimentary first year, reliable high-performance hosting charges start from just ₹350/- per month.
                 </div>
               </div>
             </div>
@@ -3822,7 +3822,7 @@ div#templates-view > main > div#templates-grid-container > div > div > span:nth-
             <div class="faq-collapse">
               <div class="faq-collapse-inner">
                 <div class="faq-answer">
-                  Our custom website development packages start from ₹3,999/-. We provide transparent, value-driven pricing tailored to your specific page count, visual design, and interactive features with zero hidden surprises.
+                  Our custom website development packages start from ₹4,999/-. We provide transparent, value-driven pricing tailored to your specific page count, visual design, and interactive features with zero hidden surprises.
                 </div>
               </div>
             </div>
@@ -7204,7 +7204,7 @@ const INITIAL_SEED_FAQ_QUESTIONS = [
     createdAt: new Date(Date.now() - 3600000 * 52).toISOString(),
     name: 'Meera Nambiar',
     email: 'meera@nambiarwellness.com',
-    question: 'Can you provide multilingual content translation and SEO metadata setup for landing pages starting at ₹3,999/-?',
+    question: 'Can you provide multilingual content translation and SEO metadata setup for landing pages starting at ₹4,999/-?',
     status: 'New',
     repliedAt: null
   }
@@ -7232,13 +7232,13 @@ const INITIAL_SEED_FAQS = [
   {
     id: "faq_4",
     question: "How much does web hosting cost?",
-    answer: "We provide the first 1 full year of hosting completely free with all our web development projects. Following the complimentary first year, reliable high-performance hosting charges start from just ₹399/- per month.",
+    answer: "We provide the first 1 full year of hosting completely free with all our web development projects. Following the complimentary first year, reliable high-performance hosting charges start from just ₹350/- per month.",
     order: 4
   },
   {
     id: "faq_5",
     question: "What are the charges for website development?",
-    answer: "Our custom website development packages start from ₹3,999/-. We provide transparent, value-driven pricing tailored to your specific page count, visual design, and interactive features with zero hidden surprises.",
+    answer: "Our custom website development packages start from ₹4,999/-. We provide transparent, value-driven pricing tailored to your specific page count, visual design, and interactive features with zero hidden surprises.",
     order: 5
   },
   {
@@ -7598,6 +7598,23 @@ function initFirestoreSyncBridge() {
   if (typeof window.FirebaseSync.listenFaqs === 'function') {
     window.FirebaseSync.listenFaqs(remoteFaqs => {
       if (remoteFaqs && remoteFaqs.length > 0) {
+        // Auto-migrate any stale records from Firestore that still contain old pricing
+        remoteFaqs.forEach(f => {
+          let updated = false;
+          if ((f.id === 'faq_5' || (f.question && f.question.includes('charges for website development'))) &&
+              f.answer && f.answer.includes('3,999')) {
+            f.answer = f.answer.replace(/₹?\s*3,999\/?-?/g, '₹4,999/-');
+            updated = true;
+          }
+          if ((f.id === 'faq_4' || (f.question && f.question.includes('hosting cost'))) &&
+              f.answer && f.answer.includes('399')) {
+            f.answer = f.answer.replace(/₹?\s*399\/?-?/g, '₹350/-');
+            updated = true;
+          }
+          if (updated && typeof window.FirebaseSync.addFaq === 'function') {
+            window.FirebaseSync.addFaq(f);
+          }
+        });
         renderFaqAccordion(remoteFaqs);
       } else {
         INITIAL_SEED_FAQS.forEach(f => window.FirebaseSync.addFaq(f));
@@ -7610,7 +7627,15 @@ function renderFaqAccordion(faqs) {
   const container = document.getElementById('main-faq-container');
   if (!container || !faqs || faqs.length === 0) return;
   const sorted = [...faqs].sort((a, b) => (a.order || 99) - (b.order || 99));
-  container.innerHTML = sorted.map(f => `
+  container.innerHTML = sorted.map(f => {
+    let answerText = f.answer || '';
+    if (f.id === 'faq_5' || answerText.includes('3,999')) {
+      answerText = answerText.replace(/₹?\s*3,999\/?-?/g, '₹4,999/-');
+    }
+    if (f.id === 'faq_4' || (f.question && f.question.includes('hosting cost') && answerText.includes('399'))) {
+      answerText = answerText.replace(/₹?\s*399\/?-?/g, '₹350/-');
+    }
+    return `
     <div class="faq-item">
       <button class="faq-header" onclick="toggleFaq(this)" aria-expanded="false">
         ${escapeHtml(f.question)}
@@ -7619,12 +7644,13 @@ function renderFaqAccordion(faqs) {
       <div class="faq-collapse">
         <div class="faq-collapse-inner">
           <div class="faq-answer">
-            ${escapeHtml(f.answer)}
+            ${escapeHtml(answerText)}
           </div>
         </div>
       </div>
     </div>
-  `).join('');
+  `;
+  }).join('');
 }
 
 window.addEventListener('firebase:ready', initFirestoreSyncBridge);
